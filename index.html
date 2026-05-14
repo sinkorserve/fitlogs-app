@@ -4,8 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0">
 <title>FitLogs.ai — Your AI Health Coach by Text</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -17,87 +15,124 @@
   --shadow:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.06);
   --shadow-md:0 4px 16px rgba(0,0,0,.1);
 }
-body{font-family:'DM Sans',sans-serif;background:var(--surface);color:var(--text-primary);min-height:100vh;font-size:15px;line-height:1.6}
-h1,h2,h3,.brand{font-family:'Space Grotesk',sans-serif}
+body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',sans-serif;background:var(--surface);color:var(--text-primary);min-height:100vh;font-size:15px;line-height:1.6}
+h1,h2,h3,.brand{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',sans-serif}
 
-/* NAV */
-nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;gap:12px;height:58px}
-.brand{font-size:19px;font-weight:700;color:var(--slate);letter-spacing:-.5px;display:flex;align-items:center;gap:7px;text-decoration:none}
-.brand span{color:var(--green)}
-.brand-pill{background:var(--green-light);color:var(--green-dark);font-size:10px;font-weight:600;padding:2px 7px;border-radius:20px;font-family:'DM Sans',sans-serif}
-nav .spacer{flex:1}
-.nav-btn{border:1px solid var(--border);background:var(--card);color:var(--text-primary);padding:7px 14px;border-radius:var(--radius-sm);font-size:13px;font-weight:500;cursor:pointer;transition:.15s;font-family:'DM Sans',sans-serif}
-.nav-btn:hover{background:var(--surface)}
-.nav-btn.primary{background:var(--green);border-color:var(--green);color:#fff}
-.nav-btn.primary:hover{background:var(--green-dark)}
-#signOutBtn{display:none;background:none;border:none;color:var(--text-muted);font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;padding:7px 14px}
 
 /* ═══════════════════════════════════════════
-   LANDING
+   LANDING — Two-panel layout (soslogs pattern)
 ═══════════════════════════════════════════ */
-#landing{}
+#landing{min-height:100vh;display:flex;flex-direction:column}
 
-/* HERO */
-.hero{background:linear-gradient(160deg,#f0fdf4 0%,#dcfce7 40%,#bbf7d0 100%);color:var(--slate);padding:80px 24px 72px;text-align:center;border-bottom:1px solid #86efac}
-.hero-eyebrow{font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--green-dark);margin-bottom:20px}
-.hero h1{font-size:clamp(28px,4.5vw,48px);font-weight:700;letter-spacing:-1px;line-height:1.15;margin-bottom:16px;max-width:680px;margin-left:auto;margin-right:auto;color:var(--slate)}
-.hero h1 em{font-style:normal;color:var(--green-dark)}
-.hero-sub{font-size:16px;color:var(--text-secondary);max-width:480px;margin:0 auto 36px;line-height:1.7}
-.sms-block{display:inline-flex;flex-direction:column;align-items:center;gap:8px;background:#fff;border:2px solid #86efac;border-radius:16px;padding:20px 36px;margin-bottom:20px;cursor:pointer;transition:.2s;box-shadow:0 4px 24px rgba(34,197,94,.15)}
-.sms-block:hover{border-color:var(--green);box-shadow:0 6px 32px rgba(34,197,94,.25);transform:translateY(-2px)}
-.sms-block .label{font-size:11px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--text-muted)}
-.sms-block .number{font-size:26px;font-weight:700;font-family:'Space Grotesk',sans-serif;color:var(--slate);letter-spacing:.5px}
-.sms-block .vanity{font-size:26px;font-weight:700;font-family:'Space Grotesk',sans-serif;color:var(--green-dark);letter-spacing:.5px}
-.hero-cta-row{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap}
-.hero-cta{background:var(--green);color:#fff;border:none;padding:13px 28px;border-radius:var(--radius-sm);font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.15s;box-shadow:0 4px 12px rgba(34,197,94,.3)}
-.hero-cta:hover{background:var(--green-dark);box-shadow:0 6px 16px rgba(34,197,94,.4)}
-.hero-cta-ghost{background:#fff;border:2px solid #86efac;color:var(--green-dark);padding:13px 24px;border-radius:var(--radius-sm);font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.15s}
-.hero-cta-ghost:hover{border-color:var(--green);background:var(--green-light)}
-.hero-note{font-size:12px;color:var(--text-muted);margin-top:16px}
+/* SPLIT LAYOUT */
+.split{display:grid;grid-template-columns:1fr 1fr;min-height:100vh}
+@media(max-width:860px){.split{grid-template-columns:1fr;min-height:unset}}
 
-/* PRICING */
-.pricing-wrap{max-width:960px;margin:0 auto;padding:64px 24px}
-.pricing-header{text-align:center;margin-bottom:40px}
-.pricing-header h2{font-size:28px;font-weight:700;letter-spacing:-.5px;margin-bottom:8px}
-.pricing-header p{color:var(--text-secondary);font-size:15px}
+/* LEFT PANEL */
+.panel-left{background:#fff;color:var(--slate);padding:40px 44px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden;border-right:1px solid var(--border)}
+@media(max-width:860px){.panel-left{border-right:none;border-bottom:1px solid var(--border)}}
+
+.pl-brand{font-size:22px;font-weight:800;letter-spacing:-.5px;margin-bottom:20px;display:flex;align-items:center;gap:6px;color:var(--slate)}
+.pl-brand .ai{font-size:22px;font-weight:800;color:var(--green-dark)}
+
+.pl-headline{font-size:clamp(22px,2.8vw,30px);font-weight:800;line-height:1.2;letter-spacing:-.5px;margin-bottom:8px;color:var(--slate)}
+.pl-headline em{font-style:normal;color:var(--green-dark)}
+.pl-sub{font-size:13px;color:var(--text-secondary);line-height:1.7;margin-bottom:24px;max-width:420px}
+
+/* CONVO CARDS — green fill with white text */
+.convo-pair{display:flex;flex-direction:column;gap:8px;margin-bottom:20px}
+.convo-card{padding:16px 18px;border-radius:14px}
+.convo-card.card-you{background:#dcfce7;border:1.5px solid #86efac}
+.convo-card.card-ai{background:#bbf7d0;border:1.5px solid #6ee7b7}
+.convo-card-label{font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;margin-bottom:10px;color:#14532d}
+.convo-item{display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;font-size:13px;color:#166534;line-height:1.5}
+.convo-item:last-child{margin-bottom:0}
+.convo-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;margin-top:6px;background:#15803d}
+.convo-item strong{color:#14532d;font-weight:600}
+
+/* NUMBER BRIDGE — dark slate band between cards, white numbers pop, green arrows visible */
+.num-bridge{display:flex;align-items:center;justify-content:center;gap:16px;padding:16px 20px;background:transparent}
+.num-bridge .num{font-size:17px;font-weight:700;color:#fff;letter-spacing:.3px;white-space:nowrap;text-align:right;flex:1}
+.num-bridge .vanity{font-size:17px;font-weight:700;color:#86efac;letter-spacing:.3px;white-space:nowrap;text-align:left;flex:1}
+.num-bridge-arrows{display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.num-bridge-tagline{text-align:center;font-size:11px;color:rgba(255,255,255,.45);letter-spacing:.2px;padding:0 20px 12px;font-style:italic;background:transparent}
+
+/* AI COACH PERSONAS — white on dark green */
+.persona-row{display:flex;flex-direction:column;gap:6px}
+.persona{display:flex;align-items:flex-start;gap:10px;padding:8px 10px;background:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.9);border-radius:8px}
+.persona-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px}
+.persona-name{font-size:12px;font-weight:700;color:#14532d;margin-bottom:2px}
+.persona-quote{font-size:12px;color:#166534;line-height:1.45;font-style:italic}
+
+.pl-footer{font-size:12px;color:var(--text-muted);border-top:1px solid var(--border);padding-top:14px;margin-top:auto}
+
+/* RIGHT PANEL */
+.panel-right{background:#fff;padding:48px 44px;display:flex;flex-direction:column;justify-content:center;overflow-y:auto}
+@media(max-width:860px){.panel-right{padding:36px 24px}}
+
+.pr-tabs{display:flex;gap:0;border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:28px}
+.pr-tab{flex:1;padding:10px;text-align:center;font-size:13px;font-weight:600;cursor:pointer;border:none;background:none;font-family:inherit;color:var(--text-secondary);transition:.15s}
+.pr-tab.active{background:var(--green);color:#fff}
+.pr-tab:hover:not(.active){background:var(--surface)}
+
+/* FORM */
+.pr-form{display:flex;flex-direction:column;gap:0}
+.pr-form.hidden{display:none}
+.trial-badge{background:var(--green-light);border:1px solid #86efac;border-radius:10px;padding:10px 14px;font-size:13px;color:var(--green-dark);font-weight:500;margin-bottom:20px;text-align:center;line-height:1.5}
+.form-label{font-size:11px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--text-muted);margin-bottom:5px;margin-top:12px;display:block}
+.form-label:first-of-type{margin-top:0}
+.form-row{display:flex;gap:8px}
+.form-input{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:11px 13px;font-size:14px;font-family:inherit;color:var(--text-primary);background:#fff;transition:.15s}
+.form-input:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px rgba(34,197,94,.1)}
+.form-select{border:1.5px solid var(--border);border-radius:10px;padding:11px 13px;font-size:14px;font-family:inherit;background:#fff;width:90px;flex-shrink:0}
+.form-select:focus{outline:none;border-color:var(--green)}
+.otp-wrap{display:none;margin-top:12px}
+.otp-row{display:flex;gap:8px}
+.otp-input{flex:1;border:1.5px solid var(--border);border-radius:10px;padding:11px 13px;font-size:18px;font-weight:700;letter-spacing:6px;text-align:center;font-family:inherit}
+.otp-input:focus{outline:none;border-color:var(--green)}
+.otp-verify-btn{background:var(--green);color:#fff;border:none;padding:11px 16px;border-radius:10px;font-size:18px;cursor:pointer}
+.verified-badge{display:none;background:var(--green-light);border:1px solid #86efac;border-radius:8px;padding:8px 12px;font-size:13px;color:var(--green-dark);font-weight:600;margin-top:10px}
+.form-err{display:none;background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:9px 12px;font-size:13px;color:#b91c1c;margin-top:10px}
+.form-ok{display:none;background:var(--green-light);border:1px solid #86efac;border-radius:8px;padding:9px 12px;font-size:13px;color:var(--green-dark);margin-top:10px}
+.form-submit{background:var(--green);color:#fff;border:none;width:100%;padding:13px;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:16px;transition:.15s;letter-spacing:-.2px}
+.form-submit:hover{background:var(--green-dark)}
+.form-submit:disabled{opacity:.6;cursor:not-allowed}
+.form-fine{font-size:11px;color:var(--text-muted);text-align:center;margin-top:10px;line-height:1.5}
+.form-switch{text-align:center;margin-top:14px;font-size:13px;color:var(--text-secondary)}
+.form-switch a{color:var(--green-dark);cursor:pointer;font-weight:600}
+.forgot-link{text-align:right;margin-top:-6px;margin-bottom:4px}
+.forgot-link a{font-size:12px;color:var(--text-muted);cursor:pointer}
+.forgot-link a:hover{color:var(--green-dark)}
+
+/* PRICING SECTION */
+.pricing-section{background:var(--surface);border-top:1px solid var(--border);padding:56px 24px}
+.pricing-inner{max-width:960px;margin:0 auto}
+.section-head{text-align:center;margin-bottom:36px}
+.section-head h2{font-size:22px;font-weight:700;letter-spacing:-.3px;margin-bottom:6px}
+.section-head p{color:var(--text-secondary);font-size:14px}
 .pricing-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
-.pricing-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:28px;position:relative;box-shadow:var(--shadow)}
+.pricing-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;position:relative;box-shadow:var(--shadow)}
 .pricing-card.featured{border:2px solid var(--green);box-shadow:0 0 0 1px rgba(34,197,94,.1),var(--shadow-md)}
-.featured-pill{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--green);color:#fff;font-size:11px;font-weight:700;padding:4px 16px;border-radius:20px;white-space:nowrap;letter-spacing:.5px}
-.plan-name{font-size:12px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--text-muted);margin-bottom:10px}
-.plan-price{font-family:'Space Grotesk',sans-serif;font-size:32px;font-weight:700;color:var(--slate);line-height:1;margin-bottom:4px}
-.plan-price sup{font-size:20px;vertical-align:top;margin-top:8px}
-.plan-price sub{font-size:14px;font-weight:400;color:var(--text-muted)}
-.plan-trial{display:inline-block;font-size:12px;font-weight:600;color:var(--green-dark);background:var(--green-light);padding:3px 10px;border-radius:20px;margin:10px 0 14px}
-.plan-desc{font-size:13px;color:var(--text-secondary);margin-bottom:18px;line-height:1.6;min-height:38px}
-.plan-features{list-style:none;margin-bottom:22px}
+.featured-pill{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--green);color:#fff;font-size:11px;font-weight:700;padding:4px 14px;border-radius:20px;white-space:nowrap;letter-spacing:.5px}
+.plan-name{font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px}
+.plan-price{font-size:30px;font-weight:700;color:var(--slate);line-height:1;margin-bottom:4px}
+.plan-trial{display:inline-block;font-size:11px;font-weight:600;color:var(--green-dark);background:var(--green-light);padding:3px 10px;border-radius:20px;margin:8px 0 12px}
+.plan-desc{font-size:13px;color:var(--text-secondary);margin-bottom:16px;line-height:1.55}
+.plan-features{list-style:none;margin-bottom:20px}
 .plan-features li{font-size:13px;color:var(--text-secondary);padding:5px 0;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:8px;line-height:1.5}
 .plan-features li:last-child{border-bottom:none}
-.check{color:var(--green);font-weight:700;flex-shrink:0;font-size:14px}
-.plan-btn{width:100%;padding:11px;border-radius:var(--radius-sm);font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.15s;border:1px solid var(--border);background:var(--surface);color:var(--slate)}
+.check{color:var(--green);font-weight:700;flex-shrink:0;font-size:13px}
+.plan-btn{width:100%;padding:11px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;transition:.15s;border:1px solid var(--border);background:var(--surface);color:var(--slate)}
 .plan-btn:hover{background:var(--border)}
 .plan-btn.green{background:var(--green);color:#fff;border-color:var(--green)}
 .plan-btn.green:hover{background:var(--green-dark)}
-
-/* EXAMPLES */
-.examples-wrap{background:var(--slate);padding:64px 24px}
-.examples-inner{max-width:960px;margin:0 auto}
-.examples-header{text-align:center;margin-bottom:40px}
-.examples-header h2{font-size:24px;font-weight:700;color:#fff;letter-spacing:-.5px;margin-bottom:8px}
-.examples-header p{color:rgba(255,255,255,.5);font-size:14px}
-.examples-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
-.ex-card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:var(--radius);padding:18px}
-.ex-tag{font-size:10px;font-weight:700;letter-spacing:.5px;color:var(--green);margin-bottom:10px}
-.ex-bubble{background:rgba(255,255,255,.09);border-radius:0 10px 10px 10px;padding:10px 12px;font-size:12px;color:rgba(255,255,255,.8);font-family:monospace;line-height:1.6;margin-bottom:8px}
-.ex-reply{background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.2);border-radius:10px 0 10px 10px;padding:10px 12px;font-size:12px;color:rgba(255,255,255,.8);font-family:monospace;line-height:1.6}
-.coach-pill{display:inline-block;background:var(--purple);color:#fff;font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;letter-spacing:.3px;margin-bottom:6px}
 
 /* ═══════════════════════════════════════════
    DASHBOARD
 ═══════════════════════════════════════════ */
 #dashboard{display:none;max-width:1100px;margin:0 auto;padding:24px 24px 64px}
 .dash-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px}
-.dash-greeting{font-size:22px;font-weight:700;font-family:'Space Grotesk',sans-serif}
+.dash-greeting{font-size:22px;font-weight:700;font-family:inherit}
 .dash-sub{font-size:14px;color:var(--text-secondary);margin-top:2px}
 .tier-chip{font-size:11px;font-weight:700;padding:4px 12px;border-radius:20px;letter-spacing:.5px}
 .tier-coach{background:#ede9fe;color:#5b21b6}
@@ -106,12 +141,12 @@ nav .spacer{flex:1}
 .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px}
 .stat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow)}
 .stat-label{font-size:11px;color:var(--text-muted);font-weight:600;letter-spacing:.3px;text-transform:uppercase;margin-bottom:8px}
-.stat-value{font-size:26px;font-weight:700;font-family:'Space Grotesk',sans-serif;color:var(--slate);line-height:1}
+.stat-value{font-size:26px;font-weight:700;font-family:inherit;color:var(--slate);line-height:1}
 .stat-sub{font-size:12px;color:var(--text-secondary);margin-top:4px}
 .main-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
 @media(max-width:720px){.main-grid{grid-template-columns:1fr}}
 .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
-.card-title{font-size:14px;font-weight:600;color:var(--slate);margin-bottom:16px;font-family:'Space Grotesk',sans-serif;display:flex;align-items:center;gap:8px}
+.card-title{font-size:14px;font-weight:600;color:var(--slate);margin-bottom:16px;font-family:inherit;display:flex;align-items:center;gap:8px}
 .card-tag{font-size:11px;font-weight:500;color:var(--text-muted);background:var(--surface);border:1px solid var(--border);padding:2px 8px;border-radius:20px;margin-left:auto}
 .food-entry{border:1px solid var(--border);border-radius:var(--radius-sm);padding:11px;margin-bottom:8px;display:flex;gap:10px;align-items:center}
 .food-emoji{width:40px;height:40px;border-radius:8px;background:var(--green-light);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
@@ -119,7 +154,7 @@ nav .spacer{flex:1}
 .food-name{font-size:13px;font-weight:500;margin-bottom:2px}
 .food-meta{font-size:11px;color:var(--text-muted)}
 .cal-wrap{display:flex;flex-direction:column;align-items:flex-end;gap:2px}
-.cal-input{width:60px;border:1px solid var(--border);border-radius:6px;padding:4px 6px;font-size:13px;font-weight:600;text-align:center;color:var(--slate);background:var(--green-light);font-family:'Space Grotesk',sans-serif}
+.cal-input{width:60px;border:1px solid var(--border);border-radius:6px;padding:4px 6px;font-size:13px;font-weight:600;text-align:center;color:var(--slate);background:var(--green-light);font-family:inherit}
 .cal-input:focus{outline:none;border-color:var(--green);background:#fff}
 .cal-unit{font-size:10px;color:var(--text-muted)}
 .ai-tag{font-size:9px;background:#ede9fe;color:#6d28d9;padding:1px 5px;border-radius:3px;font-weight:600}
@@ -128,7 +163,7 @@ nav .spacer{flex:1}
 .macro-label{width:46px;color:var(--text-secondary)}
 .macro-track{flex:1;height:5px;background:var(--border);border-radius:3px;overflow:hidden}
 .macro-fill{height:100%;border-radius:3px}
-.steps-num{font-size:38px;font-weight:700;font-family:'Space Grotesk',sans-serif;line-height:1;text-align:center;padding:8px 0 4px}
+.steps-num{font-size:38px;font-weight:700;font-family:inherit;line-height:1;text-align:center;padding:8px 0 4px}
 .steps-goal{font-size:13px;color:var(--text-muted);text-align:center;margin-bottom:10px}
 .steps-track{background:var(--border);border-radius:6px;height:10px;overflow:hidden;margin-bottom:6px}
 .steps-fill{height:100%;background:linear-gradient(90deg,var(--green),#14b8a6);border-radius:6px}
@@ -140,7 +175,7 @@ nav .spacer{flex:1}
 .routine-check{margin-left:auto;opacity:0;color:var(--green);font-weight:700}
 .routine-chip.done .routine-check{opacity:1}
 .spider-wrap{display:flex;flex-direction:column;align-items:center;gap:12px}
-.spider-score{font-size:40px;font-weight:700;font-family:'Space Grotesk',sans-serif;text-align:center;line-height:1}
+.spider-score{font-size:40px;font-weight:700;font-family:inherit;text-align:center;line-height:1}
 .spider-sub{font-size:12px;color:var(--text-muted);text-align:center}
 .spider-legend{display:grid;grid-template-columns:1fr 1fr;gap:4px 16px;width:100%}
 .legend-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-secondary)}
@@ -151,20 +186,20 @@ nav .spacer{flex:1}
 .chat-msg.ai{background:var(--surface);border:1px solid var(--border);border-radius:12px 12px 12px 4px;align-self:flex-start}
 .chat-msg .msg-time{font-size:10px;opacity:.55;margin-top:4px}
 .chat-input-wrap{display:flex;gap:8px}
-.chat-input{flex:1;border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;font-size:13px;font-family:'DM Sans',sans-serif;resize:none;height:44px}
+.chat-input{flex:1;border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;font-size:13px;font-family:inherit;resize:none;height:44px}
 .chat-input:focus{outline:none;border-color:var(--green)}
-.chat-send{background:var(--green);color:#fff;border:none;padding:10px 16px;border-radius:var(--radius-sm);font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif}
+.chat-send{background:var(--green);color:#fff;border:none;padding:10px 16px;border-radius:var(--radius-sm);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit}
 .chat-send:hover{background:var(--green-dark)}
 .entry-panel{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
 .entry-tabs{display:flex;border-bottom:1px solid var(--border)}
-.entry-tab{flex:1;padding:11px 6px;text-align:center;font-size:12px;font-weight:500;color:var(--text-secondary);cursor:pointer;border-bottom:2px solid transparent;transition:.15s;background:none;border-top:none;border-left:none;border-right:none;font-family:'DM Sans',sans-serif}
+.entry-tab{flex:1;padding:11px 6px;text-align:center;font-size:12px;font-weight:500;color:var(--text-secondary);cursor:pointer;border-bottom:2px solid transparent;transition:.15s;background:none;border-top:none;border-left:none;border-right:none;font-family:inherit}
 .entry-tab.active{color:var(--green-dark);border-bottom-color:var(--green);background:var(--green-light)}
 .entry-body{padding:16px}
-.entry-ta{width:100%;border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;font-size:13px;font-family:'DM Sans',sans-serif;color:var(--text-primary);resize:none;height:80px;background:var(--surface)}
+.entry-ta{width:100%;border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;font-size:13px;font-family:inherit;color:var(--text-primary);resize:none;height:80px;background:var(--surface)}
 .entry-ta:focus{outline:none;border-color:var(--green);background:#fff}
 .entry-actions{display:flex;gap:8px;margin-top:10px;align-items:center}
 .entry-hint{font-size:12px;color:var(--text-muted);flex:1}
-.save-btn{background:var(--green);color:#fff;border:none;padding:9px 18px;border-radius:var(--radius-sm);font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif}
+.save-btn{background:var(--green);color:#fff;border:none;padding:9px 18px;border-radius:var(--radius-sm);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit}
 .save-btn:hover{background:var(--green-dark)}
 .msg-log{max-height:260px;overflow-y:auto}
 .msg-item{padding:9px 0;border-bottom:1px solid var(--border);font-size:13px}
@@ -181,19 +216,19 @@ nav .spacer{flex:1}
 .lab-metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:8px;margin:12px 0}
 .lab-metric{background:#fff;border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px;text-align:center}
 .lab-metric-label{font-size:10px;color:var(--text-muted);margin-bottom:2px}
-.lab-metric-value{font-size:16px;font-weight:700;font-family:'Space Grotesk',sans-serif;color:var(--text-muted)}
+.lab-metric-value{font-size:16px;font-weight:700;font-family:inherit;color:var(--text-muted)}
 
 /* AUTH MODAL */
 .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:200;align-items:center;justify-content:center;padding:24px}
 .modal-bg.open{display:flex}
 .modal{background:#fff;border-radius:16px;width:100%;max-width:420px;overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,.2)}
-.modal-head{background:var(--slate);color:#fff;padding:20px 24px;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:17px;display:flex;align-items:center;gap:10px}
+.modal-head{background:var(--slate);color:#fff;padding:20px 24px;font-family:inherit;font-weight:700;font-size:17px;display:flex;align-items:center;gap:10px}
 .modal-close{margin-left:auto;background:none;border:none;color:rgba(255,255,255,.5);cursor:pointer;font-size:18px;line-height:1;padding:0}
 .modal-body{padding:24px}
 .modal-label{font-size:12px;font-weight:600;color:var(--text-muted);letter-spacing:.3px;text-transform:uppercase;margin-bottom:6px;display:block}
-.modal-input{width:100%;border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;font-size:14px;font-family:'DM Sans',sans-serif;margin-bottom:14px}
+.modal-input{width:100%;border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;font-size:14px;font-family:inherit;margin-bottom:14px}
 .modal-input:focus{outline:none;border-color:var(--green)}
-.modal-submit{width:100%;background:var(--green);color:#fff;border:none;padding:12px;border-radius:var(--radius-sm);font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif}
+.modal-submit{width:100%;background:var(--green);color:#fff;border:none;padding:12px;border-radius:var(--radius-sm);font-size:14px;font-weight:600;cursor:pointer;font-family:inherit}
 .modal-submit:hover{background:var(--green-dark)}
 .modal-trial-note{background:var(--green-light);border-radius:var(--radius-sm);padding:10px 14px;font-size:12px;color:var(--green-dark);font-weight:500;margin-bottom:16px;text-align:center}
 .modal-toggle{text-align:center;margin-top:14px;font-size:13px;color:var(--text-secondary)}
@@ -206,157 +241,259 @@ footer a:hover{color:#fff}
 </head>
 <body>
 
-<!-- NAV -->
-<nav>
-  <a class="brand" href="/">💪 Fit<span>Logs</span><span class="brand-pill">.ai</span></a>
-  <div class="spacer"></div>
-  <button class="nav-btn" id="signInNavBtn" onclick="openModal('signin')">Sign In</button>
-  <button class="nav-btn primary" id="startNavBtn" onclick="openModal('create')">Start Free Trial</button>
-  <button id="signOutBtn" onclick="signOut()">Sign Out</button>
-</nav>
 
 <!-- LANDING -->
 <div id="landing">
+  <div class="split">
 
-  <!-- HERO -->
-  <div class="hero">
-    <div class="hero-eyebrow">No app. No download. Just text.</div>
-    <h1>Your AI health coach is<br>a text message away.</h1>
-    <p class="hero-sub">Text 1-888-596-5467, tell the AI your goal, and start logging your habits. Watch your health profile evolve — no app downloads, no signup hassle.</p>
+    <!-- LEFT PANEL -->
+    <div class="panel-left">
+      <div>
+        <div class="pl-brand">💪 FitLogs.<span class="ai">AI</span></div>
 
-    <div class="sms-block" onclick="openModal('create')">
-      <span class="label">Text or tap to start</span>
-      <span class="number">1-888-596-5467</span>
-      <span style="font-size:11px;color:var(--text-muted);letter-spacing:.3px">also known as</span>
-      <span class="vanity">1-888-596-LOGS</span>
-    </div>
+        <div class="pl-headline">A coach in your corner,<br><em>one text away.</em></div>
+        <p class="pl-sub">Manage your fitness, nutrition, health goals, and customize your training dashboard to what you want to see, one text at a time.</p>
 
-    <div class="hero-cta-row">
-      <button class="hero-cta" onclick="openModal('create')">Start 30-Day Free Trial</button>
-      <button class="hero-cta-ghost" onclick="simulateLogin()">Preview Dashboard</button>
-    </div>
-    <div class="hero-note">No charge for 30 days · Cancel anytime by texting STOP · No app required</div>
-  </div>
-
-  <!-- PRICING -->
-  <div class="pricing-wrap">
-    <div class="pricing-header">
-      <h2>Simple, honest pricing</h2>
-      <p>Every plan starts with a 30-day free trial. Downgrade or cancel anytime by text.</p>
-    </div>
-    <div class="pricing-grid">
-
-      <div class="pricing-card">
-        <div class="plan-name">Track</div>
-        <div class="plan-price">$4.99<span style="font-size:14px;font-weight:500;color:var(--text-muted)">/mo</span></div>
-        <div class="plan-trial">30-day free trial</div>
-        <div class="plan-desc">For the self-disciplined user who just needs a clean logging system and AI analysis.</div>
-        <ul class="plan-features">
-          <li><span class="check">✓</span>SMS logging — food, steps, sleep, workouts, water</li>
-          <li><span class="check">✓</span>AI calorie and macro estimates from text descriptions</li>
-          <li><span class="check">✓</span>Full dashboard with 7-metric spider chart</li>
-          <li><span class="check">✓</span>Weekly AI progress report</li>
-          <li><span class="check">✓</span>Works from phone or smartwatch voice-to-text</li>
-          <li><span class="check">✓</span>Log streak and adherence tracking</li>
-        </ul>
-        <button class="plan-btn" onclick="openModal('create')">Start Free Trial</button>
-      </div>
-
-      <div class="pricing-card featured">
-        <div class="featured-pill">Default on signup</div>
-        <div class="plan-name">Coach</div>
-        <div class="plan-price">$14.99<span style="font-size:14px;font-weight:500;color:var(--text-muted)">/mo</span></div>
-        <div class="plan-trial">30-day free trial</div>
-        <div class="plan-desc">Real-time AI coaching via SMS. The AI knows your history and coaches you like a pro.</div>
-        <ul class="plan-features">
-          <li><span class="check">✓</span>Everything in Track</li>
-          <li><span class="check">✓</span>Real-time AI coaching conversations via SMS</li>
-          <li><span class="check">✓</span>AI remembers your logs and adjusts coaching tone</li>
-          <li><span class="check">✓</span>Motivational check-ins and accountability nudges</li>
-          <li><span class="check">✓</span>Text DOWNGRADE anytime to switch to Track</li>
-        </ul>
-        <button class="plan-btn green" onclick="openModal('create')">Start Free Trial</button>
-      </div>
-
-      <div class="pricing-card">
-        <div class="plan-name">Trainer</div>
-        <div class="plan-price">$29.99<span style="font-size:14px;font-weight:500;color:var(--text-muted)">/mo</span></div>
-        <div class="plan-trial">30-day free trial</div>
-        <div class="plan-desc">Everything in Coach plus your personal trainer gets read access to your full dashboard.</div>
-        <ul class="plan-features">
-          <li><span class="check">✓</span>Everything in Coach</li>
-          <li><span class="check">✓</span>Invite your personal trainer or physical therapist</li>
-          <li><span class="check">✓</span>Trainer gets read-only dashboard access</li>
-          <li><span class="check">✓</span>Trainer sees spider chart, logs, and AI reports</li>
-          <li><span class="check">✓</span>You control access — revoke anytime</li>
-        </ul>
-        <button class="plan-btn" onclick="openModal('create')">Start Free Trial</button>
-      </div>
-
-    </div>
-
-    <!-- PT INCENTIVE CALLOUT -->
-    <div style="margin-top:32px;background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:1px solid #86efac;border-radius:var(--radius);padding:24px 28px;display:flex;align-items:flex-start;gap:16px">
-      <div style="font-size:32px;flex-shrink:0">💰</div>
-      <div style="flex:1">
-        <div style="font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:700;color:var(--slate);margin-bottom:6px">Personal trainers earn $4.99 per client per month</div>
-        <div style="font-size:14px;color:var(--text-secondary);line-height:1.7;margin-bottom:12px">When your client subscribes to the Trainer plan ($29.99/mo), $4.99 automatically accrues to your FitLogs earnings wallet every month. Cash out anytime via Stripe — directly to your bank account.</div>
-        <div style="display:flex;gap:24px;flex-wrap:wrap">
-          <div style="text-align:center">
-            <div style="font-size:22px;font-weight:700;font-family:'Space Grotesk',sans-serif;color:var(--green-dark)">$49.90</div>
-            <div style="font-size:12px;color:var(--text-muted)">earned/mo with 10 clients</div>
+        <!-- FEATURE CHIPS -->
+        <div style="display:flex;gap:10px;margin-bottom:24px;flex-wrap:wrap">
+          <div style="display:flex;align-items:center;gap:7px;background:#1e293b;border-radius:20px;padding:8px 16px;font-size:13px;font-weight:600;color:#fff">
+            <span>⚡</span> AI coach — 24/7
           </div>
-          <div style="text-align:center">
-            <div style="font-size:22px;font-weight:700;font-family:'Space Grotesk',sans-serif;color:var(--green-dark)">$149.70</div>
-            <div style="font-size:12px;color:var(--text-muted)">earned/mo with 30 clients</div>
-          </div>
-          <div style="text-align:center">
-            <div style="font-size:22px;font-weight:700;font-family:'Space Grotesk',sans-serif;color:var(--green-dark)">$499.00</div>
-            <div style="font-size:12px;color:var(--text-muted)">earned/mo with 100 clients</div>
+          <div style="display:flex;align-items:center;gap:7px;background:#1e293b;border-radius:20px;padding:8px 16px;font-size:13px;font-weight:600;color:#fff">
+            <span>👤</span> Human coach — add-on anytime
           </div>
         </div>
-        <div style="font-size:12px;color:var(--text-muted);margin-top:12px">Trainers are paid from collected revenue — no upfront cost to you or your clients. Cash out requests processed within 5 business days.</div>
+        <div class="convo-pair">
+
+          <!-- YOU TEXT IN — green fill -->
+          <div class="convo-card card-you">
+            <div class="convo-card-label">📲 What you text in</div>
+            <div class="convo-item"><div class="convo-dot"></div><div><strong>Goals</strong> — Target BMI, cholesterol ratio, measurements you care about</div></div>
+            <div class="convo-item"><div class="convo-dot"></div><div><strong>Habits</strong> — What you ate or drank, when, and where — from a quick lunch to a late-night snack</div></div>
+            <div class="convo-item"><div class="convo-dot"></div><div><strong>Movement</strong> — A walk, a run, the gym, a swim — time, distance, or just the vibe</div></div>
+            <div class="convo-item"><div class="convo-dot"></div><div><strong>Sleep</strong> — How long and how well you actually rested</div></div>
+            <div class="convo-item"><div class="convo-dot"></div><div><strong>Your weekly rhythm</strong> — Mon: walk the park · Wed: yoga · Sat: swim with the family</div></div>
+            <div class="convo-item"><div class="convo-dot"></div><div><strong>Your coach's personality</strong> — Tough love, gentle support, pure data, or pure hype</div></div>
+          </div>
+
+          <!-- NUMBER BRIDGE — one seamless dark card -->
+          <div style="background:#1e293b;border-radius:14px">
+            <div class="num-bridge">
+              <span class="num">1-888-596-5467</span>
+              <div class="num-bridge-arrows">
+                <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+                  <path d="M14 4 L14 44" stroke="#22c55e" stroke-width="4" stroke-linecap="round"/>
+                  <path d="M7 36 L14 44 L21 36" stroke="#22c55e" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M34 44 L34 4" stroke="#86efac" stroke-width="4" stroke-linecap="round"/>
+                  <path d="M27 12 L34 4 L41 12" stroke="#86efac" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <span class="vanity">1-888-596-LOGS</span>
+            </div>
+            <div class="num-bridge-tagline">No app to download. Just you and your coach texting.</div>
+          </div>
+
+          <!-- AI COACH TEXTS BACK — dark green fill -->
+          <div class="convo-card card-ai">
+            <div class="convo-card-label">🤖 What your AI coach texts back</div>
+            <div class="persona-row">
+              <div class="persona">
+                <div class="persona-dot" style="background:#dc2626"></div>
+                <div><div class="persona-name">The Drill Sergeant</div><div class="persona-quote">"520 cal logged. You're 84% to goal. The gym is not optional today."</div></div>
+              </div>
+              <div class="persona">
+                <div class="persona-dot" style="background:#2563eb"></div>
+                <div><div class="persona-name">The Wise Mentor</div><div class="persona-quote">"Your sleep score is the quiet lever pulling everything else down. Want to work on that together?"</div></div>
+              </div>
+              <div class="persona">
+                <div class="persona-dot" style="background:#d97706"></div>
+                <div><div class="persona-name">The Data Nerd</div><div class="persona-quote">"Tue/Thu strength days correlate with your best sleep scores — 3 weeks running now."</div></div>
+              </div>
+              <div class="persona">
+                <div class="persona-dot" style="background:#16a34a"></div>
+                <div><div class="persona-name">The Hype Friend</div><div class="persona-quote">"12 days straight! Hydration just went green on your spider chart for the first time 🎉"</div></div>
+              </div>
+              <div class="persona">
+                <div class="persona-dot" style="background:#7c3aed"></div>
+                <div><div class="persona-name">The Gentle One</div><div class="persona-quote">"Sounds like a hard day. Rest is part of the work. What does your body actually need right now?"</div></div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+      <div class="pl-footer">© 2026 Athens Innovation and Development LLC · <a href="/terms.html" style="color:var(--text-muted);text-decoration:none">Terms</a> · <a href="/privacy.html" style="color:var(--text-muted);text-decoration:none">Privacy</a></div>
+    </div>
+
+    <!-- RIGHT PANEL -->
+    <div class="panel-right">
+      <div style="max-width:400px;width:100%;margin:0 auto">
+
+        <div style="margin-bottom:24px">
+          <div style="font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--green-dark);margin-bottom:6px">FitLogs.AI</div>
+          <h2 style="font-size:22px;font-weight:700;letter-spacing:-.3px;margin-bottom:4px;color:var(--slate)">Welcome back</h2>
+          <p style="font-size:14px;color:var(--text-muted)">Your phone number is your primary identity.</p>
+        </div>
+
+        <div class="pr-tabs">
+          <button class="pr-tab active" id="tab-signin" onclick="showTab('signin')">Sign In</button>
+          <button class="pr-tab" id="tab-create" onclick="showTab('create')">Create Account</button>
+        </div>
+
+        <!-- SIGNIN FORM — default tab, matches soslogs -->
+        <div id="signinForm" class="pr-form">
+          <div id="login-err" class="form-err"></div>
+          <div id="login-ok" class="form-ok"></div>
+
+          <label class="form-label">Phone or Email</label>
+          <input id="login-id" class="form-input" type="text" placeholder="e.g. 9165550123 or you@email.com">
+
+          <label class="form-label" style="margin-top:12px">Password</label>
+          <input id="login-pw" class="form-input" type="password" placeholder="Your password" onkeydown="if(event.key==='Enter')doLogin()" style="margin-bottom:6px">
+
+          <div class="forgot-link"><a onclick="doForgotPw()">Forgot password?</a></div>
+
+          <button id="login-btn" class="form-submit" onclick="doLogin()">Sign In</button>
+          <div class="form-switch">No account yet? <a onclick="showTab('create')">Start your free trial</a></div>
+        </div>
+
+        <!-- SIGNUP FORM -->
+        <div id="createForm" class="pr-form hidden">
+          <div class="trial-badge">🎉 Starting on <strong>Coach ($14.99/mo)</strong> — full AI coaching experience.<br>Downgrade or cancel anytime by texting STOP.</div>
+
+          <div id="signup-err" class="form-err"></div>
+          <div id="signup-ok" class="form-ok"></div>
+
+          <label class="form-label">Phone Number</label>
+          <div class="form-row">
+            <select id="su-cc" class="form-select"><option value="+1">🇺🇸 +1</option></select>
+            <input id="su-phone" class="form-input" type="tel" placeholder="e.g. 9165550123">
+          </div>
+
+          <label class="form-label">Email</label>
+          <input id="su-email" class="form-input" type="email" placeholder="you@email.com">
+
+          <label class="form-label">Password</label>
+          <input id="su-pw" class="form-input" type="password" placeholder="At least 8 characters">
+
+          <label class="form-label">Confirm Password</label>
+          <input id="su-pw2" class="form-input" type="password" placeholder="Repeat password">
+
+          <div class="otp-wrap" id="otp-section">
+            <label class="form-label">Verification Code</label>
+            <div style="font-size:12px;color:var(--text-muted);margin-bottom:6px">Enter the 6-digit code sent to your phone.</div>
+            <div class="otp-row">
+              <input id="otp-input" class="otp-input" type="number" placeholder="000000">
+              <button class="otp-verify-btn" onclick="confirmOtp()">✓</button>
+            </div>
+            <div style="font-size:12px;color:var(--text-muted);margin-top:8px">Didn't get it? <a onclick="sendOtp()" style="color:var(--green-dark);cursor:pointer;font-weight:600">Resend</a></div>
+          </div>
+
+          <div class="verified-badge" id="phone-verified-badge">✓ Phone number verified</div>
+
+          <button id="signup-btn" class="form-submit" onclick="sendOtp()">Send Verification Code</button>
+          <div class="form-fine">No charge for 30 days. Cancel anytime by texting STOP.</div>
+          <div class="form-switch">Already have an account? <a onclick="showTab('signin')">Sign in</a></div>
+        </div>
+
+        <!-- PREVIEW LINK -->
+        <div style="text-align:center;margin-top:20px;padding-top:16px;border-top:1px solid var(--border)">
+          <a onclick="previewDashboard()" style="font-size:13px;color:var(--text-muted);cursor:pointer">Preview the dashboard without signing up →</a>
+        </div>
+
       </div>
     </div>
-  </div>
 
-  <!-- SMS EXAMPLES -->
-  <div class="examples-wrap">
-    <div class="examples-inner">
-      <div class="examples-header">
-        <h2>See how it works</h2>
-        <p>Just text. The AI handles the rest.</p>
+  </div><!-- /split -->
+
+  <!-- PRICING SECTION -->
+  <div class="pricing-section">
+    <div class="pricing-inner">
+      <div class="section-head">
+        <h2>Simple, honest pricing</h2>
+        <p>Every plan starts with a 30-day free trial. Downgrade or cancel anytime by text.</p>
       </div>
-      <div class="examples-grid">
-        <div class="ex-card">
-          <div class="ex-tag">🍽 FOOD LOG</div>
-          <div class="ex-bubble">lunch grilled chicken breast brown rice steamed broccoli</div>
-          <div class="ex-reply">🍽 ~520 kcal — Protein 42g, Carbs 48g, Fat 8g<br><br>Reply CONFIRM to save or CALORIES 480 to correct.</div>
+      <div class="pricing-grid">
+
+        <div class="pricing-card">
+          <div class="plan-name">Track</div>
+          <div class="plan-price">$4.99<span style="font-size:13px;font-weight:500;color:var(--text-muted)">/mo</span></div>
+          <div class="plan-trial">30-day free trial</div>
+          <div class="plan-desc">For the self-disciplined person who knows what they want and just needs the tools.</div>
+          <ul class="plan-features">
+            <li><span class="check">✓</span>SMS logging — food, steps, sleep, workouts, water</li>
+            <li><span class="check">✓</span>AI calorie and macro estimates from text</li>
+            <li><span class="check">✓</span>Full dashboard with 7-metric health spider chart</li>
+            <li><span class="check">✓</span>Weekly AI progress report</li>
+            <li><span class="check">✓</span>Works from phone or smartwatch voice-to-text</li>
+            <li><span class="check">✓</span>Streak and adherence tracking</li>
+          </ul>
+          <button class="plan-btn" onclick="showTab('create')">Start Free Trial</button>
         </div>
-        <div class="ex-card">
-          <div class="ex-tag">🚶 STEPS + HABITS</div>
-          <div class="ex-bubble">steps 9200<br>slept 7.5 hours<br>2L water<br>vitamins taken</div>
-          <div class="ex-reply">✅ Logged:<br>🚶 9,200 steps (92%)<br>😴 7.5 hrs sleep<br>💧 2L water · 💊 Vitamins</div>
+
+        <div class="pricing-card featured">
+          <div class="featured-pill">You start here</div>
+          <div class="plan-name">Coach</div>
+          <div class="plan-price">$14.99<span style="font-size:13px;font-weight:500;color:var(--text-muted)">/mo</span></div>
+          <div class="plan-trial">30-day free trial</div>
+          <div class="plan-desc">A real coaching relationship — with an AI that actually remembers your story and shows up every day.</div>
+          <ul class="plan-features">
+            <li><span class="check">✓</span>Everything in Track</li>
+            <li><span class="check">✓</span>Real-time AI coaching conversations via SMS</li>
+            <li><span class="check">✓</span>AI remembers your logs and knows your patterns</li>
+            <li><span class="check">✓</span>Choose your coach's personality</li>
+            <li><span class="check">✓</span>Check-ins, nudges, and genuine accountability</li>
+            <li><span class="check">✓</span>Text DOWNGRADE anytime to move to Track</li>
+          </ul>
+          <button class="plan-btn green" onclick="showTab('create')">Start Free Trial</button>
         </div>
-        <div class="ex-card">
-          <div class="ex-tag">🏋 WORKOUT</div>
-          <div class="ex-bubble">gym 60min strength<br>bench squat deadlift</div>
-          <div class="ex-reply">✅ 🏋 Strength 60min logged<br>Bench, squat, deadlift noted.<br><br>Solid session — stay consistent!</div>
+
+        <div class="pricing-card">
+          <div class="plan-name">Trainer</div>
+          <div class="plan-price">$29.99<span style="font-size:13px;font-weight:500;color:var(--text-muted)">/mo</span></div>
+          <div class="plan-trial">30-day free trial</div>
+          <div class="plan-desc">Bring your human trainer into the picture. AI handles the daily logging. Your trainer handles the strategy.</div>
+          <ul class="plan-features">
+            <li><span class="check">✓</span>Everything in Coach</li>
+            <li><span class="check">✓</span>Invite your personal trainer or physical therapist</li>
+            <li><span class="check">✓</span>Trainer gets read-only access to your full dashboard</li>
+            <li><span class="check">✓</span>Trainer sees your spider chart, logs, and AI reports</li>
+            <li><span class="check">✓</span>You control access — revoke anytime, no questions asked</li>
+          </ul>
+          <button class="plan-btn" onclick="showTab('create')">Start Free Trial</button>
         </div>
-        <div class="ex-card">
-          <div class="ex-tag">💬 AI COACH</div>
-          <div class="coach-pill">COACH TIER</div>
-          <div class="ex-bubble">I keep skipping the gym. Feeling unmotivated lately.</div>
-          <div class="ex-reply">That happens — what matters is you said something. What's one thing getting in the way? Your consistency last week was genuinely strong.</div>
+
+      </div>
+
+      <!-- PT INCENTIVE -->
+      <div style="margin-top:24px;background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:1px solid #86efac;border-radius:16px;padding:20px 22px;display:flex;align-items:flex-start;gap:14px">
+        <div style="font-size:26px;flex-shrink:0">💰</div>
+        <div style="flex:1">
+          <div style="font-size:14px;font-weight:700;color:var(--slate);margin-bottom:4px">Personal trainers earn $4.99 per client per month</div>
+          <div style="font-size:13px;color:var(--text-secondary);line-height:1.6;margin-bottom:10px">Every client on your Trainer plan puts $4.99 into your FitLogs wallet each month. Cash out anytime via Stripe directly to your bank.</div>
+          <div style="display:flex;gap:20px;flex-wrap:wrap">
+            <div><div style="font-size:17px;font-weight:700;color:var(--green-dark)">$49.90</div><div style="font-size:11px;color:var(--text-muted)">10 clients/mo</div></div>
+            <div><div style="font-size:17px;font-weight:700;color:var(--green-dark)">$149.70</div><div style="font-size:11px;color:var(--text-muted)">30 clients/mo</div></div>
+            <div><div style="font-size:17px;font-weight:700;color:var(--green-dark)">$499.00</div><div style="font-size:11px;color:var(--text-muted)">100 clients/mo</div></div>
+          </div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:8px">Paid from collected revenue. Cash out requests processed within 5 business days.</div>
         </div>
       </div>
+
     </div>
   </div>
 
 </div><!-- /landing -->
 
+
 <!-- DASHBOARD -->
-<div id="dashboard">
+<div id="dashboard" style="display:none">
+  <div style="background:#fff;border-bottom:1px solid var(--border);padding:0 24px;height:54px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:100">
+    <span style="font-size:17px;font-weight:800;color:var(--slate)">💪 FitLogs.<span style="color:var(--green-dark)">AI</span></span>
+    <div style="flex:1"></div>
+    <button onclick="signOut()" style="font-size:13px;color:var(--text-muted);background:none;border:1px solid var(--border);padding:6px 14px;border-radius:8px;cursor:pointer;font-family:inherit">Sign Out</button>
+  </div>
   <div class="dash-top">
     <div>
       <div class="dash-greeting" id="dashGreeting">Good morning 👋</div>
@@ -364,7 +501,7 @@ footer a:hover{color:#fff}
     </div>
     <div style="display:flex;align-items:center;gap:8px">
       <span class="tier-chip tier-coach">COACH</span>
-      <button style="font-size:12px;color:var(--text-muted);background:none;border:1px solid var(--border);padding:5px 12px;border-radius:var(--radius-sm);cursor:pointer;font-family:'DM Sans',sans-serif">My Account</button>
+      <button style="font-size:12px;color:var(--text-muted);background:none;border:1px solid var(--border);padding:5px 12px;border-radius:var(--radius-sm);cursor:pointer;font-family:inherit">My Account</button>
     </div>
   </div>
 
@@ -387,7 +524,7 @@ footer a:hover{color:#fff}
           <text x="40" y="44" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="13" font-weight="700" fill="#0f172a">71%</text>
         </svg>
         <div style="flex:1">
-          <div style="font-size:22px;font-weight:700;font-family:'Space Grotesk',sans-serif">1,420 <span style="font-size:13px;font-weight:400;color:var(--text-muted)">cal</span></div>
+          <div style="font-size:22px;font-weight:700;font-family:inherit">1,420 <span style="font-size:13px;font-weight:400;color:var(--text-muted)">cal</span></div>
           <div style="font-size:12px;color:var(--text-muted);margin-bottom:6px">580 remaining of 2,000</div>
           <div class="macro-row"><span class="macro-label">Protein</span><div class="macro-track"><div class="macro-fill" style="width:68%;background:#3b82f6"></div></div><span style="font-size:11px;color:var(--text-muted)">102g</span></div>
           <div class="macro-row"><span class="macro-label">Carbs</span><div class="macro-track"><div class="macro-fill" style="width:55%;background:#f59e0b"></div></div><span style="font-size:11px;color:var(--text-muted)">165g</span></div>
@@ -495,14 +632,14 @@ footer a:hover{color:#fff}
   <div class="main-grid" style="margin-top:16px">
     <div class="entry-panel">
       <div class="entry-tabs">
-        <button class="entry-tab active" onclick="switchTab(this,'food')">🍽 Food</button>
-        <button class="entry-tab" onclick="switchTab(this,'steps')">🚶 Steps</button>
-        <button class="entry-tab" onclick="switchTab(this,'routine')">✅ Routine</button>
-        <button class="entry-tab" onclick="switchTab(this,'note')">📝 Note</button>
+        <button class="entry-tab active" onclick="switchDashTab(this,'food')">🍽 Food</button>
+        <button class="entry-tab" onclick="switchDashTab(this,'steps')">🚶 Steps</button>
+        <button class="entry-tab" onclick="switchDashTab(this,'routine')">✅ Routine</button>
+        <button class="entry-tab" onclick="switchDashTab(this,'note')">📝 Note</button>
       </div>
       <div class="entry-body">
         <div id="tabFood"><textarea class="entry-ta" placeholder="Describe your meal — AI estimates the calories.&#10;&#10;e.g. grilled chicken brown rice broccoli&#10;e.g. Chipotle burrito bowl chicken guac"></textarea><div class="entry-actions"><span class="entry-hint">Or text to 1-888-596-LOGS</span><button class="save-btn" onclick="saveEntry(this)">Estimate Calories</button></div></div>
-        <div id="tabSteps" style="display:none"><div style="display:flex;gap:10px;align-items:center;margin-bottom:10px"><input type="number" id="stepsInput" placeholder="e.g. 8432" style="flex:1;border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;font-size:18px;font-weight:600;font-family:'Space Grotesk',sans-serif"><span style="color:var(--text-muted);font-size:14px">steps</span></div><div class="sms-hint">📲 Or text: <strong>steps 8432</strong> to 1-888-596-5467</div><div class="entry-actions" style="margin-top:10px"><span class="entry-hint">Updates your daily total</span><button class="save-btn" onclick="saveEntry(this)">Log Steps</button></div></div>
+        <div id="tabSteps" style="display:none"><div style="display:flex;gap:10px;align-items:center;margin-bottom:10px"><input type="number" id="stepsInput" placeholder="e.g. 8432" style="flex:1;border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;font-size:18px;font-weight:600;font-family:inherit"><span style="color:var(--text-muted);font-size:14px">steps</span></div><div class="sms-hint">📲 Or text: <strong>steps 8432</strong> to 1-888-596-5467</div><div class="entry-actions" style="margin-top:10px"><span class="entry-hint">Updates your daily total</span><button class="save-btn" onclick="saveEntry(this)">Log Steps</button></div></div>
         <div id="tabRoutine" style="display:none"><textarea class="entry-ta" placeholder="Log any routine:&#10;• gym 45min strength&#10;• ran 3 miles&#10;• yoga 30min&#10;• vitamins taken&#10;• 8hr sleep · 2L water"></textarea><div class="entry-actions"><span class="entry-hint">Or text to 1-888-596-LOGS</span><button class="save-btn" onclick="saveEntry(this)">Log Routine</button></div></div>
         <div id="tabNote" style="display:none"><textarea class="entry-ta" placeholder="Personal note — energy, soreness, motivation, stress..."></textarea><div class="entry-actions"><span class="entry-hint">Private — visible only to you</span><button class="save-btn" onclick="saveEntry(this)">Save Note</button></div></div>
       </div>
@@ -526,7 +663,7 @@ footer a:hover{color:#fff}
     <div style="display:flex;align-items:flex-start;gap:16px">
       <div style="font-size:30px;flex-shrink:0">🧪</div>
       <div style="flex:1">
-        <div style="font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:700;color:var(--slate);margin-bottom:4px;display:flex;align-items:center;gap:8px">Lab Report Tracking <span style="font-size:10px;font-weight:700;background:var(--amber);color:#fff;padding:2px 8px;border-radius:20px;letter-spacing:.5px">COMING IN V2</span></div>
+        <div style="font-family:inherit;font-size:14px;font-weight:700;color:var(--slate);margin-bottom:4px;display:flex;align-items:center;gap:8px">Lab Report Tracking <span style="font-size:10px;font-weight:700;background:var(--amber);color:#fff;padding:2px 8px;border-radius:20px;letter-spacing:.5px">COMING IN V2</span></div>
         <div style="font-size:13px;color:var(--text-secondary);margin-bottom:10px">Upload your lipid panel, A1C, blood pressure and other lab results. AI extracts the values — only numbers you confirm are saved. Documents are never stored.</div>
         <div class="lab-metrics">
           <div class="lab-metric"><div class="lab-metric-label">LDL</div><div class="lab-metric-value">—</div></div>
@@ -543,30 +680,6 @@ footer a:hover{color:#fff}
 
 </div><!-- /dashboard -->
 
-<!-- AUTH MODAL -->
-<div class="modal-bg" id="authModal">
-  <div class="modal">
-    <div class="modal-head"><span>💪</span><span id="modalTitle">Start your free trial</span><button class="modal-close" onclick="closeModal()">✕</button></div>
-    <div class="modal-body">
-      <div id="createForm">
-        <div class="modal-trial-note">🎉 30-day free trial · Coach tier ($14.99/mo) · Downgrade or cancel anytime</div>
-        <label class="modal-label">Full Name</label><input class="modal-input" type="text" placeholder="Your name">
-        <label class="modal-label">Email</label><input class="modal-input" type="email" placeholder="you@email.com">
-        <label class="modal-label">Phone Number</label><input class="modal-input" type="tel" placeholder="+1 (555) 000-0000">
-        <label class="modal-label">Password</label><input class="modal-input" type="password" placeholder="Create a password">
-        <button class="modal-submit" onclick="simulateLogin()">Start Free Trial</button>
-        <div style="font-size:11px;color:var(--text-muted);text-align:center;margin-top:10px">No charge for 30 days. Text STOP to cancel anytime.</div>
-        <div class="modal-toggle">Already have an account? <a onclick="switchModal('signin')">Sign in</a></div>
-      </div>
-      <div id="signinForm" style="display:none">
-        <label class="modal-label">Email or Phone</label><input class="modal-input" type="text" placeholder="Email or phone number">
-        <label class="modal-label">Password</label><input class="modal-input" type="password" placeholder="Password">
-        <button class="modal-submit" onclick="simulateLogin()">Sign In</button>
-        <div class="modal-toggle">No account? <a onclick="switchModal('create')">Start free trial</a></div>
-      </div>
-    </div>
-  </div>
-</div>
 
 <footer>
   © 2026 Athens Innovation and Development LLC &nbsp;·&nbsp;
@@ -576,33 +689,290 @@ footer a:hover{color:#fff}
   <a href="mailto:hello@fitlogs.ai">Contact</a>
 </footer>
 
-<script>
-function openModal(type){document.getElementById('authModal').classList.add('open');switchModal(type)}
-function closeModal(){document.getElementById('authModal').classList.remove('open')}
-function switchModal(type){
-  document.getElementById('createForm').style.display=type==='create'?'block':'none';
-  document.getElementById('signinForm').style.display=type==='signin'?'block':'none';
-  document.getElementById('modalTitle').textContent=type==='create'?'Start your free trial':'Welcome back';
+
+<!-- FIREBASE AUTH (module) -->
+<script type="module">
+import { initializeApp }              from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword,
+         signInWithEmailAndPassword, signOut, updateProfile,
+         sendPasswordResetEmail }     from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, doc, setDoc, getDoc, getDocs, collection,
+         query, where, collectionGroup,
+         serverTimestamp }            from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const fbApp = initializeApp({
+  apiKey:            "AIzaSyB4tzLecMq4YdFsNvhSyPBTMWYhgtiv1Y0",
+  authDomain:        "fitlogs-dev.firebaseapp.com",
+  projectId:         "fitlogs-dev",
+  storageBucket:     "fitlogs-dev.firebasestorage.app",
+  messagingSenderId: "449996807760",
+  appId:             "1:449996807760:web:3b79c5788e88dbf4b57b55"
+});
+
+const auth = getAuth(fbApp);
+const db   = getFirestore(fbApp);
+
+// ── Helpers ──────────────────────────────────────────────────────
+const encEmail   = e => e.replace(/\./g,'_dot_').replace(/@/g,'_at_');
+const emailsCol  = p => collection(db,'users',p,'emails');
+const normPhone  = (cc,ph) => '+' + cc.replace(/\D/g,'') + ph.replace(/\D/g,'');
+const WEBHOOK    = 'https://fitlogs-webhook-production.up.railway.app';
+
+let currentPhone  = null;
+let phoneVerified = false;
+
+// ── Error messages ────────────────────────────────────────────────
+const ERR = {
+  'auth/email-already-in-use':  'An account with that email already exists.',
+  'auth/invalid-email':         'Please enter a valid email address.',
+  'auth/weak-password':         'Password must be at least 8 characters.',
+  'auth/user-not-found':        'No account found. Please check your details.',
+  'auth/wrong-password':        'Incorrect password. Please try again.',
+  'auth/too-many-requests':     'Too many attempts. Please wait a moment and try again.',
+  'auth/network-request-failed':'Network error. Please check your connection.',
+};
+const fErr = code => ERR[code] || 'Something went wrong. Please try again.';
+const showErr = (id,msg) => { const el=document.getElementById(id); el.textContent=msg; el.style.display='block'; };
+const showOk  = (id,msg) => { const el=document.getElementById(id); el.textContent=msg; el.style.display='block'; };
+const clearMsg = id => { const el=document.getElementById(id); if(el){el.textContent=''; el.style.display='none';} };
+
+// ── Auth state ────────────────────────────────────────────────────
+onAuthStateChanged(auth, async user => {
+  if(user){
+    currentPhone = await resolvePhone(user);
+    await showDashboardForUser(user);
+  } else {
+    showLanding();
+  }
+});
+
+async function resolvePhone(user){
+  if(user.displayName && /^\+?\d{7,}$/.test(user.displayName.replace(/[\s\-()]/g,''))){
+    return user.displayName;
+  }
+  try{
+    const q = query(collectionGroup(db,'profile'), where('uid','==',user.uid));
+    const snap = await getDocs(q);
+    if(!snap.empty){
+      for(const d of snap.docs){
+        const phone = d.data().phone || d.ref.parent.parent?.id;
+        if(phone && /^\+?\d{7,}$/.test(phone.replace(/\s/g,''))) return phone;
+      }
+    }
+  } catch(e){}
+  try{
+    const q = query(collectionGroup(db,'emails'), where('email','==',user.email));
+    const snap = await getDocs(q);
+    if(!snap.empty){
+      const phone = snap.docs[0].ref.parent.parent?.id;
+      if(phone && /^\+?\d{7,}$/.test(phone.replace(/\s/g,''))) return phone;
+    }
+  } catch(e){}
+  return user.displayName || user.email;
 }
-function simulateLogin(){
-  closeModal();
+
+async function showDashboardForUser(user){
+  document.getElementById('landing').style.display   = 'none';
+  document.getElementById('dashboard').style.display = 'block';
+  const h = new Date().getHours();
+  document.getElementById('dashGreeting').textContent =
+    (h<12?'Good morning':h<17?'Good afternoon':'Good evening') + ' 👋';
+}
+
+function showLanding(){
+  document.getElementById('landing').style.display   = 'block';
+  document.getElementById('dashboard').style.display = 'none';
+}
+
+// ── OTP ───────────────────────────────────────────────────────────
+window.sendOtp = async function(){
+  const cc    = document.getElementById('su-cc').value.trim() || '+1';
+  const phone = document.getElementById('su-phone').value.trim();
+  clearMsg('signup-err'); clearMsg('signup-ok');
+  if(!phone){ showErr('signup-err','Please enter your phone number.'); return; }
+  const fullPhone = normPhone(cc, phone);
+  const btn = document.getElementById('signup-btn');
+  btn.disabled = true; btn.textContent = 'Sending...';
+  try{
+    const res = await fetch(`${WEBHOOK}/verify/send`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({phone: fullPhone})
+    });
+    const data = await res.json();
+    if(data.success){
+      document.getElementById('otp-section').style.display = 'block';
+      btn.textContent = 'Create Account';
+      btn.onclick = () => doSignup();
+      showOk('signup-ok', `Code sent to ${fullPhone}`);
+    } else {
+      showErr('signup-err', data.error || 'Could not send code. Please try again.');
+      btn.disabled = false; btn.textContent = 'Send Verification Code';
+    }
+  } catch(e){
+    showErr('signup-err','Connection error. Please try again.');
+    btn.disabled = false; btn.textContent = 'Send Verification Code';
+  }
+};
+
+window.confirmOtp = async function(){
+  const cc    = document.getElementById('su-cc').value.trim() || '+1';
+  const phone = document.getElementById('su-phone').value.trim();
+  const code  = document.getElementById('otp-input').value.trim();
+  clearMsg('signup-err');
+  if(!code){ showErr('signup-err','Please enter the verification code.'); return; }
+  const fullPhone = normPhone(cc, phone);
+  try{
+    const res = await fetch(`${WEBHOOK}/verify/check`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({phone: fullPhone, code})
+    });
+    const data = await res.json();
+    if(data.success){
+      phoneVerified = true;
+      document.getElementById('otp-section').style.display       = 'none';
+      document.getElementById('phone-verified-badge').style.display = 'block';
+      const btn = document.getElementById('signup-btn');
+      btn.disabled = false; btn.textContent = 'Create Account & Start Trial';
+      btn.onclick = () => doSignup();
+    } else {
+      showErr('signup-err', 'Invalid code. Please try again.');
+    }
+  } catch(e){
+    showErr('signup-err','Connection error. Please try again.');
+  }
+};
+
+// ── Signup ────────────────────────────────────────────────────────
+window.doSignup = async function(){
+  const cc    = document.getElementById('su-cc').value.trim() || '+1';
+  const phone = document.getElementById('su-phone').value.trim();
+  const email = document.getElementById('su-email').value.trim();
+  const pw    = document.getElementById('su-pw').value;
+  const pw2   = document.getElementById('su-pw2').value;
+  const btn   = document.getElementById('signup-btn');
+  clearMsg('signup-err'); clearMsg('signup-ok');
+  if(!phone||!email){ showErr('signup-err','Please fill in all fields.'); return; }
+  if(pw.length < 8){ showErr('signup-err','Password must be at least 8 characters.'); return; }
+  if(pw !== pw2){ showErr('signup-err','Passwords do not match.'); return; }
+  if(!phoneVerified){ showErr('signup-err','Please verify your phone number first.'); return; }
+  const fullPhone = normPhone(cc, phone);
+  btn.disabled = true; btn.textContent = 'Creating account...';
+  try{
+    const cred = await createUserWithEmailAndPassword(auth, email, pw);
+    await updateProfile(cred.user, {displayName: fullPhone});
+    await setDoc(doc(db,'users',fullPhone,'profile','data'), {
+      uid:         cred.user.uid,
+      phone:       fullPhone,
+      plan:        'coach',
+      tier:        'coach',
+      status:      'trial',
+      trialStart:  serverTimestamp(),
+      joinedAt:    serverTimestamp(),
+      joinedLocal: new Date().toISOString()
+    });
+    await setDoc(doc(emailsCol(fullPhone), encEmail(email)), {
+      email, addedAt: serverTimestamp(), primary: true
+    });
+    showOk('signup-ok','Account created! Welcome to FitLogs 🎉');
+    closeModal();
+  } catch(e){
+    btn.disabled = false; btn.textContent = 'Create Account & Start Trial';
+    showErr('signup-err', fErr(e.code));
+  }
+};
+
+// ── Login ─────────────────────────────────────────────────────────
+window.doLogin = async function(){
+  const id  = document.getElementById('login-id').value.trim();
+  const pw  = document.getElementById('login-pw').value;
+  const btn = document.getElementById('login-btn');
+  clearMsg('login-err'); clearMsg('login-ok');
+  if(!id||!pw){ showErr('login-err','Please enter your phone/email and password.'); return; }
+  btn.textContent = 'Signing in...'; btn.disabled = true;
+  const reset = () => { btn.textContent = 'Sign In'; btn.disabled = false; };
+  try{
+    let loginEmail = id;
+    if(!id.includes('@')){
+      let digits = id.replace(/\D/g,'');
+      if(digits.length===11 && digits.startsWith('1')) digits = digits.slice(1);
+      if(digits.length!==10){ showErr('login-err','Please enter a valid 10-digit US phone number.'); reset(); return; }
+      const phone = '+1' + digits;
+      const emailsSnap = await getDocs(emailsCol(phone));
+      if(!emailsSnap.empty){
+        const primary = emailsSnap.docs.find(d=>d.data().primary);
+        loginEmail = (primary||emailsSnap.docs[0]).data().email || '';
+        if(!loginEmail){ showErr('login-err','Account found but no email on file. Please contact support.'); reset(); return; }
+      } else {
+        showErr('login-err','No account found for that phone number. Please try your email address.'); reset(); return;
+      }
+    }
+    await signInWithEmailAndPassword(auth, loginEmail, pw);
+    closeModal(); reset();
+  } catch(e){ reset(); showErr('login-err', fErr(e.code)); }
+};
+
+// ── Forgot password ───────────────────────────────────────────────
+window.doForgotPw = async function(){
+  let id = document.getElementById('login-id').value.trim();
+  clearMsg('login-err');
+  if(!id){ showErr('login-err','Enter your email or phone number first.'); return; }
+  if(!id.includes('@')){
+    let digits = id.replace(/\D/g,'');
+    if(digits.length===11 && digits.startsWith('1')) digits = digits.slice(1);
+    const phone = '+1' + digits;
+    try{
+      const emailsSnap = await getDocs(emailsCol(phone));
+      if(!emailsSnap.empty){
+        const primary = emailsSnap.docs.find(d=>d.data().primary);
+        id = primary ? primary.data().email : emailsSnap.docs[0].data().email;
+      } else { showErr('login-err','No account found for that phone number.'); return; }
+    } catch(e){ showErr('login-err','Please enter your email address to reset password.'); return; }
+  }
+  try{ await sendPasswordResetEmail(auth, id); showOk('login-ok','Password reset email sent.'); }
+  catch(e){ showErr('login-err', fErr(e.code)); }
+};
+
+// ── Sign out ──────────────────────────────────────────────────────
+window.doLogout = async function(){
+  await signOut(auth);
+  showLanding();
+  window.history.replaceState({},'','/');
+};
+</script>
+
+<!-- NON-MODULE SCRIPT -->
+<script>
+function previewDashboard(){
   document.getElementById('landing').style.display='none';
   document.getElementById('dashboard').style.display='block';
-  document.getElementById('signInNavBtn').style.display='none';
-  document.getElementById('startNavBtn').style.display='none';
-  document.getElementById('signOutBtn').style.display='block';
   const h=new Date().getHours();
   document.getElementById('dashGreeting').textContent=(h<12?'Good morning':h<17?'Good afternoon':'Good evening')+' 👋';
 }
-function signOut(){
-  document.getElementById('landing').style.display='block';
-  document.getElementById('dashboard').style.display='none';
-  document.getElementById('signInNavBtn').style.display='block';
-  document.getElementById('startNavBtn').style.display='block';
-  document.getElementById('signOutBtn').style.display='none';
+function showTab(tab){
+  const isSignin=tab==='signin';
+  const cf=document.getElementById('createForm');
+  const sf=document.getElementById('signinForm');
+  if(cf){cf.classList.toggle('hidden',isSignin);}
+  if(sf){sf.classList.toggle('hidden',!isSignin);}
+  const tc=document.getElementById('tab-create');
+  const ts=document.getElementById('tab-signin');
+  if(tc){tc.classList.toggle('active',!isSignin);}
+  if(ts){ts.classList.toggle('active',isSignin);}
+  if(!isSignin){
+    const os=document.getElementById('otp-section');
+    const pb=document.getElementById('phone-verified-badge');
+    if(os)os.style.display='none';
+    if(pb)pb.style.display='none';
+    const btn=document.getElementById('signup-btn');
+    if(btn){btn.textContent='Send Verification Code';btn.disabled=false;btn.onclick=()=>window.sendOtp();}
+  }
 }
+function openModal(type){showTab(type==='create'?'create':'signin')}
+function closeModal(){}
+function switchModal(type){showTab(type==='create'?'create':'signin')}
+function signOut(){if(window.doLogout)window.doLogout();}
 function toggleRoutine(el){el.classList.toggle('done')}
-function switchTab(btn,tab){
+function switchDashTab(btn,tab){
   document.querySelectorAll('.entry-tab').forEach(t=>t.classList.remove('active'));
   btn.classList.add('active');
   ['tabFood','tabSteps','tabRoutine','tabNote'].forEach(id=>document.getElementById(id).style.display='none');
@@ -624,7 +994,7 @@ function sendChat(){
   setTimeout(()=>{
     const a=document.createElement('div');
     a.className='chat-msg ai';
-    a.innerHTML='Got it — noted. Keep going, you\'re building something real here. What else is on your mind?<div class="msg-time">Just now</div>';
+    a.innerHTML='Got it — keep going. What else is on your mind?<div class="msg-time">Just now</div>';
     chat.appendChild(a);
     chat.scrollTop=chat.scrollHeight;
   },900);
