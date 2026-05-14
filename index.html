@@ -3,666 +3,496 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0">
-<title>FitLogs — SMS Health Tracking</title>
+<title>FitLogs.ai — Your AI Health Coach by Text</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
   --green:#22c55e;--green-dark:#15803d;--green-light:#dcfce7;
-  --teal:#14b8a6;--teal-dark:#0f766e;
-  --slate:#0f172a;--slate-mid:#334155;--slate-soft:#64748b;
-  --surface:#f8fafc;--card:#ffffff;--border:#e2e8f0;
-  --amber:#f59e0b;--red:#ef4444;--blue:#3b82f6;
+  --slate:#0f172a;--surface:#f8fafc;--card:#ffffff;--border:#e2e8f0;
+  --amber:#f59e0b;--purple:#8b5cf6;
   --text-primary:#0f172a;--text-secondary:#475569;--text-muted:#94a3b8;
-  --radius:12px;--radius-sm:8px;--shadow:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.06);
-  --shadow-md:0 4px 6px rgba(0,0,0,.07),0 2px 4px rgba(0,0,0,.05);
+  --radius:14px;--radius-sm:8px;
+  --shadow:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.06);
+  --shadow-md:0 4px 16px rgba(0,0,0,.1);
 }
 body{font-family:'DM Sans',sans-serif;background:var(--surface);color:var(--text-primary);min-height:100vh;font-size:15px;line-height:1.6}
 h1,h2,h3,.brand{font-family:'Space Grotesk',sans-serif}
 
 /* NAV */
-nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;gap:16px;height:60px}
-.brand{font-size:20px;font-weight:700;color:var(--slate);letter-spacing:-.5px;display:flex;align-items:center;gap:8px}
+nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;gap:12px;height:58px}
+.brand{font-size:19px;font-weight:700;color:var(--slate);letter-spacing:-.5px;display:flex;align-items:center;gap:7px;text-decoration:none}
 .brand span{color:var(--green)}
-.brand-pill{background:var(--green-light);color:var(--green-dark);font-size:10px;font-weight:600;padding:2px 7px;border-radius:20px;letter-spacing:.5px;font-family:'DM Sans',sans-serif}
+.brand-pill{background:var(--green-light);color:var(--green-dark);font-size:10px;font-weight:600;padding:2px 7px;border-radius:20px;font-family:'DM Sans',sans-serif}
 nav .spacer{flex:1}
-.nav-btn{border:1px solid var(--border);background:var(--card);color:var(--text-primary);padding:7px 16px;border-radius:var(--radius-sm);font-size:13px;font-weight:500;cursor:pointer;transition:.15s}
+.nav-btn{border:1px solid var(--border);background:var(--card);color:var(--text-primary);padding:7px 14px;border-radius:var(--radius-sm);font-size:13px;font-weight:500;cursor:pointer;transition:.15s;font-family:'DM Sans',sans-serif}
 .nav-btn:hover{background:var(--surface)}
 .nav-btn.primary{background:var(--green);border-color:var(--green);color:#fff}
 .nav-btn.primary:hover{background:var(--green-dark)}
-.nav-btn.ghost{border:none;background:none;color:var(--text-secondary);display:none}
-#signOutBtn{display:none}
+#signOutBtn{display:none;background:none;border:none;color:var(--text-muted);font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;padding:7px 14px}
+
+/* ═══════════════════════════════════════════
+   LANDING
+═══════════════════════════════════════════ */
+#landing{}
 
 /* HERO */
-.hero{padding:72px 24px 64px;text-align:center;max-width:720px;margin:0 auto}
-.hero-badge{display:inline-flex;align-items:center;gap:6px;background:var(--green-light);color:var(--green-dark);font-size:12px;font-weight:600;padding:5px 14px;border-radius:20px;margin-bottom:24px;letter-spacing:.3px}
-.hero h1{font-size:clamp(32px,5vw,52px);font-weight:700;letter-spacing:-1.5px;line-height:1.1;margin-bottom:16px;color:var(--slate)}
-.hero h1 em{font-style:normal;color:var(--green)}
-.hero p{font-size:17px;color:var(--text-secondary);max-width:520px;margin:0 auto 32px;line-height:1.7}
-.sms-box{display:inline-flex;align-items:center;gap:12px;background:var(--slate);color:#fff;padding:14px 24px;border-radius:14px;font-size:18px;font-weight:600;letter-spacing:.5px;margin-bottom:16px;font-family:'Space Grotesk',sans-serif}
-.sms-box .icon{font-size:22px}
-.hero-sub{font-size:13px;color:var(--text-muted)}
+.hero{background:linear-gradient(160deg,#f0fdf4 0%,#dcfce7 40%,#bbf7d0 100%);color:var(--slate);padding:80px 24px 72px;text-align:center;border-bottom:1px solid #86efac}
+.hero-eyebrow{font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--green-dark);margin-bottom:20px}
+.hero h1{font-size:clamp(28px,4.5vw,48px);font-weight:700;letter-spacing:-1px;line-height:1.15;margin-bottom:16px;max-width:680px;margin-left:auto;margin-right:auto;color:var(--slate)}
+.hero h1 em{font-style:normal;color:var(--green-dark)}
+.hero-sub{font-size:16px;color:var(--text-secondary);max-width:480px;margin:0 auto 36px;line-height:1.7}
+.sms-block{display:inline-flex;flex-direction:column;align-items:center;gap:8px;background:#fff;border:2px solid #86efac;border-radius:16px;padding:20px 36px;margin-bottom:20px;cursor:pointer;transition:.2s;box-shadow:0 4px 24px rgba(34,197,94,.15)}
+.sms-block:hover{border-color:var(--green);box-shadow:0 6px 32px rgba(34,197,94,.25);transform:translateY(-2px)}
+.sms-block .label{font-size:11px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--text-muted)}
+.sms-block .number{font-size:26px;font-weight:700;font-family:'Space Grotesk',sans-serif;color:var(--slate);letter-spacing:.5px}
+.sms-block .vanity{font-size:26px;font-weight:700;font-family:'Space Grotesk',sans-serif;color:var(--green-dark);letter-spacing:.5px}
+.hero-cta-row{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap}
+.hero-cta{background:var(--green);color:#fff;border:none;padding:13px 28px;border-radius:var(--radius-sm);font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.15s;box-shadow:0 4px 12px rgba(34,197,94,.3)}
+.hero-cta:hover{background:var(--green-dark);box-shadow:0 6px 16px rgba(34,197,94,.4)}
+.hero-cta-ghost{background:#fff;border:2px solid #86efac;color:var(--green-dark);padding:13px 24px;border-radius:var(--radius-sm);font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.15s}
+.hero-cta-ghost:hover{border-color:var(--green);background:var(--green-light)}
+.hero-note{font-size:12px;color:var(--text-muted);margin-top:16px}
 
-/* DASHBOARD (hidden by default) */
-#dashboard{display:none;max-width:1080px;margin:0 auto;padding:24px 24px 48px}
-.dash-greeting{font-size:22px;font-weight:600;margin-bottom:4px;font-family:'Space Grotesk',sans-serif}
-.dash-sub{font-size:14px;color:var(--text-secondary);margin-bottom:24px}
+/* PRICING */
+.pricing-wrap{max-width:960px;margin:0 auto;padding:64px 24px}
+.pricing-header{text-align:center;margin-bottom:40px}
+.pricing-header h2{font-size:28px;font-weight:700;letter-spacing:-.5px;margin-bottom:8px}
+.pricing-header p{color:var(--text-secondary);font-size:15px}
+.pricing-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.pricing-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:28px;position:relative;box-shadow:var(--shadow)}
+.pricing-card.featured{border:2px solid var(--green);box-shadow:0 0 0 1px rgba(34,197,94,.1),var(--shadow-md)}
+.featured-pill{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--green);color:#fff;font-size:11px;font-weight:700;padding:4px 16px;border-radius:20px;white-space:nowrap;letter-spacing:.5px}
+.plan-name{font-size:12px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--text-muted);margin-bottom:10px}
+.plan-price{font-family:'Space Grotesk',sans-serif;font-size:32px;font-weight:700;color:var(--slate);line-height:1;margin-bottom:4px}
+.plan-price sup{font-size:20px;vertical-align:top;margin-top:8px}
+.plan-price sub{font-size:14px;font-weight:400;color:var(--text-muted)}
+.plan-trial{display:inline-block;font-size:12px;font-weight:600;color:var(--green-dark);background:var(--green-light);padding:3px 10px;border-radius:20px;margin:10px 0 14px}
+.plan-desc{font-size:13px;color:var(--text-secondary);margin-bottom:18px;line-height:1.6;min-height:38px}
+.plan-features{list-style:none;margin-bottom:22px}
+.plan-features li{font-size:13px;color:var(--text-secondary);padding:5px 0;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:8px;line-height:1.5}
+.plan-features li:last-child{border-bottom:none}
+.check{color:var(--green);font-weight:700;flex-shrink:0;font-size:14px}
+.plan-btn{width:100%;padding:11px;border-radius:var(--radius-sm);font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.15s;border:1px solid var(--border);background:var(--surface);color:var(--slate)}
+.plan-btn:hover{background:var(--border)}
+.plan-btn.green{background:var(--green);color:#fff;border-color:var(--green)}
+.plan-btn.green:hover{background:var(--green-dark)}
 
-/* TIER BANNER */
-.tier-banner{background:linear-gradient(135deg,#dcfce7,#d1fae5);border:1px solid #bbf7d0;border-radius:var(--radius);padding:14px 20px;display:flex;align-items:center;gap:12px;margin-bottom:24px;font-size:14px}
-.tier-badge{background:var(--green);color:#fff;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;letter-spacing:.5px;white-space:nowrap}
+/* EXAMPLES */
+.examples-wrap{background:var(--slate);padding:64px 24px}
+.examples-inner{max-width:960px;margin:0 auto}
+.examples-header{text-align:center;margin-bottom:40px}
+.examples-header h2{font-size:24px;font-weight:700;color:#fff;letter-spacing:-.5px;margin-bottom:8px}
+.examples-header p{color:rgba(255,255,255,.5);font-size:14px}
+.examples-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+.ex-card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:var(--radius);padding:18px}
+.ex-tag{font-size:10px;font-weight:700;letter-spacing:.5px;color:var(--green);margin-bottom:10px}
+.ex-bubble{background:rgba(255,255,255,.09);border-radius:0 10px 10px 10px;padding:10px 12px;font-size:12px;color:rgba(255,255,255,.8);font-family:monospace;line-height:1.6;margin-bottom:8px}
+.ex-reply{background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.2);border-radius:10px 0 10px 10px;padding:10px 12px;font-size:12px;color:rgba(255,255,255,.8);font-family:monospace;line-height:1.6}
+.coach-pill{display:inline-block;background:var(--purple);color:#fff;font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;letter-spacing:.3px;margin-bottom:6px}
 
-/* STATS GRID */
-.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:24px}
+/* ═══════════════════════════════════════════
+   DASHBOARD
+═══════════════════════════════════════════ */
+#dashboard{display:none;max-width:1100px;margin:0 auto;padding:24px 24px 64px}
+.dash-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px}
+.dash-greeting{font-size:22px;font-weight:700;font-family:'Space Grotesk',sans-serif}
+.dash-sub{font-size:14px;color:var(--text-secondary);margin-top:2px}
+.tier-chip{font-size:11px;font-weight:700;padding:4px 12px;border-radius:20px;letter-spacing:.5px}
+.tier-coach{background:#ede9fe;color:#5b21b6}
+.tier-track{background:var(--green-light);color:var(--green-dark)}
+.tier-trainer{background:#dbeafe;color:#1e40af}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px}
 .stat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow)}
-.stat-label{font-size:12px;color:var(--text-muted);font-weight:500;letter-spacing:.3px;text-transform:uppercase;margin-bottom:8px}
-.stat-value{font-size:28px;font-weight:700;font-family:'Space Grotesk',sans-serif;color:var(--slate);line-height:1}
-.stat-unit{font-size:13px;color:var(--text-secondary);font-weight:400;margin-top:4px}
-
-/* MAIN GRID */
+.stat-label{font-size:11px;color:var(--text-muted);font-weight:600;letter-spacing:.3px;text-transform:uppercase;margin-bottom:8px}
+.stat-value{font-size:26px;font-weight:700;font-family:'Space Grotesk',sans-serif;color:var(--slate);line-height:1}
+.stat-sub{font-size:12px;color:var(--text-secondary);margin-top:4px}
 .main-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
 @media(max-width:720px){.main-grid{grid-template-columns:1fr}}
-
-/* CARD */
 .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
 .card-title{font-size:14px;font-weight:600;color:var(--slate);margin-bottom:16px;font-family:'Space Grotesk',sans-serif;display:flex;align-items:center;gap:8px}
-.card-title .tag{font-size:11px;font-weight:500;color:var(--text-muted);background:var(--surface);border:1px solid var(--border);padding:2px 8px;border-radius:20px;margin-left:auto}
-
-/* LOCKED CARD */
-.locked-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);position:relative;overflow:hidden}
-.locked-overlay{position:absolute;inset:0;background:rgba(248,250,252,.88);backdrop-filter:blur(3px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;border-radius:var(--radius)}
-.locked-icon{font-size:28px;opacity:.4}
-.locked-label{font-size:13px;color:var(--text-secondary);font-weight:500}
-.locked-upgrade{background:var(--green);color:#fff;border:none;padding:8px 20px;border-radius:var(--radius-sm);font-size:13px;font-weight:600;cursor:pointer;margin-top:4px;transition:.15s;font-family:'DM Sans',sans-serif}
-.locked-upgrade:hover{background:var(--green-dark)}
-
-/* FOOD LOG */
-.food-entry{border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;margin-bottom:8px;display:flex;gap:12px;align-items:flex-start}
-.food-thumb{width:52px;height:52px;border-radius:6px;object-fit:cover;background:var(--surface);border:1px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:22px}
+.card-tag{font-size:11px;font-weight:500;color:var(--text-muted);background:var(--surface);border:1px solid var(--border);padding:2px 8px;border-radius:20px;margin-left:auto}
+.food-entry{border:1px solid var(--border);border-radius:var(--radius-sm);padding:11px;margin-bottom:8px;display:flex;gap:10px;align-items:center}
+.food-emoji{width:40px;height:40px;border-radius:8px;background:var(--green-light);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
 .food-details{flex:1;min-width:0}
-.food-name{font-size:14px;font-weight:500;margin-bottom:4px}
-.food-time{font-size:12px;color:var(--text-muted)}
-.calorie-badge{display:flex;align-items:center;gap:4px}
-.calorie-input{width:64px;border:1px solid var(--border);border-radius:6px;padding:4px 8px;font-size:13px;font-weight:600;text-align:center;color:var(--slate);background:var(--green-light);font-family:'Space Grotesk',sans-serif}
-.calorie-input:focus{outline:none;border-color:var(--green);background:#fff}
-.calorie-label{font-size:11px;color:var(--text-muted)}
-.ai-badge{font-size:10px;background:#ede9fe;color:#6d28d9;padding:2px 6px;border-radius:4px;font-weight:600;margin-left:4px}
-
-/* CALORIE RING */
-.calorie-ring-wrap{display:flex;align-items:center;gap:20px;margin-bottom:16px}
-.ring-svg{width:80px;height:80px;flex-shrink:0}
-.ring-stats{flex:1}
-.ring-total{font-size:24px;font-weight:700;font-family:'Space Grotesk',sans-serif;color:var(--slate)}
-.ring-label{font-size:12px;color:var(--text-muted)}
-.ring-bars{display:grid;gap:6px;margin-top:8px}
-.macro-bar-row{display:flex;align-items:center;gap:8px;font-size:12px}
-.macro-bar-label{width:52px;color:var(--text-secondary)}
-.macro-bar-track{flex:1;height:5px;background:var(--border);border-radius:3px;overflow:hidden}
-.macro-bar-fill{height:100%;border-radius:3px;transition:width .4s ease}
-
-/* STEPS */
-.steps-display{text-align:center;padding:12px 0 4px}
-.steps-num{font-size:42px;font-weight:700;font-family:'Space Grotesk',sans-serif;color:var(--slate);line-height:1}
-.steps-goal{font-size:13px;color:var(--text-muted);margin-top:4px}
-.steps-bar-wrap{margin:12px 0}
-.steps-bar-track{background:var(--border);border-radius:6px;height:10px;overflow:hidden}
-.steps-bar-fill{height:100%;background:linear-gradient(90deg,var(--green),var(--teal));border-radius:6px;transition:width .6s ease}
-.steps-sms-note{font-size:12px;color:var(--text-secondary);background:var(--surface);border-radius:var(--radius-sm);padding:10px 12px;border:1px solid var(--border);margin-top:10px}
-
-/* ROUTINES */
+.food-name{font-size:13px;font-weight:500;margin-bottom:2px}
+.food-meta{font-size:11px;color:var(--text-muted)}
+.cal-wrap{display:flex;flex-direction:column;align-items:flex-end;gap:2px}
+.cal-input{width:60px;border:1px solid var(--border);border-radius:6px;padding:4px 6px;font-size:13px;font-weight:600;text-align:center;color:var(--slate);background:var(--green-light);font-family:'Space Grotesk',sans-serif}
+.cal-input:focus{outline:none;border-color:var(--green);background:#fff}
+.cal-unit{font-size:10px;color:var(--text-muted)}
+.ai-tag{font-size:9px;background:#ede9fe;color:#6d28d9;padding:1px 5px;border-radius:3px;font-weight:600}
+.ring-wrap{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.macro-row{display:flex;align-items:center;gap:8px;font-size:12px;margin-bottom:4px}
+.macro-label{width:46px;color:var(--text-secondary)}
+.macro-track{flex:1;height:5px;background:var(--border);border-radius:3px;overflow:hidden}
+.macro-fill{height:100%;border-radius:3px}
+.steps-num{font-size:38px;font-weight:700;font-family:'Space Grotesk',sans-serif;line-height:1;text-align:center;padding:8px 0 4px}
+.steps-goal{font-size:13px;color:var(--text-muted);text-align:center;margin-bottom:10px}
+.steps-track{background:var(--border);border-radius:6px;height:10px;overflow:hidden;margin-bottom:6px}
+.steps-fill{height:100%;background:linear-gradient(90deg,var(--green),#14b8a6);border-radius:6px}
+.sms-hint{font-size:12px;color:var(--text-secondary);background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px 12px;margin-top:8px}
 .routine-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.routine-chip{border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;cursor:pointer;transition:.15s;background:var(--card)}
+.routine-chip{border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px 12px;display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;cursor:pointer;transition:.15s;background:var(--card)}
 .routine-chip:hover{border-color:var(--green);background:var(--green-light)}
 .routine-chip.done{border-color:var(--green);background:var(--green-light);color:var(--green-dark)}
-.routine-chip .ri{font-size:16px}
-.routine-chip .check{margin-left:auto;opacity:0;transition:.15s;color:var(--green)}
-.routine-chip.done .check{opacity:1}
-
-/* SPIDER */
-.spider-wrap{display:flex;flex-direction:column;align-items:center;gap:16px}
-.spider-score{font-size:42px;font-weight:700;font-family:'Space Grotesk',sans-serif;color:var(--slate);text-align:center;line-height:1}
-.spider-label{font-size:12px;color:var(--text-muted);text-align:center}
-.spider-legend{display:grid;grid-template-columns:1fr 1fr;gap:4px 16px;margin-top:4px;width:100%}
-.legend-row{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-secondary)}
+.routine-check{margin-left:auto;opacity:0;color:var(--green);font-weight:700}
+.routine-chip.done .routine-check{opacity:1}
+.spider-wrap{display:flex;flex-direction:column;align-items:center;gap:12px}
+.spider-score{font-size:40px;font-weight:700;font-family:'Space Grotesk',sans-serif;text-align:center;line-height:1}
+.spider-sub{font-size:12px;color:var(--text-muted);text-align:center}
+.spider-legend{display:grid;grid-template-columns:1fr 1fr;gap:4px 16px;width:100%}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-secondary)}
 .legend-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-
-/* PHOTO UPLOAD */
-.photo-upload-area{border:2px dashed var(--border);border-radius:var(--radius);padding:28px 20px;text-align:center;cursor:pointer;transition:.15s}
-
-/* ANALYZE PANEL */
-.analyze-panel{display:none;margin-top:16px;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
-.analyze-header{background:var(--surface);padding:12px 16px;border-bottom:1px solid var(--border);font-size:13px;font-weight:600;color:var(--slate);display:flex;align-items:center;gap:8px}
-.analyze-body{padding:16px}
-.field-row{margin-bottom:12px}
-.field-label{font-size:12px;font-weight:600;color:var(--text-muted);letter-spacing:.3px;text-transform:uppercase;margin-bottom:4px}
-.field-value{font-size:14px;color:var(--text-primary);border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 12px;width:100%;font-family:'DM Sans',sans-serif;resize:vertical;background:var(--card)}
-.field-value:focus{outline:none;border-color:var(--green)}
-.analyze-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
-.btn{padding:9px 20px;border-radius:var(--radius-sm);font-size:13px;font-weight:600;cursor:pointer;border:none;transition:.15s;font-family:'DM Sans',sans-serif}
-.btn-ghost{background:none;border:1px solid var(--border);color:var(--text-secondary)}
-.btn-ghost:hover{background:var(--surface)}
-.btn-green{background:var(--green);color:#fff}
-.btn-green:hover{background:var(--green-dark)}
-
-/* ENTRY PANEL */
-.entry-panel{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)}
+.coach-chat{display:flex;flex-direction:column;gap:10px;max-height:260px;overflow-y:auto;margin-bottom:12px}
+.chat-msg{max-width:85%;padding:10px 14px;border-radius:12px;font-size:13px;line-height:1.5}
+.chat-msg.user{background:var(--green);color:#fff;border-radius:12px 12px 4px 12px;align-self:flex-end}
+.chat-msg.ai{background:var(--surface);border:1px solid var(--border);border-radius:12px 12px 12px 4px;align-self:flex-start}
+.chat-msg .msg-time{font-size:10px;opacity:.55;margin-top:4px}
+.chat-input-wrap{display:flex;gap:8px}
+.chat-input{flex:1;border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;font-size:13px;font-family:'DM Sans',sans-serif;resize:none;height:44px}
+.chat-input:focus{outline:none;border-color:var(--green)}
+.chat-send{background:var(--green);color:#fff;border:none;padding:10px 16px;border-radius:var(--radius-sm);font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif}
+.chat-send:hover{background:var(--green-dark)}
+.entry-panel{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
 .entry-tabs{display:flex;border-bottom:1px solid var(--border)}
-.entry-tab{flex:1;padding:12px;text-align:center;font-size:13px;font-weight:500;color:var(--text-secondary);cursor:pointer;border-bottom:2px solid transparent;transition:.15s;background:none;border-top:none;border-left:none;border-right:none}
+.entry-tab{flex:1;padding:11px 6px;text-align:center;font-size:12px;font-weight:500;color:var(--text-secondary);cursor:pointer;border-bottom:2px solid transparent;transition:.15s;background:none;border-top:none;border-left:none;border-right:none;font-family:'DM Sans',sans-serif}
 .entry-tab.active{color:var(--green-dark);border-bottom-color:var(--green);background:var(--green-light)}
 .entry-body{padding:16px}
-.entry-textarea{width:100%;border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;font-size:14px;font-family:'DM Sans',sans-serif;color:var(--text-primary);resize:none;height:90px;background:var(--surface)}
-.entry-textarea:focus{outline:none;border-color:var(--green);background:#fff}
+.entry-ta{width:100%;border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;font-size:13px;font-family:'DM Sans',sans-serif;color:var(--text-primary);resize:none;height:80px;background:var(--surface)}
+.entry-ta:focus{outline:none;border-color:var(--green);background:#fff}
 .entry-actions{display:flex;gap:8px;margin-top:10px;align-items:center}
-.entry-actions .hint{font-size:12px;color:var(--text-muted);flex:1}
-.save-btn{background:var(--green);color:#fff;border:none;padding:9px 20px;border-radius:var(--radius-sm);font-size:13px;font-weight:600;cursor:pointer;transition:.15s;font-family:'DM Sans',sans-serif}
+.entry-hint{font-size:12px;color:var(--text-muted);flex:1}
+.save-btn{background:var(--green);color:#fff;border:none;padding:9px 18px;border-radius:var(--radius-sm);font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif}
 .save-btn:hover{background:var(--green-dark)}
-.save-btn.saved{background:#10b981}
-
-/* MESSAGE LOG */
 .msg-log{max-height:260px;overflow-y:auto}
-.msg-item{padding:10px 0;border-bottom:1px solid var(--border);font-size:13px}
+.msg-item{padding:9px 0;border-bottom:1px solid var(--border);font-size:13px}
 .msg-item:last-child{border-bottom:none}
-.msg-meta{display:flex;align-items:center;gap:8px;margin-bottom:4px}
-.msg-time{color:var(--text-muted);font-size:11px}
-.msg-type{font-size:10px;font-weight:600;padding:2px 7px;border-radius:4px;letter-spacing:.3px}
-.msg-type.food{background:#dcfce7;color:#15803d}
-.msg-type.body{background:#ede9fe;color:#6d28d9}
-.msg-type.steps{background:#dbeafe;color:#1d4ed8}
-.msg-type.routine{background:#fef3c7;color:#92400e}
-.msg-text{color:var(--text-primary);line-height:1.5}
-
-/* PROGRESS PHOTOS */
-.progress-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.progress-thumb{aspect-ratio:3/4;border-radius:8px;overflow:hidden;position:relative;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:12px;cursor:pointer}
-.progress-thumb img{width:100%;height:100%;object-fit:cover}
-.progress-thumb .date-badge{position:absolute;bottom:6px;left:6px;right:6px;background:rgba(0,0,0,.55);color:#fff;font-size:10px;font-weight:500;padding:3px 6px;border-radius:4px;text-align:center}
-.progress-thumb .add-icon{font-size:28px;opacity:.3}
+.msg-meta{display:flex;align-items:center;gap:6px;margin-bottom:3px}
+.msg-time{font-size:11px;color:var(--text-muted)}
+.msg-type{font-size:10px;font-weight:600;padding:2px 6px;border-radius:4px;letter-spacing:.3px}
+.mt-food{background:#dcfce7;color:#15803d}
+.mt-steps{background:#dbeafe;color:#1d4ed8}
+.mt-routine{background:#fef3c7;color:#92400e}
+.mt-sleep{background:#ede9fe;color:#6d28d9}
+.mt-coach{background:#fce7f3;color:#9d174d}
+.lab-card{background:var(--card);border:2px dashed var(--border);border-radius:var(--radius);padding:20px;margin-top:16px;background:linear-gradient(135deg,#f8fafc,#f0fdf4)}
+.lab-metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:8px;margin:12px 0}
+.lab-metric{background:#fff;border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px;text-align:center}
+.lab-metric-label{font-size:10px;color:var(--text-muted);margin-bottom:2px}
+.lab-metric-value{font-size:16px;font-weight:700;font-family:'Space Grotesk',sans-serif;color:var(--text-muted)}
 
 /* AUTH MODAL */
-.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;align-items:center;justify-content:center;padding:24px}
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:200;align-items:center;justify-content:center;padding:24px}
 .modal-bg.open{display:flex}
-.modal{background:#fff;border-radius:16px;width:100%;max-width:400px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.2)}
-.modal-header{background:var(--slate);color:#fff;padding:20px 24px;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:17px;display:flex;align-items:center;gap:10px}
+.modal{background:#fff;border-radius:16px;width:100%;max-width:420px;overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,.2)}
+.modal-head{background:var(--slate);color:#fff;padding:20px 24px;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:17px;display:flex;align-items:center;gap:10px}
+.modal-close{margin-left:auto;background:none;border:none;color:rgba(255,255,255,.5);cursor:pointer;font-size:18px;line-height:1;padding:0}
 .modal-body{padding:24px}
 .modal-label{font-size:12px;font-weight:600;color:var(--text-muted);letter-spacing:.3px;text-transform:uppercase;margin-bottom:6px;display:block}
 .modal-input{width:100%;border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;font-size:14px;font-family:'DM Sans',sans-serif;margin-bottom:14px}
 .modal-input:focus{outline:none;border-color:var(--green)}
-.modal-submit{width:100%;background:var(--green);color:#fff;border:none;padding:12px;border-radius:var(--radius-sm);font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.15s}
+.modal-submit{width:100%;background:var(--green);color:#fff;border:none;padding:12px;border-radius:var(--radius-sm);font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif}
 .modal-submit:hover{background:var(--green-dark)}
+.modal-trial-note{background:var(--green-light);border-radius:var(--radius-sm);padding:10px 14px;font-size:12px;color:var(--green-dark);font-weight:500;margin-bottom:16px;text-align:center}
 .modal-toggle{text-align:center;margin-top:14px;font-size:13px;color:var(--text-secondary)}
 .modal-toggle a{color:var(--green-dark);cursor:pointer;font-weight:500}
-.modal-close{margin-left:auto;background:none;border:none;color:rgba(255,255,255,.6);cursor:pointer;font-size:18px;line-height:1}
 
-/* PRICING */
-.pricing-section{max-width:900px;margin:0 auto;padding:64px 24px}
-.pricing-title{font-size:32px;font-weight:700;text-align:center;margin-bottom:8px;letter-spacing:-.5px}
-.pricing-sub{text-align:center;color:var(--text-secondary);margin-bottom:40px;font-size:16px}
-.pricing-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
-.pricing-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;position:relative}
-.pricing-card.featured{border:2px solid var(--green);box-shadow:0 0 0 1px rgba(34,197,94,.15)}
-.featured-badge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--green);color:#fff;font-size:11px;font-weight:700;padding:4px 14px;border-radius:20px;white-space:nowrap;letter-spacing:.5px}
-.plan-name{font-size:16px;font-weight:700;font-family:'Space Grotesk',sans-serif;margin-bottom:4px}
-.plan-price{font-size:32px;font-weight:700;font-family:'Space Grotesk',sans-serif;color:var(--slate);margin:12px 0 4px}
-.plan-price span{font-size:14px;font-weight:400;color:var(--text-muted)}
-.plan-desc{font-size:13px;color:var(--text-secondary);margin-bottom:16px;min-height:36px}
-.plan-features{list-style:none;margin-bottom:20px}
-.plan-features li{font-size:13px;color:var(--text-secondary);padding:5px 0;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:8px}
-.plan-features li:last-child{border-bottom:none}
-.plan-features .check{color:var(--green);font-weight:700;flex-shrink:0}
-.plan-btn{width:100%;padding:11px;border-radius:var(--radius-sm);font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.15s;border:1px solid var(--border);background:var(--surface);color:var(--slate)}
-.plan-btn:hover{background:var(--border)}
-.plan-btn.green-btn{background:var(--green);color:#fff;border-color:var(--green)}
-.plan-btn.green-btn:hover{background:var(--green-dark)}
-
-/* SMS EXPLAINER */
-.sms-section{background:var(--slate);color:#fff;padding:64px 24px;text-align:center}
-.sms-section h2{font-size:28px;font-weight:700;margin-bottom:8px;letter-spacing:-.5px}
-.sms-section p{color:rgba(255,255,255,.65);margin-bottom:32px;font-size:16px}
-.sms-examples{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;max-width:800px;margin:0 auto;text-align:left}
-.sms-example{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:var(--radius);padding:16px}
-.sms-category{font-size:11px;font-weight:700;letter-spacing:.5px;color:var(--green);margin-bottom:8px}
-.sms-bubble{background:rgba(255,255,255,.12);border-radius:0 10px 10px 10px;padding:10px 12px;font-size:13px;color:rgba(255,255,255,.9);font-family:monospace;line-height:1.5}
-
-/* FOOTER */
-footer{background:var(--slate);color:rgba(255,255,255,.5);text-align:center;padding:24px;font-size:13px;border-top:1px solid rgba(255,255,255,.08)}
-footer a{color:rgba(255,255,255,.6);text-decoration:none;margin:0 10px}
+footer{background:var(--slate);color:rgba(255,255,255,.4);text-align:center;padding:24px;font-size:13px}
+footer a{color:rgba(255,255,255,.55);text-decoration:none;margin:0 10px}
 footer a:hover{color:#fff}
-
-/* UTILS */
-.spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-.hidden{display:none!important}
-.text-muted{color:var(--text-muted)}
-.mt8{margin-top:8px}
 </style>
 </head>
 <body>
 
 <!-- NAV -->
 <nav>
-  <div class="brand">💪 Fit<span>Logs</span><span class="brand-pill">.ai</span></div>
+  <a class="brand" href="/">💪 Fit<span>Logs</span><span class="brand-pill">.ai</span></a>
   <div class="spacer"></div>
   <button class="nav-btn" id="signInNavBtn" onclick="openModal('signin')">Sign In</button>
-  <button class="nav-btn primary" id="createNavBtn" onclick="openModal('create')">Start Free</button>
-  <button class="nav-btn ghost" id="signOutBtn" onclick="signOut()">Sign Out</button>
+  <button class="nav-btn primary" id="startNavBtn" onclick="openModal('create')">Start Free Trial</button>
+  <button id="signOutBtn" onclick="signOut()">Sign Out</button>
 </nav>
 
-<!-- HERO (visible when logged out) -->
-<div id="heroSection">
-  <div class="hero">
-    <div class="hero-badge">📲 SMS-first health tracking</div>
-    <h1>Your health log,<br>no app needed.<br><em>Just text.</em></h1>
-    <p>Text photos of your food, selfies for progress tracking, your step count, and daily routines — all from your existing messages app. AI does the analysis. You stay in control.</p>
-    <div class="sms-box">
-      <span class="icon">💬</span>
-      Text to 1-888-FIT-LOGS
-    </div>
-    <div class="hero-sub">No app install. Works on any phone. Data yours forever.</div>
-  </div>
+<!-- LANDING -->
+<div id="landing">
 
-  <!-- SMS EXPLAINER -->
-  <div class="sms-section">
-    <h2>Just text it. That's it.</h2>
-    <p>No tapping through menus. Text from anywhere — your kitchen, the gym, the trail.</p>
-    <div class="sms-examples">
-      <div class="sms-example">
-        <div class="sms-category">🍽 FOOD PHOTO</div>
-        <div class="sms-bubble">[send a photo of your plate]<br><br>AI replies: "Estimated 620 cal — Chicken 35g protein, rice 55g carbs. Tap dashboard to adjust."</div>
-      </div>
-      <div class="sms-example">
-        <div class="sms-category">🚶 STEPS</div>
-        <div class="sms-bubble">steps 8432<br><br>FitLogs: "Got it — 8,432 steps logged for today. You're 84% to your 10k goal."</div>
-      </div>
-      <div class="sms-example">
-        <div class="sms-category">📸 BODY CHECK-IN</div>
-        <div class="sms-bubble">[send a selfie or mirror photo]<br><br>AI replies: "Compared to your last check-in 14 days ago — posture more upright, shoulder definition slightly improved."</div>
-      </div>
-      <div class="sms-example">
-        <div class="sms-category">🏋 WORKOUT</div>
-        <div class="sms-bubble">gym 45min strength<br>8hr sleep<br>2L water<br><br>FitLogs: "All logged — strength, sleep, and hydration updated."</div>
-      </div>
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-eyebrow">No app. No download. Just text.</div>
+    <h1>Your AI health coach is<br>a text message away.</h1>
+    <p class="hero-sub">Text 1-888-596-5467, tell the AI your goal, and start logging your habits. Watch your health profile evolve — no app downloads, no signup hassle.</p>
+
+    <div class="sms-block" onclick="openModal('create')">
+      <span class="label">Text or tap to start</span>
+      <span class="number">1-888-596-5467</span>
+      <span style="font-size:11px;color:var(--text-muted);letter-spacing:.3px">also known as</span>
+      <span class="vanity">1-888-596-LOGS</span>
     </div>
+
+    <div class="hero-cta-row">
+      <button class="hero-cta" onclick="openModal('create')">Start 30-Day Free Trial</button>
+      <button class="hero-cta-ghost" onclick="simulateLogin()">Preview Dashboard</button>
+    </div>
+    <div class="hero-note">No charge for 30 days · Cancel anytime by texting STOP · No app required</div>
   </div>
 
   <!-- PRICING -->
-  <div class="pricing-section">
-    <h2 class="pricing-title">Simple, transparent pricing</h2>
-    <p class="pricing-sub">Start logging for free today. Upgrade when your data starts telling a story.</p>
+  <div class="pricing-wrap">
+    <div class="pricing-header">
+      <h2>Simple, honest pricing</h2>
+      <p>Every plan starts with a 30-day free trial. Downgrade or cancel anytime by text.</p>
+    </div>
     <div class="pricing-grid">
+
       <div class="pricing-card">
-        <div class="plan-name">Free</div>
-        <div class="plan-price">$0<span>/forever</span></div>
-        <div class="plan-desc">Log anything from your phone, right now.</div>
-        <ul class="plan-features">
-          <li><span class="check">✓</span>Unlimited SMS logging via 1-888-FIT-LOGS</li>
-          <li><span class="check">✓</span>Timestamped food, steps, and routine logs</li>
-          <li><span class="check">✓</span>No app required</li>
-          <li><span class="check">✗</span>No dashboard or history</li>
-          <li><span class="check">✗</span>No AI calorie estimates</li>
-        </ul>
-        <button class="plan-btn" onclick="openModal('create')">Start Logging Free</button>
-      </div>
-      <div class="pricing-card featured">
-        <div class="featured-badge">Most Popular</div>
         <div class="plan-name">Track</div>
-        <div class="plan-price">$4.99<span>/month</span></div>
-        <div class="plan-desc">✨ 30-day free trial — no charge until day 31</div>
+        <div class="plan-price">$4.99<span style="font-size:14px;font-weight:500;color:var(--text-muted)">/mo</span></div>
+        <div class="plan-trial">30-day free trial</div>
+        <div class="plan-desc">For the self-disciplined user who just needs a clean logging system and AI analysis.</div>
         <ul class="plan-features">
-          <li><span class="check">✓</span>Everything in Free</li>
-          <li><span class="check">✓</span>Full dashboard and message history</li>
-          <li><span class="check">✓</span>Calorie and macro tracking</li>
-          <li><span class="check">✓</span>Steps progress and goal tracking</li>
-          <li><span class="check">✓</span>Health spider chart (7 metrics)</li>
-          <li><span class="check">✓</span>Routine streak tracking</li>
-          <li><span class="check">✓</span>Progress photo timeline</li>
+          <li><span class="check">✓</span>SMS logging — food, steps, sleep, workouts, water</li>
+          <li><span class="check">✓</span>AI calorie and macro estimates from text descriptions</li>
+          <li><span class="check">✓</span>Full dashboard with 7-metric spider chart</li>
+          <li><span class="check">✓</span>Weekly AI progress report</li>
+          <li><span class="check">✓</span>Works from phone or smartwatch voice-to-text</li>
+          <li><span class="check">✓</span>Log streak and adherence tracking</li>
         </ul>
-        <button class="plan-btn green-btn" onclick="openModal('create')">Start Free Trial</button>
+        <button class="plan-btn" onclick="openModal('create')">Start Free Trial</button>
       </div>
-      <div class="pricing-card">
+
+      <div class="pricing-card featured">
+        <div class="featured-pill">Default on signup</div>
         <div class="plan-name">Coach</div>
-        <div class="plan-price">$14.99<span>/month</span></div>
-        <div class="plan-desc">AI-powered analysis and weekly insight reports.</div>
+        <div class="plan-price">$14.99<span style="font-size:14px;font-weight:500;color:var(--text-muted)">/mo</span></div>
+        <div class="plan-trial">30-day free trial</div>
+        <div class="plan-desc">Real-time AI coaching via SMS. The AI knows your history and coaches you like a pro.</div>
         <ul class="plan-features">
           <li><span class="check">✓</span>Everything in Track</li>
-          <li><span class="check">✓</span>AI calorie estimation from food photos</li>
-          <li><span class="check">✓</span>Body progress AI analysis (up to 30/mo)</li>
-          <li><span class="check">✓</span>Weekly AI health summary report</li>
-          <li><span class="check">✓</span>Macro breakdown with editable fields</li>
-          <li><span class="check">✓</span>Priority support</li>
+          <li><span class="check">✓</span>Real-time AI coaching conversations via SMS</li>
+          <li><span class="check">✓</span>AI remembers your logs and adjusts coaching tone</li>
+          <li><span class="check">✓</span>Motivational check-ins and accountability nudges</li>
+          <li><span class="check">✓</span>Text DOWNGRADE anytime to switch to Track</li>
         </ul>
-        <button class="plan-btn" onclick="openModal('create')">Get Coach</button>
+        <button class="plan-btn green" onclick="openModal('create')">Start Free Trial</button>
       </div>
+
+      <div class="pricing-card">
+        <div class="plan-name">Trainer</div>
+        <div class="plan-price">$29.99<span style="font-size:14px;font-weight:500;color:var(--text-muted)">/mo</span></div>
+        <div class="plan-trial">30-day free trial</div>
+        <div class="plan-desc">Everything in Coach plus your personal trainer gets read access to your full dashboard.</div>
+        <ul class="plan-features">
+          <li><span class="check">✓</span>Everything in Coach</li>
+          <li><span class="check">✓</span>Invite your personal trainer or physical therapist</li>
+          <li><span class="check">✓</span>Trainer gets read-only dashboard access</li>
+          <li><span class="check">✓</span>Trainer sees spider chart, logs, and AI reports</li>
+          <li><span class="check">✓</span>You control access — revoke anytime</li>
+        </ul>
+        <button class="plan-btn" onclick="openModal('create')">Start Free Trial</button>
+      </div>
+
     </div>
-  </div>
-</div>
 
-<!-- DASHBOARD (visible when logged in) -->
-<div id="dashboard">
-
-  <!-- TIER BANNER -->
-  <div class="tier-banner" id="tierBanner">
-    <span class="tier-badge">FREE TIER</span>
-    <span>You're on the Free tier — <a href="#" style="color:var(--green-dark);font-weight:600">upgrade to Track ($4.99/mo)</a> to unlock your dashboard, spider chart, and calorie history.</span>
-  </div>
-
-  <div class="dash-greeting" id="dashGreeting">Good morning 👋</div>
-  <div class="dash-sub">Here's your health snapshot for today</div>
-
-  <!-- STATS ROW -->
-  <div class="stats-grid">
-    <div class="stat-card">
-      <div class="stat-label">Calories Today</div>
-      <div class="stat-value" id="statCals">1,420</div>
-      <div class="stat-unit">of 2,000 goal</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">Steps Today</div>
-      <div class="stat-value" id="statSteps">6,240</div>
-      <div class="stat-unit">of 10,000 goal</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">Log Streak</div>
-      <div class="stat-value">12</div>
-      <div class="stat-unit">days in a row 🔥</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">Week Avg Sleep</div>
-      <div class="stat-value">6.8</div>
-      <div class="stat-unit">hrs/night</div>
-    </div>
-  </div>
-
-  <!-- MAIN GRID ROW 1 -->
-  <div class="main-grid">
-
-    <!-- FOOD LOG -->
-    <div class="card">
-      <div class="card-title">🍽 Today's Food Log <span class="tag">Last 90 days</span></div>
-      <div class="calorie-ring-wrap">
-        <svg class="ring-svg" viewBox="0 0 80 80">
-          <circle cx="40" cy="40" r="32" fill="none" stroke="#e2e8f0" stroke-width="10"/>
-          <circle cx="40" cy="40" r="32" fill="none" stroke="#22c55e" stroke-width="10"
-            stroke-dasharray="201" stroke-dashoffset="60" stroke-linecap="round"
-            transform="rotate(-90 40 40)"/>
-          <text x="40" y="44" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="13" font-weight="700" fill="#0f172a">71%</text>
-        </svg>
-        <div class="ring-stats">
-          <div class="ring-total">1,420 <span style="font-size:16px;font-weight:400;color:var(--text-muted)">cal</span></div>
-          <div class="ring-label">580 remaining of 2,000 goal</div>
-          <div class="ring-bars">
-            <div class="macro-bar-row">
-              <span class="macro-bar-label">Protein</span>
-              <div class="macro-bar-track"><div class="macro-bar-fill" style="width:68%;background:#3b82f6"></div></div>
-              <span style="font-size:11px;color:var(--text-muted)">102g</span>
-            </div>
-            <div class="macro-bar-row">
-              <span class="macro-bar-label">Carbs</span>
-              <div class="macro-bar-track"><div class="macro-bar-fill" style="width:55%;background:#f59e0b"></div></div>
-              <span style="font-size:11px;color:var(--text-muted)">165g</span>
-            </div>
-            <div class="macro-bar-row">
-              <span class="macro-bar-label">Fat</span>
-              <div class="macro-bar-track"><div class="macro-bar-fill" style="width:42%;background:#ef4444"></div></div>
-              <span style="font-size:11px;color:var(--text-muted)">38g</span>
-            </div>
+    <!-- PT INCENTIVE CALLOUT -->
+    <div style="margin-top:32px;background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:1px solid #86efac;border-radius:var(--radius);padding:24px 28px;display:flex;align-items:flex-start;gap:16px">
+      <div style="font-size:32px;flex-shrink:0">💰</div>
+      <div style="flex:1">
+        <div style="font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:700;color:var(--slate);margin-bottom:6px">Personal trainers earn $4.99 per client per month</div>
+        <div style="font-size:14px;color:var(--text-secondary);line-height:1.7;margin-bottom:12px">When your client subscribes to the Trainer plan ($29.99/mo), $4.99 automatically accrues to your FitLogs earnings wallet every month. Cash out anytime via Stripe — directly to your bank account.</div>
+        <div style="display:flex;gap:24px;flex-wrap:wrap">
+          <div style="text-align:center">
+            <div style="font-size:22px;font-weight:700;font-family:'Space Grotesk',sans-serif;color:var(--green-dark)">$49.90</div>
+            <div style="font-size:12px;color:var(--text-muted)">earned/mo with 10 clients</div>
+          </div>
+          <div style="text-align:center">
+            <div style="font-size:22px;font-weight:700;font-family:'Space Grotesk',sans-serif;color:var(--green-dark)">$149.70</div>
+            <div style="font-size:12px;color:var(--text-muted)">earned/mo with 30 clients</div>
+          </div>
+          <div style="text-align:center">
+            <div style="font-size:22px;font-weight:700;font-family:'Space Grotesk',sans-serif;color:var(--green-dark)">$499.00</div>
+            <div style="font-size:12px;color:var(--text-muted)">earned/mo with 100 clients</div>
           </div>
         </div>
+        <div style="font-size:12px;color:var(--text-muted);margin-top:12px">Trainers are paid from collected revenue — no upfront cost to you or your clients. Cash out requests processed within 5 business days.</div>
       </div>
+    </div>
+  </div>
 
-      <!-- Sample food entries -->
-      <div class="food-entry">
-        <div class="food-thumb">🥚</div>
-        <div class="food-details">
-          <div class="food-name">Scrambled eggs with toast</div>
-          <div class="food-time">8:12 AM — via SMS photo</div>
+  <!-- SMS EXAMPLES -->
+  <div class="examples-wrap">
+    <div class="examples-inner">
+      <div class="examples-header">
+        <h2>See how it works</h2>
+        <p>Just text. The AI handles the rest.</p>
+      </div>
+      <div class="examples-grid">
+        <div class="ex-card">
+          <div class="ex-tag">🍽 FOOD LOG</div>
+          <div class="ex-bubble">lunch grilled chicken breast brown rice steamed broccoli</div>
+          <div class="ex-reply">🍽 ~520 kcal — Protein 42g, Carbs 48g, Fat 8g<br><br>Reply CONFIRM to save or CALORIES 480 to correct.</div>
         </div>
-        <div class="calorie-badge" style="flex-direction:column;align-items:flex-end;gap:2px">
-          <input class="calorie-input" type="number" value="380" title="Edit calories">
-          <span class="calorie-label">kcal <span class="ai-badge">AI</span></span>
+        <div class="ex-card">
+          <div class="ex-tag">🚶 STEPS + HABITS</div>
+          <div class="ex-bubble">steps 9200<br>slept 7.5 hours<br>2L water<br>vitamins taken</div>
+          <div class="ex-reply">✅ Logged:<br>🚶 9,200 steps (92%)<br>😴 7.5 hrs sleep<br>💧 2L water · 💊 Vitamins</div>
+        </div>
+        <div class="ex-card">
+          <div class="ex-tag">🏋 WORKOUT</div>
+          <div class="ex-bubble">gym 60min strength<br>bench squat deadlift</div>
+          <div class="ex-reply">✅ 🏋 Strength 60min logged<br>Bench, squat, deadlift noted.<br><br>Solid session — stay consistent!</div>
+        </div>
+        <div class="ex-card">
+          <div class="ex-tag">💬 AI COACH</div>
+          <div class="coach-pill">COACH TIER</div>
+          <div class="ex-bubble">I keep skipping the gym. Feeling unmotivated lately.</div>
+          <div class="ex-reply">That happens — what matters is you said something. What's one thing getting in the way? Your consistency last week was genuinely strong.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /landing -->
+
+<!-- DASHBOARD -->
+<div id="dashboard">
+  <div class="dash-top">
+    <div>
+      <div class="dash-greeting" id="dashGreeting">Good morning 👋</div>
+      <div class="dash-sub">Here is your health snapshot for today</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <span class="tier-chip tier-coach">COACH</span>
+      <button style="font-size:12px;color:var(--text-muted);background:none;border:1px solid var(--border);padding:5px 12px;border-radius:var(--radius-sm);cursor:pointer;font-family:'DM Sans',sans-serif">My Account</button>
+    </div>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card"><div class="stat-label">Calories Today</div><div class="stat-value">1,420</div><div class="stat-sub">of 2,000 goal</div></div>
+    <div class="stat-card"><div class="stat-label">Steps Today</div><div class="stat-value">6,240</div><div class="stat-sub">of 10,000 goal</div></div>
+    <div class="stat-card"><div class="stat-label">Log Streak</div><div class="stat-value">12</div><div class="stat-sub">days in a row 🔥</div></div>
+    <div class="stat-card"><div class="stat-label">Adherence</div><div class="stat-value">84%</div><div class="stat-sub">this week</div></div>
+    <div class="stat-card"><div class="stat-label">Avg Sleep</div><div class="stat-value">6.8</div><div class="stat-sub">hrs/night this week</div></div>
+  </div>
+
+  <div class="main-grid">
+    <!-- FOOD LOG -->
+    <div class="card">
+      <div class="card-title">🍽 Today's Food Log <span class="card-tag">AI estimates</span></div>
+      <div class="ring-wrap">
+        <svg viewBox="0 0 80 80" width="74" height="74" style="flex-shrink:0">
+          <circle cx="40" cy="40" r="32" fill="none" stroke="#e2e8f0" stroke-width="10"/>
+          <circle cx="40" cy="40" r="32" fill="none" stroke="#22c55e" stroke-width="10" stroke-dasharray="201" stroke-dashoffset="60" stroke-linecap="round" transform="rotate(-90 40 40)"/>
+          <text x="40" y="44" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="13" font-weight="700" fill="#0f172a">71%</text>
+        </svg>
+        <div style="flex:1">
+          <div style="font-size:22px;font-weight:700;font-family:'Space Grotesk',sans-serif">1,420 <span style="font-size:13px;font-weight:400;color:var(--text-muted)">cal</span></div>
+          <div style="font-size:12px;color:var(--text-muted);margin-bottom:6px">580 remaining of 2,000</div>
+          <div class="macro-row"><span class="macro-label">Protein</span><div class="macro-track"><div class="macro-fill" style="width:68%;background:#3b82f6"></div></div><span style="font-size:11px;color:var(--text-muted)">102g</span></div>
+          <div class="macro-row"><span class="macro-label">Carbs</span><div class="macro-track"><div class="macro-fill" style="width:55%;background:#f59e0b"></div></div><span style="font-size:11px;color:var(--text-muted)">165g</span></div>
+          <div class="macro-row"><span class="macro-label">Fat</span><div class="macro-track"><div class="macro-fill" style="width:42%;background:#ef4444"></div></div><span style="font-size:11px;color:var(--text-muted)">38g</span></div>
         </div>
       </div>
       <div class="food-entry">
-        <div class="food-thumb">🥗</div>
-        <div class="food-details">
-          <div class="food-name">Grilled chicken salad</div>
-          <div class="food-time">12:44 PM — via SMS photo</div>
-        </div>
-        <div class="calorie-badge" style="flex-direction:column;align-items:flex-end;gap:2px">
-          <input class="calorie-input" type="number" value="520">
-          <span class="calorie-label">kcal <span class="ai-badge">AI</span></span>
-        </div>
+        <div class="food-emoji">🥚</div>
+        <div class="food-details"><div class="food-name">Scrambled eggs with toast</div><div class="food-meta">8:12 AM · via SMS</div></div>
+        <div class="cal-wrap"><input class="cal-input" type="number" value="380"><span class="cal-unit">kcal <span class="ai-tag">AI</span></span></div>
       </div>
       <div class="food-entry">
-        <div class="food-thumb">🍌</div>
-        <div class="food-details">
-          <div class="food-name">Banana + protein bar</div>
-          <div class="food-time">3:30 PM — via SMS</div>
-        </div>
-        <div class="calorie-badge" style="flex-direction:column;align-items:flex-end;gap:2px">
-          <input class="calorie-input" type="number" value="290">
-          <span class="calorie-label">kcal</span>
-        </div>
+        <div class="food-emoji">🥗</div>
+        <div class="food-details"><div class="food-name">Grilled chicken salad</div><div class="food-meta">12:44 PM · via SMS</div></div>
+        <div class="cal-wrap"><input class="cal-input" type="number" value="520"><span class="cal-unit">kcal <span class="ai-tag">AI</span></span></div>
       </div>
-      <div style="font-size:12px;color:var(--text-muted);margin-top:8px;padding:8px 12px;border-top:1px solid var(--border);display:flex;align-items:center;gap:6px">
-        <span>🔒</span> Food photos are analyzed then discarded — only these calorie estimates are stored. Tap any number to correct it.
+      <div class="food-entry">
+        <div class="food-emoji">🍌</div>
+        <div class="food-details"><div class="food-name">Banana + protein bar</div><div class="food-meta">3:30 PM · via SMS</div></div>
+        <div class="cal-wrap"><input class="cal-input" type="number" value="290"><span class="cal-unit">kcal</span></div>
       </div>
+      <div style="font-size:11px;color:var(--text-muted);padding:8px 0;border-top:1px solid var(--border);margin-top:4px">💡 AI estimates — tap any number to correct it</div>
     </div>
 
     <!-- STEPS + ROUTINES -->
     <div style="display:flex;flex-direction:column;gap:16px">
       <div class="card">
         <div class="card-title">🚶 Steps Today</div>
-        <div class="steps-display">
-          <div class="steps-num">6,240</div>
-          <div class="steps-goal">Goal: 10,000 steps</div>
-        </div>
-        <div class="steps-bar-wrap">
-          <div class="steps-bar-track">
-            <div class="steps-bar-fill" style="width:62.4%"></div>
-          </div>
-        </div>
-        <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text-muted);margin-bottom:10px">
-          <span>0</span><span>62% of goal</span><span>10k</span>
-        </div>
-        <div class="steps-sms-note">
-          📲 Text <strong>steps 8432</strong> to 1-888-FIT-LOGS to update from your phone
-        </div>
+        <div class="steps-num">6,240</div>
+        <div class="steps-goal">Goal: 10,000 steps</div>
+        <div class="steps-track"><div class="steps-fill" style="width:62.4%"></div></div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-muted);margin-bottom:8px"><span>0</span><span>62%</span><span>10k</span></div>
+        <div class="sms-hint">📲 Text <strong>steps 8432</strong> to 1-888-596-5467 (1-888-596-LOGS)</div>
       </div>
-
       <div class="card">
         <div class="card-title">✅ Daily Routines</div>
         <div class="routine-grid">
-          <div class="routine-chip done" onclick="toggleRoutine(this)">
-            <span class="ri">💧</span> Hydration
-            <span class="check">✓</span>
-          </div>
-          <div class="routine-chip done" onclick="toggleRoutine(this)">
-            <span class="ri">😴</span> Sleep Log
-            <span class="check">✓</span>
-          </div>
-          <div class="routine-chip" onclick="toggleRoutine(this)">
-            <span class="ri">🏋</span> Strength
-            <span class="check">✓</span>
-          </div>
-          <div class="routine-chip" onclick="toggleRoutine(this)">
-            <span class="ri">🧘</span> Stretch
-            <span class="check">✓</span>
-          </div>
-          <div class="routine-chip" onclick="toggleRoutine(this)">
-            <span class="ri">💊</span> Vitamins
-            <span class="check">✓</span>
-          </div>
-          <div class="routine-chip" onclick="toggleRoutine(this)">
-            <span class="ri">🫁</span> Cardio
-            <span class="check">✓</span>
-          </div>
+          <div class="routine-chip done" onclick="toggleRoutine(this)"><span>💧</span>Hydration<span class="routine-check">✓</span></div>
+          <div class="routine-chip done" onclick="toggleRoutine(this)"><span>😴</span>Sleep Log<span class="routine-check">✓</span></div>
+          <div class="routine-chip" onclick="toggleRoutine(this)"><span>🏋</span>Training<span class="routine-check">✓</span></div>
+          <div class="routine-chip" onclick="toggleRoutine(this)"><span>🧘</span>Stretch<span class="routine-check">✓</span></div>
+          <div class="routine-chip" onclick="toggleRoutine(this)"><span>💊</span>Vitamins<span class="routine-check">✓</span></div>
+          <div class="routine-chip" onclick="toggleRoutine(this)"><span>🫁</span>Cardio<span class="routine-check">✓</span></div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- MAIN GRID ROW 2 -->
   <div class="main-grid" style="margin-top:16px">
-
-    <!-- HEALTH SPIDER -->
+    <!-- SPIDER -->
     <div class="card">
-      <div class="card-title">🕸 Health Profile <span class="tag">7 metrics</span></div>
+      <div class="card-title">🕸 Health Profile <span class="card-tag">7 metrics</span></div>
       <div class="spider-wrap">
-        <div>
-          <div class="spider-score">74</div>
-          <div class="spider-label">Overall Health Score</div>
-        </div>
-        <svg viewBox="0 0 300 300" width="240" height="240">
-          <defs>
-            <style>
-              .spider-axis{stroke:#e2e8f0;stroke-width:1}
-              .spider-ring{fill:none;stroke:#e2e8f0;stroke-width:.8}
-              .spider-area{fill:rgba(34,197,94,.18);stroke:#22c55e;stroke-width:2}
-              .spider-label-txt{font-family:DM Sans,sans-serif;font-size:11px;fill:#64748b;font-weight:500}
-            </style>
-          </defs>
-          <!-- rings -->
-          <polygon class="spider-ring" points="150,70 202,95 220,155 192,210 108,210 80,155 98,95"/>
-          <polygon class="spider-ring" points="150,100 185,118 198,158 176,195 124,195 102,158 115,118"/>
-          <polygon class="spider-ring" points="150,130 168,141 176,162 160,180 140,180 124,162 132,141"/>
-          <!-- axes -->
-          <line class="spider-axis" x1="150" y1="150" x2="150" y2="70"/>
-          <line class="spider-axis" x1="150" y1="150" x2="202" y2="95"/>
-          <line class="spider-axis" x1="150" y1="150" x2="220" y2="155"/>
-          <line class="spider-axis" x1="150" y1="150" x2="192" y2="210"/>
-          <line class="spider-axis" x1="150" y1="150" x2="108" y2="210"/>
-          <line class="spider-axis" x1="150" y1="150" x2="80" y2="155"/>
-          <line class="spider-axis" x1="150" y1="150" x2="98" y2="95"/>
-          <!-- data area (scores: Nutrition 80, Activity 70, Body 65, Sleep 55, Hydration 90, Strength 75, Recovery 70) -->
-          <polygon class="spider-area"
-            points="150,86 196,107 213,156 186,205 114,205 84,155 107,102"/>
-          <!-- dots -->
-          <circle cx="150" cy="86" r="4" fill="#22c55e"/>
-          <circle cx="196" cy="107" r="4" fill="#22c55e"/>
-          <circle cx="213" cy="156" r="4" fill="#22c55e"/>
-          <circle cx="186" cy="205" r="4" fill="#22c55e"/>
-          <circle cx="114" cy="205" r="4" fill="#22c55e"/>
-          <circle cx="84" cy="155" r="4" fill="#22c55e"/>
+        <div><div class="spider-score">74</div><div class="spider-sub">Overall Health Score</div></div>
+        <svg viewBox="0 0 300 300" width="228" height="228">
+          <defs><style>.ax{stroke:#e2e8f0;stroke-width:1}.rg{fill:none;stroke:#e2e8f0;stroke-width:.8}.ar{fill:rgba(34,197,94,.15);stroke:#22c55e;stroke-width:2}.lb{font-family:DM Sans,sans-serif;font-size:11px;fill:#64748b;font-weight:500}</style></defs>
+          <polygon class="rg" points="150,70 202,95 220,155 192,210 108,210 80,155 98,95"/>
+          <polygon class="rg" points="150,100 185,118 198,158 176,195 124,195 102,158 115,118"/>
+          <polygon class="rg" points="150,130 168,141 176,162 160,180 140,180 124,162 132,141"/>
+          <line class="ax" x1="150" y1="150" x2="150" y2="70"/><line class="ax" x1="150" y1="150" x2="202" y2="95"/>
+          <line class="ax" x1="150" y1="150" x2="220" y2="155"/><line class="ax" x1="150" y1="150" x2="192" y2="210"/>
+          <line class="ax" x1="150" y1="150" x2="108" y2="210"/><line class="ax" x1="150" y1="150" x2="80" y2="155"/>
+          <line class="ax" x1="150" y1="150" x2="98" y2="95"/>
+          <polygon class="ar" points="150,86 196,107 213,156 186,205 114,205 84,155 107,102"/>
+          <circle cx="150" cy="86" r="4" fill="#22c55e"/><circle cx="196" cy="107" r="4" fill="#22c55e"/>
+          <circle cx="213" cy="156" r="4" fill="#22c55e"/><circle cx="186" cy="205" r="4" fill="#22c55e"/>
+          <circle cx="114" cy="205" r="4" fill="#22c55e"/><circle cx="84" cy="155" r="4" fill="#22c55e"/>
           <circle cx="107" cy="102" r="4" fill="#22c55e"/>
-          <!-- labels -->
-          <text class="spider-label-txt" x="150" y="60" text-anchor="middle">Nutrition</text>
-          <text class="spider-label-txt" x="215" y="92" text-anchor="start">Activity</text>
-          <text class="spider-label-txt" x="228" y="158" text-anchor="start">Body</text>
-          <text class="spider-label-txt" x="192" y="226" text-anchor="middle">Sleep</text>
-          <text class="spider-label-txt" x="108" y="226" text-anchor="middle">Hydration</text>
-          <text class="spider-label-txt" x="62" y="158" text-anchor="end">Strength</text>
-          <text class="spider-label-txt" x="85" y="92" text-anchor="end">Recovery</text>
+          <text class="lb" x="150" y="60" text-anchor="middle">Nutrition</text>
+          <text class="lb" x="215" y="92" text-anchor="start">Training</text>
+          <text class="lb" x="228" y="158" text-anchor="start">Cardio</text>
+          <text class="lb" x="192" y="226" text-anchor="middle">Sleep</text>
+          <text class="lb" x="108" y="226" text-anchor="middle">Hydration</text>
+          <text class="lb" x="62" y="158" text-anchor="end">Adherence</text>
+          <text class="lb" x="85" y="92" text-anchor="end">Recovery</text>
         </svg>
         <div class="spider-legend">
-          <div class="legend-row"><div class="legend-dot" style="background:#22c55e"></div>Nutrition 80</div>
-          <div class="legend-row"><div class="legend-dot" style="background:#14b8a6"></div>Activity 70</div>
-          <div class="legend-row"><div class="legend-dot" style="background:#3b82f6"></div>Body Comp 65</div>
-          <div class="legend-row"><div class="legend-dot" style="background:#8b5cf6"></div>Sleep 55</div>
-          <div class="legend-row"><div class="legend-dot" style="background:#06b6d4"></div>Hydration 90</div>
-          <div class="legend-row"><div class="legend-dot" style="background:#f59e0b"></div>Strength 75</div>
-          <div class="legend-row"><div class="legend-dot" style="background:#ef4444"></div>Recovery 70</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#22c55e"></div>Nutrition 80</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#14b8a6"></div>Training 70</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#3b82f6"></div>Cardio 65</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#8b5cf6"></div>Sleep 55</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#06b6d4"></div>Hydration 90</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#f59e0b"></div>Adherence 84</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#ef4444"></div>Recovery 70</div>
         </div>
       </div>
     </div>
 
-    <!-- BODY PROGRESS CHECK-IN -->
+    <!-- AI COACH CHAT -->
     <div class="card">
-      <div class="card-title">📸 Body Progress Check-In <span class="tag">AI analysis only</span></div>
-
-      <!-- Privacy notice -->
-      <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:16px;display:flex;gap:10px;align-items:flex-start">
-        <span style="font-size:18px;flex-shrink:0">🔒</span>
-        <div>
-          <div style="font-size:13px;font-weight:600;color:#15803d;margin-bottom:2px">Photos are never stored</div>
-          <div style="font-size:12px;color:#166534;line-height:1.5">Your photo is sent directly to AI for analysis, then immediately discarded. Only the AI's text observations are saved — and you review and edit those before anything goes to your log.</div>
-        </div>
+      <div class="card-title">💬 AI Coach <span class="card-tag" style="background:#ede9fe;color:#6d28d9;border-color:#c4b5fd">Coach tier</span></div>
+      <div class="coach-chat" id="coachChat">
+        <div class="chat-msg ai">Hey! 84% adherence this week — genuinely strong. Your sleep score is the one area pulling your number down. Want to work through what's getting in the way?<div class="msg-time">9:02 AM</div></div>
+        <div class="chat-msg user">I keep staying up too late scrolling. Hard to wind down.<div class="msg-time">9:15 AM</div></div>
+        <div class="chat-msg ai">Really common — scrolling keeps your brain in alert mode right when it needs to shift down. Try a hard phone stop at 10pm just for this week. Not about sleep itself, just the phone. What time do you usually start?<div class="msg-time">9:16 AM</div></div>
       </div>
-
-      <!-- Upload area -->
-      <div style="border:2px dashed var(--border);border-radius:var(--radius);padding:24px 16px;text-align:center;cursor:pointer;transition:.15s;position:relative;margin-bottom:12px" id="photoUploadArea"
-           onmouseenter="this.style.borderColor='#22c55e';this.style.background='#f0fdf4'"
-           onmouseleave="this.style.borderColor='';this.style.background=''"
-           onclick="document.getElementById('photoFileInput').click()">
-        <input type="file" id="photoFileInput" accept="image/*" style="display:none" onchange="handlePhotoSelect(event)">
-        <div style="font-size:32px;margin-bottom:8px;opacity:.5">📷</div>
-        <div style="font-size:14px;font-weight:500;color:var(--text-secondary)">Tap to select a photo for AI analysis</div>
-        <div style="font-size:12px;color:var(--text-muted);margin-top:4px">Or text a mirror selfie to 1-888-FIT-LOGS</div>
-        <div style="font-size:11px;color:var(--text-muted);margin-top:8px;font-style:italic">Photo is analyzed then immediately deleted — never stored</div>
+      <div class="chat-input-wrap">
+        <textarea class="chat-input" id="chatInput" placeholder="Talk to your AI coach..." onkeydown="handleChatKey(event)"></textarea>
+        <button class="chat-send" onclick="sendChat()">Send</button>
       </div>
-
-      <!-- Analyzing state (hidden by default) -->
-      <div id="analyzingState" style="display:none;text-align:center;padding:20px;border:1px solid var(--border);border-radius:var(--radius-sm);margin-bottom:12px">
-        <div style="font-size:13px;color:var(--text-secondary);display:flex;align-items:center;justify-content:center;gap:10px">
-          <div class="spinner" style="border-color:rgba(34,197,94,.3);border-top-color:var(--green)"></div>
-          AI analyzing your photo — this takes a few seconds...
-        </div>
-        <div style="font-size:11px;color:var(--text-muted);margin-top:8px">Photo will be discarded immediately after analysis</div>
-      </div>
-
-      <!-- Results panel (shown after analysis) -->
-      <div class="analyze-panel" id="analyzePanel">
-        <div class="analyze-header">
-          <span>🤖</span> AI Body Progress Analysis — Review Before Saving
-          <span style="margin-left:auto;font-size:11px;color:var(--green);font-weight:600;background:#dcfce7;padding:2px 8px;border-radius:4px">Photo discarded ✓</span>
-        </div>
-        <div class="analyze-body">
-          <div style="font-size:12px;color:var(--text-secondary);margin-bottom:12px;padding:8px 12px;background:var(--surface);border-radius:var(--radius-sm);border:1px solid var(--border)">
-            ✏️ All fields are editable — correct anything the AI got wrong before saving
-          </div>
-          <div class="field-row">
-            <div class="field-label">AI Observation</div>
-            <textarea class="field-value" rows="3" id="aiObservation">Compared to your last check-in (14 days ago): posture appears slightly more upright, shoulder line marginally wider. No significant change in midsection visible yet. Overall direction consistent with stated goal.</textarea>
-          </div>
-          <div class="field-row">
-            <div class="field-label">Your Goal</div>
-            <input class="field-value" type="text" id="userGoal" value="Build lean muscle, reduce body fat">
-          </div>
-          <div class="field-row">
-            <div class="field-label">Progress Assessment</div>
-            <select class="field-value" id="progressDir">
-              <option>On track</option>
-              <option>Slightly ahead of goal</option>
-              <option>Plateau — may need adjustment</option>
-              <option>Behind goal</option>
-            </select>
-          </div>
-          <div class="field-row">
-            <div class="field-label">Your Notes (optional)</div>
-            <textarea class="field-value" rows="2" placeholder="Add anything the AI missed — how you felt, what changed in your routine..."></textarea>
-          </div>
-          <div class="analyze-actions">
-            <button class="btn btn-ghost" onclick="closeAnalyze()">Discard All</button>
-            <button class="btn btn-green" onclick="saveAnalysis()">Confirm and Save to Log</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Past check-in entries (text only, no photos) -->
-      <div style="margin-top:16px">
-        <div style="font-size:12px;font-weight:600;color:var(--text-muted);letter-spacing:.3px;text-transform:uppercase;margin-bottom:8px">Previous Check-Ins</div>
-        <div class="msg-item">
-          <div class="msg-meta">
-            <span class="msg-type body">body check-in</span>
-            <span class="msg-time">Apr 29 — 14 days ago</span>
-          </div>
-          <div class="msg-text" style="font-size:13px">Goal: Build lean muscle. AI: Shoulder definition slightly improved, posture consistent. Assessment: On track. <span style="color:var(--text-muted)">(User confirmed)</span></div>
-        </div>
-        <div class="msg-item">
-          <div class="msg-meta">
-            <span class="msg-type body">body check-in</span>
-            <span class="msg-time">Apr 15 — 28 days ago</span>
-          </div>
-          <div class="msg-text" style="font-size:13px">Goal: Build lean muscle. AI: No visible change from baseline. Assessment: Early stage, too soon to measure. <span style="color:var(--text-muted)">(User edited: "Starting point logged")</span></div>
-        </div>
-      </div>
+      <div style="font-size:11px;color:var(--text-muted);margin-top:8px">💬 Also works via SMS — text anything to 1-888-596-5467</div>
     </div>
   </div>
 
-  <!-- ENTRY + LOG ROW -->
   <div class="main-grid" style="margin-top:16px">
-
-    <!-- MANUAL ENTRY PANEL -->
     <div class="entry-panel">
       <div class="entry-tabs">
         <button class="entry-tab active" onclick="switchTab(this,'food')">🍽 Food</button>
@@ -671,139 +501,42 @@ footer a:hover{color:#fff}
         <button class="entry-tab" onclick="switchTab(this,'note')">📝 Note</button>
       </div>
       <div class="entry-body">
-        <div id="tabFood">
-          <textarea class="entry-textarea" placeholder="Describe what you ate, or text a photo to 1-888-FIT-LOGS. AI will estimate calories automatically.&#10;&#10;Example: Chicken breast rice broccoli lunch"></textarea>
-          <div class="entry-actions">
-            <span class="hint">Or text a food photo to 1-888-FIT-LOGS</span>
-            <button class="save-btn" onclick="saveEntry(this)">Save Entry</button>
-          </div>
-        </div>
-        <div id="tabSteps" style="display:none">
-          <div style="display:flex;gap:10px;align-items:center;margin-bottom:10px">
-            <input type="number" placeholder="e.g. 8432" style="flex:1;border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;font-size:16px;font-weight:600;font-family:'Space Grotesk',sans-serif" id="stepsInput">
-            <span style="color:var(--text-muted);font-size:14px">steps</span>
-          </div>
-          <div class="steps-sms-note">📲 Or text: <strong>steps 8432</strong> to 1-888-FIT-LOGS</div>
-          <div class="entry-actions" style="margin-top:10px">
-            <span class="hint">Updates your daily step total</span>
-            <button class="save-btn" onclick="saveSteps(this)">Log Steps</button>
-          </div>
-        </div>
-        <div id="tabRoutine" style="display:none">
-          <textarea class="entry-textarea" placeholder="Log any health routine:&#10;&#10;Examples:&#10;• 8hr sleep&#10;• 2L water&#10;• 45min yoga&#10;• vitamins taken&#10;• rest day"></textarea>
-          <div class="entry-actions">
-            <span class="hint">Or text it to 1-888-FIT-LOGS</span>
-            <button class="save-btn" onclick="saveEntry(this)">Log Routine</button>
-          </div>
-        </div>
-        <div id="tabNote" style="display:none">
-          <textarea class="entry-textarea" placeholder="Add a personal health note — how you feel, energy levels, motivation, stress, soreness..."></textarea>
-          <div class="entry-actions">
-            <span class="hint">Private note, visible only to you</span>
-            <button class="save-btn" onclick="saveEntry(this)">Save Note</button>
-          </div>
-        </div>
+        <div id="tabFood"><textarea class="entry-ta" placeholder="Describe your meal — AI estimates the calories.&#10;&#10;e.g. grilled chicken brown rice broccoli&#10;e.g. Chipotle burrito bowl chicken guac"></textarea><div class="entry-actions"><span class="entry-hint">Or text to 1-888-596-LOGS</span><button class="save-btn" onclick="saveEntry(this)">Estimate Calories</button></div></div>
+        <div id="tabSteps" style="display:none"><div style="display:flex;gap:10px;align-items:center;margin-bottom:10px"><input type="number" id="stepsInput" placeholder="e.g. 8432" style="flex:1;border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;font-size:18px;font-weight:600;font-family:'Space Grotesk',sans-serif"><span style="color:var(--text-muted);font-size:14px">steps</span></div><div class="sms-hint">📲 Or text: <strong>steps 8432</strong> to 1-888-596-5467</div><div class="entry-actions" style="margin-top:10px"><span class="entry-hint">Updates your daily total</span><button class="save-btn" onclick="saveEntry(this)">Log Steps</button></div></div>
+        <div id="tabRoutine" style="display:none"><textarea class="entry-ta" placeholder="Log any routine:&#10;• gym 45min strength&#10;• ran 3 miles&#10;• yoga 30min&#10;• vitamins taken&#10;• 8hr sleep · 2L water"></textarea><div class="entry-actions"><span class="entry-hint">Or text to 1-888-596-LOGS</span><button class="save-btn" onclick="saveEntry(this)">Log Routine</button></div></div>
+        <div id="tabNote" style="display:none"><textarea class="entry-ta" placeholder="Personal note — energy, soreness, motivation, stress..."></textarea><div class="entry-actions"><span class="entry-hint">Private — visible only to you</span><button class="save-btn" onclick="saveEntry(this)">Save Note</button></div></div>
       </div>
     </div>
-
-    <!-- MESSAGE LOG -->
     <div class="card">
-      <div class="card-title">📨 SMS Message Log <span class="tag">Latest first</span></div>
+      <div class="card-title">📨 SMS Log <span class="card-tag">Latest first</span></div>
       <div class="msg-log">
-        <div class="msg-item">
-          <div class="msg-meta">
-            <span class="msg-type food">food</span>
-            <span class="msg-time">Today 3:30 PM</span>
-          </div>
-          <div class="msg-text">banana protein bar snack — AI estimated 290 cal ✅</div>
-        </div>
-        <div class="msg-item">
-          <div class="msg-meta">
-            <span class="msg-type steps">steps</span>
-            <span class="msg-time">Today 2:15 PM</span>
-          </div>
-          <div class="msg-text">steps 6240 — logged. 62% of 10k goal.</div>
-        </div>
-        <div class="msg-item">
-          <div class="msg-meta">
-            <span class="msg-type food">food</span>
-            <span class="msg-time">Today 12:44 PM</span>
-          </div>
-          <div class="msg-text">[photo] Grilled chicken salad — AI estimated 520 cal, 42g protein ✅</div>
-        </div>
-        <div class="msg-item">
-          <div class="msg-meta">
-            <span class="msg-type routine">routine</span>
-            <span class="msg-time">Today 10:00 AM</span>
-          </div>
-          <div class="msg-text">2L water hydration — logged ✅</div>
-        </div>
-        <div class="msg-item">
-          <div class="msg-meta">
-            <span class="msg-type food">food</span>
-            <span class="msg-time">Today 8:12 AM</span>
-          </div>
-          <div class="msg-text">[photo] Scrambled eggs toast — AI estimated 380 cal ✅</div>
-        </div>
-        <div class="msg-item">
-          <div class="msg-meta">
-            <span class="msg-type body">body</span>
-            <span class="msg-time">Yesterday 7:45 PM</span>
-          </div>
-          <div class="msg-text">[selfie] Body check-in — AI analysis saved. Shoulder definition slightly improved vs. 2 weeks ago.</div>
-        </div>
-        <div class="msg-item">
-          <div class="msg-meta">
-            <span class="msg-type routine">routine</span>
-            <span class="msg-time">Yesterday 6:30 AM</span>
-          </div>
-          <div class="msg-text">8hr sleep 45min strength gym — all logged ✅</div>
-        </div>
+        <div class="msg-item"><div class="msg-meta"><span class="msg-type mt-food">food</span><span class="msg-time">Today 3:30 PM</span></div><div>banana protein bar — AI estimated 290 kcal ✅</div></div>
+        <div class="msg-item"><div class="msg-meta"><span class="msg-type mt-steps">steps</span><span class="msg-time">Today 2:15 PM</span></div><div>steps 6240 — 62% of 10k goal</div></div>
+        <div class="msg-item"><div class="msg-meta"><span class="msg-type mt-coach">coach</span><span class="msg-time">Today 9:16 AM</span></div><div>AI coach — sleep and wind-down routine discussion</div></div>
+        <div class="msg-item"><div class="msg-meta"><span class="msg-type mt-food">food</span><span class="msg-time">Today 12:44 PM</span></div><div>grilled chicken salad — AI estimated 520 kcal ✅</div></div>
+        <div class="msg-item"><div class="msg-meta"><span class="msg-type mt-routine">routine</span><span class="msg-time">Today 10:00 AM</span></div><div>2L water ✅</div></div>
+        <div class="msg-item"><div class="msg-meta"><span class="msg-type mt-food">food</span><span class="msg-time">Today 8:12 AM</span></div><div>scrambled eggs toast — AI estimated 380 kcal ✅</div></div>
+        <div class="msg-item"><div class="msg-meta"><span class="msg-type mt-sleep">sleep</span><span class="msg-time">Yesterday 10:30 PM</span></div><div>slept 6.5 hours ✅</div></div>
+        <div class="msg-item"><div class="msg-meta"><span class="msg-type mt-routine">routine</span><span class="msg-time">Yesterday 6:00 PM</span></div><div>gym 60min strength bench squat deadlift ✅</div></div>
       </div>
     </div>
   </div>
 
-  <!-- LAB REPORT PLACEHOLDER -->
-  <div class="card" style="margin-top:16px;border:2px dashed var(--border);background:linear-gradient(135deg,#f8fafc,#f0fdf4)">
+  <div class="lab-card">
     <div style="display:flex;align-items:flex-start;gap:16px">
-      <div style="font-size:36px;flex-shrink:0">🧪</div>
+      <div style="font-size:30px;flex-shrink:0">🧪</div>
       <div style="flex:1">
-        <div style="font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:700;color:var(--slate);margin-bottom:4px;display:flex;align-items:center;gap:8px">
-          Lab Report Upload
-          <span style="font-size:10px;font-weight:700;background:var(--amber);color:#fff;padding:2px 8px;border-radius:20px;letter-spacing:.5px">COMING IN V2</span>
+        <div style="font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:700;color:var(--slate);margin-bottom:4px;display:flex;align-items:center;gap:8px">Lab Report Tracking <span style="font-size:10px;font-weight:700;background:var(--amber);color:#fff;padding:2px 8px;border-radius:20px;letter-spacing:.5px">COMING IN V2</span></div>
+        <div style="font-size:13px;color:var(--text-secondary);margin-bottom:10px">Upload your lipid panel, A1C, blood pressure and other lab results. AI extracts the values — only numbers you confirm are saved. Documents are never stored.</div>
+        <div class="lab-metrics">
+          <div class="lab-metric"><div class="lab-metric-label">LDL</div><div class="lab-metric-value">—</div></div>
+          <div class="lab-metric"><div class="lab-metric-label">HDL</div><div class="lab-metric-value">—</div></div>
+          <div class="lab-metric"><div class="lab-metric-label">A1C</div><div class="lab-metric-value">—</div></div>
+          <div class="lab-metric"><div class="lab-metric-label">Blood Pressure</div><div class="lab-metric-value">—</div></div>
+          <div class="lab-metric"><div class="lab-metric-label">Vitamin D</div><div class="lab-metric-value">—</div></div>
+          <div class="lab-metric"><div class="lab-metric-label">Thyroid</div><div class="lab-metric-value">—</div></div>
         </div>
-        <div style="font-size:13px;color:var(--text-secondary);margin-bottom:12px;line-height:1.6">
-          Upload your lipid panel, A1C, blood pressure, vitamin D, thyroid, and other lab results. AI extracts the values — only the numbers you confirm are saved. Documents are never stored.
-        </div>
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin-bottom:14px">
-          <div style="background:#fff;border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 12px;text-align:center">
-            <div style="font-size:11px;color:var(--text-muted);margin-bottom:2px">LDL</div>
-            <div style="font-size:18px;font-weight:700;font-family:'Space Grotesk',sans-serif;color:var(--text-muted)">—</div>
-          </div>
-          <div style="background:#fff;border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 12px;text-align:center">
-            <div style="font-size:11px;color:var(--text-muted);margin-bottom:2px">HDL</div>
-            <div style="font-size:18px;font-weight:700;font-family:'Space Grotesk',sans-serif;color:var(--text-muted)">—</div>
-          </div>
-          <div style="background:#fff;border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 12px;text-align:center">
-            <div style="font-size:11px;color:var(--text-muted);margin-bottom:2px">A1C</div>
-            <div style="font-size:18px;font-weight:700;font-family:'Space Grotesk',sans-serif;color:var(--text-muted)">—</div>
-          </div>
-          <div style="background:#fff;border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 12px;text-align:center">
-            <div style="font-size:11px;color:var(--text-muted);margin-bottom:2px">Blood Pressure</div>
-            <div style="font-size:18px;font-weight:700;font-family:'Space Grotesk',sans-serif;color:var(--text-muted)">—</div>
-          </div>
-          <div style="background:#fff;border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 12px;text-align:center">
-            <div style="font-size:11px;color:var(--text-muted);margin-bottom:2px">Vitamin D</div>
-            <div style="font-size:18px;font-weight:700;font-family:'Space Grotesk',sans-serif;color:var(--text-muted)">—</div>
-          </div>
-          <div style="background:#fff;border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 12px;text-align:center">
-            <div style="font-size:11px;color:var(--text-muted);margin-bottom:2px">Thyroid (TSH)</div>
-            <div style="font-size:18px;font-weight:700;font-family:'Space Grotesk',sans-serif;color:var(--text-muted)">—</div>
-          </div>
-        </div>
-        <div style="font-size:12px;color:var(--text-muted);display:flex;align-items:center;gap:6px">
-          <span>🔒</span> Documents analyzed then discarded — only confirmed values saved. Full HIPAA disclosure required before upload.
-        </div>
+        <div style="font-size:11px;color:var(--text-muted)">🔒 Full HIPAA disclosure required before upload. Documents analyzed then discarded.</div>
       </div>
     </div>
   </div>
@@ -813,30 +546,23 @@ footer a:hover{color:#fff}
 <!-- AUTH MODAL -->
 <div class="modal-bg" id="authModal">
   <div class="modal">
-    <div class="modal-header">
-      <span>💪</span>
-      <span id="modalTitle">Create your account</span>
-      <button class="modal-close" onclick="closeModal()">✕</button>
-    </div>
+    <div class="modal-head"><span>💪</span><span id="modalTitle">Start your free trial</span><button class="modal-close" onclick="closeModal()">✕</button></div>
     <div class="modal-body">
       <div id="createForm">
-        <div style="font-size:13px;color:var(--text-secondary);margin-bottom:16px">Your phone number is your primary identity.</div>
-        <label class="modal-label">Phone</label>
-        <input class="modal-input" type="tel" placeholder="+1 (555) 000-0000">
-        <label class="modal-label">Email</label>
-        <input class="modal-input" type="email" placeholder="you@email.com">
-        <label class="modal-label">Password</label>
-        <input class="modal-input" type="password" placeholder="Create a password">
-        <button class="modal-submit" onclick="simulateLogin()">Create Account</button>
+        <div class="modal-trial-note">🎉 30-day free trial · Coach tier ($14.99/mo) · Downgrade or cancel anytime</div>
+        <label class="modal-label">Full Name</label><input class="modal-input" type="text" placeholder="Your name">
+        <label class="modal-label">Email</label><input class="modal-input" type="email" placeholder="you@email.com">
+        <label class="modal-label">Phone Number</label><input class="modal-input" type="tel" placeholder="+1 (555) 000-0000">
+        <label class="modal-label">Password</label><input class="modal-input" type="password" placeholder="Create a password">
+        <button class="modal-submit" onclick="simulateLogin()">Start Free Trial</button>
+        <div style="font-size:11px;color:var(--text-muted);text-align:center;margin-top:10px">No charge for 30 days. Text STOP to cancel anytime.</div>
         <div class="modal-toggle">Already have an account? <a onclick="switchModal('signin')">Sign in</a></div>
       </div>
       <div id="signinForm" style="display:none">
-        <label class="modal-label">Phone or Email</label>
-        <input class="modal-input" type="text" placeholder="Phone or email">
-        <label class="modal-label">Password</label>
-        <input class="modal-input" type="password" placeholder="Password">
+        <label class="modal-label">Email or Phone</label><input class="modal-input" type="text" placeholder="Email or phone number">
+        <label class="modal-label">Password</label><input class="modal-input" type="password" placeholder="Password">
         <button class="modal-submit" onclick="simulateLogin()">Sign In</button>
-        <div class="modal-toggle">No account? <a onclick="switchModal('create')">Create one free</a></div>
+        <div class="modal-toggle">No account? <a onclick="switchModal('create')">Start free trial</a></div>
       </div>
     </div>
   </div>
@@ -844,98 +570,64 @@ footer a:hover{color:#fff}
 
 <footer>
   © 2026 Athens Innovation and Development LLC &nbsp;·&nbsp;
-  <a href="#">About</a>
-  <a href="#">Privacy Policy</a>
-  <a href="#">Terms of Service</a>
-  <a href="mailto:admin@fitlogs.ai">Contact</a>
+  <a href="/">Home</a>
+  <a href="/terms.html">Terms of Service</a>
+  <a href="/privacy.html">Privacy Policy</a>
+  <a href="mailto:hello@fitlogs.ai">Contact</a>
 </footer>
 
 <script>
-let loggedIn = false;
-
-function openModal(type){
-  document.getElementById('authModal').classList.add('open');
-  switchModal(type);
-}
+function openModal(type){document.getElementById('authModal').classList.add('open');switchModal(type)}
 function closeModal(){document.getElementById('authModal').classList.remove('open')}
 function switchModal(type){
-  document.getElementById('createForm').style.display = type==='create'?'block':'none';
-  document.getElementById('signinForm').style.display = type==='signin'?'block':'none';
-  document.getElementById('modalTitle').textContent = type==='create'?'Create your account':'Welcome back';
+  document.getElementById('createForm').style.display=type==='create'?'block':'none';
+  document.getElementById('signinForm').style.display=type==='signin'?'block':'none';
+  document.getElementById('modalTitle').textContent=type==='create'?'Start your free trial':'Welcome back';
 }
-
 function simulateLogin(){
   closeModal();
-  loggedIn = true;
-  document.getElementById('heroSection').style.display = 'none';
-  document.getElementById('dashboard').style.display = 'block';
-  document.getElementById('signInNavBtn').style.display = 'none';
-  document.getElementById('createNavBtn').style.display = 'none';
-  document.getElementById('signOutBtn').style.display = 'block';
-  setGreeting();
+  document.getElementById('landing').style.display='none';
+  document.getElementById('dashboard').style.display='block';
+  document.getElementById('signInNavBtn').style.display='none';
+  document.getElementById('startNavBtn').style.display='none';
+  document.getElementById('signOutBtn').style.display='block';
+  const h=new Date().getHours();
+  document.getElementById('dashGreeting').textContent=(h<12?'Good morning':h<17?'Good afternoon':'Good evening')+' 👋';
 }
-
 function signOut(){
-  loggedIn = false;
-  document.getElementById('heroSection').style.display = 'block';
-  document.getElementById('dashboard').style.display = 'none';
-  document.getElementById('signInNavBtn').style.display = 'block';
-  document.getElementById('createNavBtn').style.display = 'block';
-  document.getElementById('signOutBtn').style.display = 'none';
+  document.getElementById('landing').style.display='block';
+  document.getElementById('dashboard').style.display='none';
+  document.getElementById('signInNavBtn').style.display='block';
+  document.getElementById('startNavBtn').style.display='block';
+  document.getElementById('signOutBtn').style.display='none';
 }
-
-function setGreeting(){
-  const h = new Date().getHours();
-  const g = h<12?'Good morning':'h'<17?'Good afternoon':'Good evening';
-  document.getElementById('dashGreeting').textContent = g + ' 👋';
-}
-
 function toggleRoutine(el){el.classList.toggle('done')}
-
-function switchTab(btn, tab){
+function switchTab(btn,tab){
   document.querySelectorAll('.entry-tab').forEach(t=>t.classList.remove('active'));
   btn.classList.add('active');
   ['tabFood','tabSteps','tabRoutine','tabNote'].forEach(id=>document.getElementById(id).style.display='none');
-  const map={food:'tabFood',steps:'tabSteps',routine:'tabRoutine',note:'tabNote'};
-  document.getElementById(map[tab]).style.display='block';
+  document.getElementById({food:'tabFood',steps:'tabSteps',routine:'tabRoutine',note:'tabNote'}[tab]).style.display='block';
 }
-
-function saveEntry(btn){
-  const orig = btn.textContent;
-  btn.textContent = 'Saved ✓';
-  btn.style.background = '#10b981';
-  setTimeout(()=>{btn.textContent=orig;btn.style.background='';},2000);
-}
-
-function saveSteps(btn){
-  const val = document.getElementById('stepsInput').value;
-  if(val){document.getElementById('statSteps').textContent = parseInt(val).toLocaleString();}
-  saveEntry(btn);
-}
-
-function handlePhotoSelect(e){
-  const file = e.target.files[0];
-  if(!file) return;
-  document.getElementById('photoUploadArea').style.display='none';
-  document.getElementById('analyzingState').style.display='block';
-  document.getElementById('analyzePanel').style.display='none';
+function saveEntry(btn){const o=btn.textContent;btn.textContent='Saved ✓';btn.style.background='#10b981';setTimeout(()=>{btn.textContent=o;btn.style.background=''},2000)}
+function handleChatKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendChat()}}
+function sendChat(){
+  const input=document.getElementById('chatInput');
+  const text=input.value.trim();
+  if(!text)return;
+  const chat=document.getElementById('coachChat');
+  const u=document.createElement('div');
+  u.className='chat-msg user';
+  u.innerHTML=text+'<div class="msg-time">Just now</div>';
+  chat.appendChild(u);
+  input.value='';
+  chat.scrollTop=chat.scrollHeight;
   setTimeout(()=>{
-    document.getElementById('analyzingState').style.display='none';
-    document.getElementById('analyzePanel').style.display='block';
-    e.target.value='';
-  },2200);
-}
-function closeAnalyze(){
-  document.getElementById('analyzePanel').style.display='none';
-  document.getElementById('photoUploadArea').style.display='block';
-}
-function saveAnalysis(){
-  closeAnalyze();
-  const toast=document.createElement('div');
-  toast.textContent='✓ Body check-in saved to your log';
-  toast.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#15803d;color:#fff;padding:12px 24px;border-radius:10px;font-size:14px;font-weight:600;z-index:999;box-shadow:0 4px 12px rgba(0,0,0,.2)';
-  document.body.appendChild(toast);
-  setTimeout(()=>toast.remove(),2800);
+    const a=document.createElement('div');
+    a.className='chat-msg ai';
+    a.innerHTML='Got it — noted. Keep going, you\'re building something real here. What else is on your mind?<div class="msg-time">Just now</div>';
+    chat.appendChild(a);
+    chat.scrollTop=chat.scrollHeight;
+  },900);
 }
 </script>
 </body>
