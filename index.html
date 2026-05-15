@@ -383,11 +383,11 @@ footer a:hover{color:#fff}
           <div class="otp-wrap" id="otp-section">
             <label class="form-label">Verification Code</label>
             <div style="font-size:12px;color:var(--text-muted);margin-bottom:6px">Enter the 6-digit code sent to your phone.</div>
-            <div class="otp-row">
-              <input id="otp-input" class="otp-input" type="number" placeholder="000000">
-              <button class="otp-verify-btn" onclick="confirmOtp()">✓</button>
+            <div class="otp-row" style="flex-direction:column;gap:8px">
+              <input id="otp-input" class="otp-input" type="number" placeholder="000000" style="width:100%">
+              <button class="otp-verify-btn" id="otp-confirm-btn" onclick="confirmOtp()" style="width:100%;padding:12px;font-size:15px;font-weight:600;border-radius:10px">Confirm Code</button>
             </div>
-            <div style="font-size:12px;color:var(--text-muted);margin-top:8px">Didn't get it? <a onclick="sendOtp()" style="color:var(--green-dark);cursor:pointer;font-weight:600">Resend</a></div>
+            <div style="font-size:12px;color:var(--text-muted);margin-top:6px;text-align:center">Didn't receive a code? <a onclick="sendOtp()" style="color:var(--text-muted);cursor:pointer;text-decoration:underline;">Resend</a></div>
           </div>
 
           <div class="verified-badge" id="phone-verified-badge">✓ Phone number verified</div>
@@ -935,6 +935,25 @@ window.doForgotPw = async function(){
 // ── Sign out ──────────────────────────────────────────────────────
 window.doLogout = async function(){
   await signOut(auth);
+  // Reset signup form state so "Creating..." never persists after logout
+  phoneVerified = false;
+  const signupBtn = document.getElementById('signup-btn');
+  if(signupBtn){ signupBtn.disabled = false; signupBtn.textContent = 'Send Verification Code'; }
+  const otpConfirmBtn = document.getElementById('otp-confirm-btn');
+  if(otpConfirmBtn){ otpConfirmBtn.disabled = false; otpConfirmBtn.textContent = 'Confirm Code'; }
+  const otpSection = document.getElementById('otp-section');
+  if(otpSection){ otpSection.style.display = 'none'; }
+  const badge = document.getElementById('phone-verified-badge');
+  if(badge){ badge.style.display = 'none'; }
+  ['su-phone','su-email','su-pw','su-pw2','otp-input'].forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.value = '';
+  });
+  ['signup-err','signup-ok','login-err','login-ok'].forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.textContent = '';
+  });
+  showTab('signin');
   showLanding();
   window.history.replaceState({},'','/');
 };
