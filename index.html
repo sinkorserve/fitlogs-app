@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0">
+<meta name="format-detection" content="telephone=no">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>FitLogs.ai — Your AI Health Coach by Text</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -44,17 +45,18 @@ h1,h2,h3,.brand{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','H
 .convo-card{padding:16px 18px;border-radius:14px}
 .convo-card.card-you{background:#dcfce7;border:1.5px solid #86efac}
 .convo-card.card-ai{background:#bbf7d0;border:1.5px solid #6ee7b7}
-.convo-card-label{font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;margin-bottom:10px;color:#14532d}
+.convo-card-label{font-size:14px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;margin-bottom:10px;color:#14532d}
 .convo-item{display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;font-size:13px;color:#166534;line-height:1.5}
 .convo-item:last-child{margin-bottom:0}
 .convo-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;margin-top:6px;background:#15803d}
 .convo-item strong{color:#14532d;font-weight:600}
 
 /* NUMBER BRIDGE — dark slate band between cards, white numbers pop, green arrows visible */
-.num-bridge{display:flex;align-items:center;justify-content:center;gap:16px;padding:16px 20px;background:transparent}
-.num-bridge .num{font-size:17px;font-weight:700;color:#fff;letter-spacing:.3px;white-space:nowrap;text-align:right;flex:1}
-.num-bridge .vanity{font-size:17px;font-weight:700;color:#86efac;letter-spacing:.3px;white-space:nowrap;text-align:left;flex:1}
+.num-bridge{display:flex;flex-direction:row;align-items:center;justify-content:flex-start;gap:16px;padding:16px 20px;background:transparent}
 .num-bridge-arrows{display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.num-bridge-numbers{display:flex;flex-direction:column;gap:6px}
+.num-bridge .num{font-size:17px;font-weight:700;color:#fff!important;letter-spacing:.5px;white-space:nowrap;-webkit-text-fill-color:#fff}
+.num-bridge .vanity{font-size:17px;font-weight:700;color:#86efac!important;letter-spacing:.5px;white-space:nowrap;-webkit-text-fill-color:#86efac}
 .num-bridge-tagline{text-align:center;font-size:11px;color:rgba(255,255,255,.45);letter-spacing:.2px;padding:0 20px 12px;font-style:italic;background:transparent}
 
 /* AI COACH PERSONAS — white on dark green */
@@ -83,13 +85,13 @@ h1,h2,h3,.brand{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','H
 .form-label:first-of-type{margin-top:0}
 .form-row{display:flex;gap:8px}
 .form-input{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:11px 13px;font-size:14px;font-family:inherit;color:var(--text-primary);background:#fff;transition:.15s}
-.form-input:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px rgba(34,197,94,.1)}
+.form-input:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(34,197,94,.2);outline:2px solid var(--green);outline-offset:0}
 .form-select{border:1.5px solid var(--border);border-radius:10px;padding:11px 13px;font-size:14px;font-family:inherit;background:#fff;width:90px;flex-shrink:0}
-.form-select:focus{outline:none;border-color:var(--green)}
+.form-select:focus{border-color:var(--green);outline:2px solid var(--green);outline-offset:0}
 .otp-wrap{display:none;margin-top:12px}
 .otp-row{display:flex;gap:8px}
 .otp-input{flex:1;border:1.5px solid var(--border);border-radius:10px;padding:11px 13px;font-size:18px;font-weight:700;letter-spacing:6px;text-align:center;font-family:inherit}
-.otp-input:focus{outline:none;border-color:var(--green)}
+.otp-input:focus{border-color:var(--green);outline:2px solid var(--green);outline-offset:0}
 .otp-verify-btn{background:var(--green);color:#fff;border:none;padding:11px 16px;border-radius:10px;font-size:18px;cursor:pointer}
 .verified-badge{display:none;background:var(--green-light);border:1px solid #86efac;border-radius:8px;padding:8px 12px;font-size:13px;color:var(--green-dark);font-weight:600;margin-top:10px}
 .form-err{display:none;background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:9px 12px;font-size:13px;color:#b91c1c;margin-top:10px}
@@ -155,7 +157,7 @@ h1,h2,h3,.brand{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','H
 .food-meta{font-size:11px;color:var(--text-muted)}
 .cal-wrap{display:flex;flex-direction:column;align-items:flex-end;gap:2px}
 .cal-input{width:60px;border:1px solid var(--border);border-radius:6px;padding:4px 6px;font-size:13px;font-weight:600;text-align:center;color:var(--slate);background:var(--green-light);font-family:inherit}
-.cal-input:focus{outline:none;border-color:var(--green);background:#fff}
+.cal-input:focus{border-color:var(--green);background:#fff;outline:2px solid var(--green);outline-offset:0}
 .cal-unit{font-size:10px;color:var(--text-muted)}
 .ai-tag{font-size:9px;background:#ede9fe;color:#6d28d9;padding:1px 5px;border-radius:3px;font-weight:600}
 .ring-wrap{display:flex;align-items:center;gap:14px;margin-bottom:14px}
@@ -187,7 +189,7 @@ h1,h2,h3,.brand{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','H
 .chat-msg .msg-time{font-size:10px;opacity:.55;margin-top:4px}
 .chat-input-wrap{display:flex;gap:8px}
 .chat-input{flex:1;border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;font-size:13px;font-family:inherit;resize:none;height:44px}
-.chat-input:focus{outline:none;border-color:var(--green)}
+.chat-input:focus{border-color:var(--green);outline:2px solid var(--green);outline-offset:0}
 .chat-send{background:var(--green);color:#fff;border:none;padding:10px 16px;border-radius:var(--radius-sm);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit}
 .chat-send:hover{background:var(--green-dark)}
 .entry-panel{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
@@ -196,7 +198,7 @@ h1,h2,h3,.brand{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','H
 .entry-tab.active{color:var(--green-dark);border-bottom-color:var(--green);background:var(--green-light)}
 .entry-body{padding:16px}
 .entry-ta{width:100%;border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;font-size:13px;font-family:inherit;color:var(--text-primary);resize:none;height:80px;background:var(--surface)}
-.entry-ta:focus{outline:none;border-color:var(--green);background:#fff}
+.entry-ta:focus{border-color:var(--green);background:#fff;outline:2px solid var(--green);outline-offset:0}
 .entry-actions{display:flex;gap:8px;margin-top:10px;align-items:center}
 .entry-hint{font-size:12px;color:var(--text-muted);flex:1}
 .save-btn{background:var(--green);color:#fff;border:none;padding:9px 18px;border-radius:var(--radius-sm);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit}
@@ -227,7 +229,7 @@ h1,h2,h3,.brand{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','H
 .modal-body{padding:24px}
 .modal-label{font-size:12px;font-weight:600;color:var(--text-muted);letter-spacing:.3px;text-transform:uppercase;margin-bottom:6px;display:block}
 .modal-input{width:100%;border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;font-size:14px;font-family:inherit;margin-bottom:14px}
-.modal-input:focus{outline:none;border-color:var(--green)}
+.modal-input:focus{border-color:var(--green);outline:2px solid var(--green);outline-offset:0}
 .modal-submit{width:100%;background:var(--green);color:#fff;border:none;padding:12px;border-radius:var(--radius-sm);font-size:14px;font-weight:600;cursor:pointer;font-family:inherit}
 .modal-submit:hover{background:var(--green-dark)}
 .modal-trial-note{background:var(--green-light);border-radius:var(--radius-sm);padding:10px 14px;font-size:12px;color:var(--green-dark);font-weight:500;margin-bottom:16px;text-align:center}
@@ -237,12 +239,16 @@ h1,h2,h3,.brand{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','H
 footer{background:var(--slate);color:rgba(255,255,255,.4);text-align:center;padding:24px;font-size:13px}
 footer a{color:rgba(255,255,255,.55);text-decoration:none;margin:0 10px}
 footer a:hover{color:#fff}
+a:focus-visible,button:focus-visible{outline:2px solid var(--green);outline-offset:2px;}
 </style>
 </head>
 <body>
+<a href="#main-content" class="skip-link" style="position:absolute;left:-9999px;top:4px;z-index:9999;padding:8px 16px;background:var(--green);color:#fff;font-weight:700;border-radius:6px;text-decoration:none;font-size:14px;">Skip to main content</a>
+
 
 
 <!-- LANDING -->
+<main id="main-content">
 <div id="landing">
   <div class="split">
 
@@ -279,7 +285,6 @@ footer a:hover{color:#fff}
           <!-- NUMBER BRIDGE — one seamless dark card -->
           <div style="background:#1e293b;border-radius:14px">
             <div class="num-bridge">
-              <span class="num">1-888-596-5467</span>
               <div class="num-bridge-arrows">
                 <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
                   <path d="M14 4 L14 44" stroke="#22c55e" stroke-width="4" stroke-linecap="round"/>
@@ -288,7 +293,10 @@ footer a:hover{color:#fff}
                   <path d="M27 12 L34 4 L41 12" stroke="#86efac" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
               </div>
-              <span class="vanity">1-888-596-LOGS</span>
+              <div class="num-bridge-numbers">
+                <span class="num">1-888-596-5467</span>
+                <span class="vanity">1-888-596-LOGS</span>
+              </div>
             </div>
             <div class="num-bridge-tagline">No app to download. Just you and your coach texting.</div>
           </div>
@@ -337,20 +345,20 @@ footer a:hover{color:#fff}
         </div>
 
         <div class="pr-tabs">
-          <button class="pr-tab active" id="tab-signin" onclick="showTab('signin')">Sign In</button>
-          <button class="pr-tab" id="tab-create" onclick="showTab('create')">Create Account</button>
+          <button class="pr-tab active" id="tab-signin" role="tab" aria-selected="true" aria-controls="signinForm" onclick="showTab('signin')">Sign In</button>
+          <button class="pr-tab" id="tab-create" role="tab" aria-selected="false" aria-controls="createForm" onclick="showTab('create')">Create Account</button>
         </div>
 
         <!-- SIGNIN FORM — default tab, matches soslogs -->
         <div id="signinForm" class="pr-form">
-          <div id="login-err" class="form-err"></div>
-          <div id="login-ok" class="form-ok"></div>
+          <div id="login-err" class="form-err" role="alert" aria-live="assertive"></div>
+          <div id="login-ok" class="form-ok" role="status" aria-live="polite"></div>
 
-          <label class="form-label">Phone or Email</label>
-          <input id="login-id" class="form-input" type="text" placeholder="e.g. 9165550123 or you@email.com">
+          <label class="form-label" for="login-id">Phone or Email</label>
+          <input id="login-id" aria-required="true" class="form-input" type="text" placeholder="e.g. 9165550123 or you@email.com">
 
-          <label class="form-label" style="margin-top:12px">Password</label>
-          <input id="login-pw" class="form-input" type="password" placeholder="Your password" onkeydown="if(event.key==='Enter')doLogin()" style="margin-bottom:6px">
+          <label class="form-label" style="margin-top:12px" for="login-pw">Password</label>
+          <input id="login-pw" aria-required="true" class="form-input" type="password" placeholder="Your password" onkeydown="if(event.key==='Enter')doLogin()" style="margin-bottom:6px">
 
           <div class="forgot-link"><a onclick="doForgotPw()">Forgot password?</a></div>
 
@@ -362,29 +370,29 @@ footer a:hover{color:#fff}
         <div id="createForm" class="pr-form hidden">
           <div class="trial-badge">🎉 Starting on <strong>Coach ($14.99/mo)</strong> — full AI coaching experience.<br>Downgrade or cancel anytime by texting STOP.</div>
 
-          <div id="signup-err" class="form-err"></div>
-          <div id="signup-ok" class="form-ok"></div>
+          <div id="signup-err" class="form-err" role="alert" aria-live="assertive"></div>
+          <div id="signup-ok" class="form-ok" role="status" aria-live="polite"></div>
 
-          <label class="form-label">Phone Number</label>
+          <label class="form-label" for="su-phone">Phone Number</label>
           <div class="form-row">
-            <select id="su-cc" class="form-select"><option value="+1">🇺🇸 +1</option></select>
-            <input id="su-phone" class="form-input" type="tel" placeholder="e.g. 9165550123">
+            <select id="su-cc" class="form-select" aria-label="Country code"><option value="+1">🇺🇸 +1</option></select>
+            <input id="su-phone" aria-required="true" class="form-input" type="tel" placeholder="e.g. 9165550123">
           </div>
 
-          <label class="form-label">Email</label>
-          <input id="su-email" class="form-input" type="email" placeholder="you@email.com">
+          <label class="form-label" for="su-email">Email</label>
+          <input id="su-email" aria-required="true" class="form-input" type="email" placeholder="you@email.com">
 
-          <label class="form-label">Password</label>
-          <input id="su-pw" class="form-input" type="password" placeholder="At least 8 characters">
+          <label class="form-label" for="su-pw">Password</label>
+          <input id="su-pw" aria-required="true" class="form-input" type="password" placeholder="At least 8 characters">
 
-          <label class="form-label">Confirm Password</label>
-          <input id="su-pw2" class="form-input" type="password" placeholder="Repeat password">
+          <label class="form-label" for="su-pw2">Confirm Password</label>
+          <input id="su-pw2" aria-required="true" class="form-input" type="password" placeholder="Repeat password">
 
           <div class="otp-wrap" id="otp-section">
-            <label class="form-label">Verification Code</label>
+            <label class="form-label" for="otp-input">Verification Code</label>
             <div style="font-size:12px;color:var(--text-muted);margin-bottom:6px">Enter the 6-digit code sent to your phone.</div>
             <div class="otp-row" style="flex-direction:column;gap:8px">
-              <input id="otp-input" class="otp-input" type="number" placeholder="000000" style="width:100%">
+              <input id="otp-input" aria-required="true" class="otp-input" type="number" placeholder="000000" style="width:100%">
               <button class="otp-verify-btn" id="otp-confirm-btn" onclick="confirmOtp()" style="width:100%;padding:12px;font-size:15px;font-weight:600;border-radius:10px">Confirm Code</button>
             </div>
             <div style="font-size:12px;color:var(--text-muted);margin-top:6px;text-align:center">Didn't receive a code? <a onclick="sendOtp()" style="color:var(--text-muted);cursor:pointer;text-decoration:underline;">Resend</a></div>
@@ -492,7 +500,7 @@ footer a:hover{color:#fff}
   <div style="background:#fff;border-bottom:1px solid var(--border);padding:0 24px;height:54px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:100">
     <span style="font-size:17px;font-weight:800;color:var(--slate)">💪 FitLogs.<span style="color:var(--green-dark)">AI</span></span>
     <div style="flex:1"></div>
-    <button onclick="signOut()" style="font-size:13px;color:var(--text-muted);background:none;border:1px solid var(--border);padding:6px 14px;border-radius:8px;cursor:pointer;font-family:inherit">Sign Out</button>
+    <button onclick="signOut()" aria-label="Sign out of FitLogs" style="font-size:13px;color:var(--text-muted);background:none;border:1px solid var(--border);padding:6px 14px;border-radius:8px;cursor:pointer;font-family:inherit">Sign Out</button>
   </div>
   <div class="dash-top">
     <div>
@@ -681,6 +689,7 @@ footer a:hover{color:#fff}
 </div><!-- /dashboard -->
 
 
+</main>
 <footer>
   © 2026 Athens Innovation and Development LLC &nbsp;·&nbsp;
   <a href="/">Home</a>
