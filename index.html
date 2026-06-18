@@ -1,764 +1,863 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <meta name="format-detection" content="telephone=no">
-  <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>FitLogs.ai — Your AI Health Coach by Text</title>
+<title>FitLogs.AI — SMS Fitness Coaching</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --green:#22c55e;--green-dark:#15803d;--green-light:#dcfce7;
-  --slate:#0f172a;--surface:#f8fafc;--card:#ffffff;--border:#e2e8f0;
-  --amber:#f59e0b;--purple:#8b5cf6;
-  --text-primary:#0f172a;--text-secondary:#475569;--text-muted:#94a3b8;
-  --radius:14px;--radius-sm:8px;
-  --shadow:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.06);
-  --shadow-md:0 4px 16px rgba(0,0,0,.1);
+  --black:#080c08;--dark:#0e1810;--card:#131f13;--card2:#192819;
+  --border:rgba(34,197,94,0.1);--border2:rgba(34,197,94,0.18);
+  --green:#22c55e;--green2:#4ade80;--green-dim:rgba(34,197,94,0.1);
+  --dark-green:#15803d;
+  --warn:#f5a623;--blue:#3b82f6;--purple:#a855f7;--red:#ef4444;
+  --muted:#4a7060;--text:#c8dcc8;--white:#f0fff4;
+  --font:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif;
+  --nav-h:54px;
 }
-body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',sans-serif;background:var(--surface);color:var(--text-primary);min-height:100vh;font-size:15px;line-height:1.6}
-h1,h2,h3,.brand{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',sans-serif}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;font-family:var(--font);background:var(--black);color:var(--text);-webkit-font-smoothing:antialiased;}
 
+#app-loading{position:fixed;inset:0;z-index:999;background:var(--black);display:flex;align-items:center;justify-content:center;}
+#app-loading.hide{display:none;}
+.loading-logo{display:flex;align-items:center;gap:10px;animation:blink 1.4s ease infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0.3;}}
+.loading-text{font-size:22px;font-weight:800;color:var(--white);}
+.loading-text span{color:var(--green);}
 
-/* ═══════════════════════════════════════════
-   LANDING — Two-panel layout (soslogs pattern)
-═══════════════════════════════════════════ */
-#landing{min-height:100vh;display:flex;flex-direction:column}
+.screen{display:none;}.screen.active{display:block;}
 
-/* SPLIT LAYOUT */
-.split{display:grid;grid-template-columns:1fr 1fr;min-height:100vh}
-@media(max-width:860px){.split{grid-template-columns:1fr;min-height:unset}}
+/* LOGIN */
+#login-screen{min-height:100dvh;display:flex;flex-direction:column;background:var(--black);overflow-y:auto;}
+#login-screen::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(34,197,94,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(34,197,94,0.02) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;z-index:0;}
 
-/* LEFT PANEL */
-.panel-left{background:#fff;color:var(--slate);padding:40px 44px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden;border-right:1px solid var(--border)}
-@media(max-width:860px){.panel-left{border-right:none;border-bottom:1px solid var(--border)}}
+.login-hero{position:relative;z-index:1;text-align:center;padding:20px 24px 16px;border-bottom:1px solid var(--border);background:linear-gradient(180deg,rgba(34,197,94,0.03) 0%,transparent 100%);}
+.hero-logo{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:4px;}
+.hero-logo-text{font-size:30px;font-weight:800;color:var(--white);letter-spacing:-0.5px;}
+.hero-logo-text span{color:var(--green);}
+.hero-tagline{font-size:10px;color:var(--muted);letter-spacing:0.14em;text-transform:uppercase;margin-bottom:10px;}
+.hero-sms{display:inline-flex;align-items:center;gap:10px;margin-top:10px;padding:10px 20px;background:rgba(34,197,94,0.06);border:1px solid rgba(34,197,94,0.2);border-radius:12px;font-size:16px;font-weight:700;color:var(--green);letter-spacing:0.02em;}
 
-.pl-brand{font-size:22px;font-weight:800;letter-spacing:-.5px;margin-bottom:20px;display:flex;align-items:center;gap:6px;color:var(--slate)}
-.pl-brand .ai{font-size:22px;font-weight:800;color:var(--green-dark)}
+.login-body{display:grid;grid-template-columns:25% 1fr 20%;position:relative;z-index:1;min-height:100dvh;}
+@media(max-width:860px){.login-body{grid-template-columns:1fr;}}
 
-.pl-headline{font-size:clamp(22px,2.8vw,30px);font-weight:800;line-height:1.2;letter-spacing:-.5px;margin-bottom:8px;color:var(--slate)}
-.pl-headline em{font-style:normal;color:var(--green-dark)}
-.pl-sub{font-size:13px;color:var(--text-secondary);line-height:1.7;margin-bottom:24px;max-width:420px}
+.login-left{display:flex;flex-direction:column;justify-content:space-between;padding:24px 20px;border-right:1px solid var(--border);border-left:1px solid var(--border);background:rgba(0,0,0,0.15);overflow-y:auto;order:2;}
+@media(max-width:860px){.login-left{border-right:none;border-bottom:1px solid var(--border);}}
 
-/* CONVO CARDS — green fill with white text */
-.convo-pair{display:flex;flex-direction:column;gap:8px;margin-bottom:20px}
-.convo-card{padding:16px 18px;border-radius:14px}
-.convo-card.card-you{background:#dcfce7;border:1.5px solid #86efac}
-.convo-card.card-ai{background:#bbf7d0;border:1.5px solid #6ee7b7}
-.convo-card-label{font-size:14px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;margin-bottom:10px;color:#14532d}
-.convo-item{display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;font-size:13px;color:#166534;line-height:1.5}
-.convo-item:last-child{margin-bottom:0}
-.convo-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;margin-top:6px;background:#15803d}
-.convo-item strong{color:#14532d;font-weight:600}
+.login-right{display:flex;flex-direction:column;justify-content:flex-start;padding:24px 16px;overflow-y:auto;order:3;}
+@media(max-width:860px){.login-right{border-left:none;border-top:1px solid var(--border);}}
 
-/* NUMBER BRIDGE — dark slate band between cards, white numbers pop, green arrows visible */
-.num-bridge{display:flex;flex-direction:row;align-items:center;justify-content:flex-start;gap:16px;padding:16px 20px;background:transparent}
-.num-bridge-arrows{display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.num-bridge-numbers{display:flex;flex-direction:column;gap:6px}
-.num-bridge .num{font-size:17px;font-weight:700;color:#fff!important;letter-spacing:.5px;white-space:nowrap;-webkit-text-fill-color:#fff}
-.num-bridge .vanity{font-size:17px;font-weight:700;color:#86efac!important;letter-spacing:.5px;white-space:nowrap;-webkit-text-fill-color:#86efac}
-.num-bridge-tagline{text-align:center;font-size:11px;color:rgba(255,255,255,.45);letter-spacing:.2px;padding:0 20px 12px;font-style:italic;background:transparent}
+.login-wrap{position:relative;z-index:1;width:100%;animation:fadeUp 0.4s cubic-bezier(.22,.68,0,1.2) both;}
 
-/* AI COACH PERSONAS — white on dark green */
-.persona-row{display:flex;flex-direction:column;gap:6px}
-.persona{display:flex;align-items:flex-start;gap:10px;padding:8px 10px;background:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.9);border-radius:8px}
-.persona-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px}
-.persona-name{font-size:12px;font-weight:700;color:#14532d;margin-bottom:2px}
-.persona-quote{font-size:12px;color:#166534;line-height:1.45;font-style:italic}
+/* Convo cards */
+.convo-pair{display:flex;flex-direction:column;gap:8px;margin-bottom:16px;}
+.convo-card{padding:14px 16px;border-radius:14px;margin-bottom:0;}
+.convo-card.card-you{background:rgba(34,197,94,0.1);border:1.5px solid rgba(34,197,94,0.3);}
+.convo-card.card-ai{background:rgba(34,197,94,0.06);border:1.5px solid rgba(34,197,94,0.18);}
+.convo-card-label{font-size:14px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;color:var(--green);margin-bottom:10px;}
+.convo-item{display:flex;align-items:flex-start;gap:8px;margin-bottom:7px;font-size:12px;color:var(--text);line-height:1.5;font-family:var(--font);}
+.convo-item:last-child{margin-bottom:0;}
+.convo-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;margin-top:5px;background:var(--green);}
+.convo-item strong{color:var(--green2);font-weight:600;}
+.num-bridge{display:flex;flex-direction:row;align-items:center;gap:14px;padding:14px 18px;background:rgba(8,12,8,0.9);border-left:1.5px solid rgba(34,197,94,0.3);border-right:1.5px solid rgba(34,197,94,0.3);}
+.num-bridge-arrows{display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.num-bridge-numbers{display:flex;flex-direction:column;gap:4px;}
+.num-bridge .num{font-size:16px;font-weight:800;color:#fff;letter-spacing:0.5px;white-space:nowrap;-webkit-text-fill-color:#fff;font-family:var(--font);}
+.num-bridge .vanity{font-size:16px;font-weight:800;color:var(--green);letter-spacing:0.5px;white-space:nowrap;-webkit-text-fill-color:var(--green);font-family:var(--font);}
+.num-bridge-tagline{text-align:center;font-size:11px;color:var(--muted);letter-spacing:0.2px;padding:0 18px 12px;font-style:italic;}
+.persona{display:flex;align-items:flex-start;gap:10px;padding:7px 9px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;margin-bottom:6px;}
+.persona:last-child{margin-bottom:0;}
+.persona-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px;}
+.persona-name{font-size:11px;font-weight:400;color:var(--text);margin-bottom:2px;font-family:var(--font);}
+.persona-quote{font-size:11px;color:var(--muted);line-height:1.45;font-style:italic;font-family:var(--font);}
+.pl-headline{font-size:clamp(18px,2.5vw,24px);font-weight:800;line-height:1.2;letter-spacing:-0.5px;margin-bottom:6px;color:var(--white);font-family:var(--font);}
+.pl-headline em{font-style:normal;color:var(--green);}
+.pl-sub{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:18px;max-width:420px;font-family:var(--font);}
+.pl-brand{font-size:20px;font-weight:800;letter-spacing:-0.5px;margin-bottom:16px;display:flex;align-items:center;gap:8px;color:var(--white);font-family:var(--font);}
+.pl-brand .ai{color:var(--green);}
+.pl-footer{font-size:11px;color:var(--muted);border-top:1px solid var(--border);padding-top:12px;margin-top:auto;}
 
-.pl-footer{font-size:12px;color:var(--text-muted);border-top:1px solid var(--border);padding-top:14px;margin-top:auto}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+.login-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px 20px;position:relative;overflow:hidden;}
+.login-card::before{content:'';position:absolute;top:-80px;right:-80px;width:200px;height:200px;background:radial-gradient(circle,rgba(34,197,94,0.05) 0%,transparent 70%);pointer-events:none;}
+.f-label{display:block;font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:5px;}
+.f-input{width:100%;background:var(--dark);border:1.5px solid var(--border);border-radius:10px;padding:8px 13px;color:var(--text);font-family:var(--font);font-size:14px;outline:none;transition:border-color 0.2s,box-shadow 0.2s;-webkit-text-fill-color:var(--text);}
+.f-input::placeholder{color:var(--muted);opacity:0.5;}
+input::placeholder,textarea::placeholder{color:var(--muted);opacity:0.5;font-style:italic;}
+.f-input:focus{border-color:rgba(34,197,94,0.45);box-shadow:0 0 0 3px rgba(34,197,94,0.07);}
+.f-input:focus-visible{outline:2px solid var(--green);outline-offset:2px;}
+button:focus-visible,a:focus-visible{outline:2px solid var(--green);outline-offset:2px;}
+.f-input:-webkit-autofill,.f-input:-webkit-autofill:hover,.f-input:-webkit-autofill:focus{-webkit-box-shadow:0 0 0 1000px var(--dark) inset !important;-webkit-text-fill-color:var(--text) !important;border-color:var(--border) !important;caret-color:var(--text);}
+.field-wrap{margin-bottom:8px;}
+.grid-cc{display:grid;grid-template-columns:80px 1fr;gap:8px;margin-bottom:8px;}
+.btn-safe{width:100%;padding:12px;border:none;border-radius:10px;background:var(--green);color:#000;font-family:var(--font);font-size:15px;font-weight:700;cursor:pointer;transition:all 0.18s;display:flex;align-items:center;justify-content:center;gap:8px;}
+.btn-safe:hover:not(:disabled){background:var(--green2);transform:translateY(-1px);}
+.btn-safe:disabled{opacity:0.45;cursor:not-allowed;transform:none;}
+.forgot-link{text-align:right;margin-top:-2px;margin-bottom:8px;}
+.forgot-link a{font-size:12px;color:var(--muted);cursor:pointer;text-decoration:none;transition:color 0.2s;}
+.forgot-link a:hover{color:var(--green);}
+.btn-ghost{flex:1;padding:9px 12px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text);font-family:var(--font);font-size:13px;cursor:pointer;transition:all 0.18s;}
+.btn-ghost:hover{border-color:rgba(255,255,255,0.2);}
+.err-box{display:none;padding:9px 12px;border-radius:8px;font-size:13px;margin:8px 0;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.18);color:#ff6b4a;}
+.err-box.show{display:block;}
+.ok-box{display:none;padding:9px 12px;border-radius:8px;font-size:13px;margin:8px 0;background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.18);color:var(--green2);}
+.ok-box.show{display:block;}
+.toggle-link{font-size:12px;color:var(--green);cursor:pointer;text-decoration:none;display:inline-block;margin-top:10px;}
+.step{display:none;}.step.active{display:block;}
+.spinner{width:16px;height:16px;border:2px solid rgba(0,0,0,0.25);border-top-color:#000;border-radius:50%;animation:spin 0.6s linear infinite;display:inline-block;}
+.spinner-g{border-color:rgba(34,197,94,0.2);border-top-color:var(--green);}
+@keyframes spin{to{transform:rotate(360deg);}}
+.login-footer{text-align:center;margin-top:10px;font-size:11px;color:var(--muted);line-height:1.8;}
+.login-footer a{color:var(--muted);text-decoration:none;transition:color 0.2s;}
+.login-footer a:hover{color:var(--green);}
 
-/* RIGHT PANEL */
-.panel-right{background:#fff;padding:48px 44px;display:flex;flex-direction:column;justify-content:center;overflow-y:auto}
-@media(max-width:860px){.panel-right{padding:36px 24px}}
+/* SMS consent checkbox */
+.consent-row{display:flex;align-items:flex-start;gap:8px;padding:10px;background:rgba(34,197,94,0.04);border:1px solid rgba(34,197,94,0.15);border-radius:8px;margin-bottom:10px;}
+.consent-row input[type="checkbox"]{width:16px;height:16px;margin-top:1px;accent-color:var(--green);flex-shrink:0;cursor:pointer;}
+.consent-row label{font-size:11px;color:var(--muted);line-height:1.5;cursor:pointer;}
+.consent-row label a{color:var(--green);text-decoration:none;}
+.consent-row label a:hover{text-decoration:underline;}
 
-.pr-tabs{display:flex;gap:0;border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:28px}
-.pr-tab{flex:1;padding:10px;text-align:center;font-size:13px;font-weight:600;cursor:pointer;border:none;background:none;font-family:inherit;color:var(--text-secondary);transition:.15s}
-.pr-tab.active{background:var(--green);color:#fff}
-.pr-tab:hover:not(.active){background:var(--surface)}
+/* OTP */
+.otp-section{display:none;margin-top:10px;animation:fadeIn 0.2s ease;}
+.otp-section.show{display:block;}
+.otp-input-row{display:flex;gap:8px;margin-top:6px;}
+.otp-input{flex:1;background:var(--dark);border:1.5px solid var(--border);border-radius:10px;padding:10px 14px;color:var(--text);font-family:var(--font);font-size:18px;font-weight:700;letter-spacing:4px;outline:none;text-align:center;-webkit-text-fill-color:var(--text);}
+.otp-input:focus{border-color:rgba(34,197,94,0.45);}
+.otp-hint{font-size:11px;color:var(--muted);margin-top:6px;line-height:1.5;}
+.otp-resend{font-size:11px;color:var(--muted);cursor:pointer;margin-top:6px;display:inline-block;text-decoration:underline;}
+.otp-resend:hover{color:var(--green);}
+.otp-verified{display:none;align-items:center;gap:6px;font-size:12px;color:var(--green);margin-top:6px;}
+.otp-verified.show{display:flex;}
 
-/* FORM */
-.pr-form{display:flex;flex-direction:column;gap:0}
-.pr-form.hidden{display:none}
-.trial-badge{background:var(--green-light);border:1px solid #86efac;border-radius:10px;padding:10px 14px;font-size:13px;color:var(--green-dark);font-weight:500;margin-bottom:20px;text-align:center;line-height:1.5}
-.form-label{font-size:11px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--text-muted);margin-bottom:5px;margin-top:12px;display:block}
-.form-label:first-of-type{margin-top:0}
-.form-row{display:flex;gap:8px}
-.form-input{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:11px 13px;font-size:14px;font-family:inherit;color:var(--text-primary);background:#fff;transition:.15s}
-.form-input:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(34,197,94,.2);outline:2px solid var(--green);outline-offset:0}
-.form-select{border:1.5px solid var(--border);border-radius:10px;padding:11px 13px;font-size:14px;font-family:inherit;background:#fff;width:90px;flex-shrink:0}
-.form-select:focus{border-color:var(--green);outline:2px solid var(--green);outline-offset:0}
-.otp-wrap{display:none;margin-top:12px}
-.otp-row{display:flex;gap:8px}
-.otp-input{flex:1;border:1.5px solid var(--border);border-radius:10px;padding:11px 13px;font-size:18px;font-weight:700;letter-spacing:6px;text-align:center;font-family:inherit}
-.otp-input:focus{border-color:var(--green);outline:2px solid var(--green);outline-offset:0}
-.otp-verify-btn{background:var(--green);color:#fff;border:none;padding:11px 16px;border-radius:10px;font-size:18px;cursor:pointer}
-.verified-badge{display:none;background:var(--green-light);border:1px solid #86efac;border-radius:8px;padding:8px 12px;font-size:13px;color:var(--green-dark);font-weight:600;margin-top:10px}
-.form-err{display:none;background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:9px 12px;font-size:13px;color:#b91c1c;margin-top:10px}
-.form-ok{display:none;background:var(--green-light);border:1px solid #86efac;border-radius:8px;padding:9px 12px;font-size:13px;color:var(--green-dark);margin-top:10px}
-.form-submit{background:var(--green);color:#fff;border:none;width:100%;padding:13px;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:16px;transition:.15s;letter-spacing:-.2px}
-.form-submit:hover{background:var(--green-dark)}
-.form-submit:disabled{opacity:.6;cursor:not-allowed}
-.form-fine{font-size:11px;color:var(--text-muted);text-align:center;margin-top:10px;line-height:1.5}
-.form-switch{text-align:center;margin-top:14px;font-size:13px;color:var(--text-secondary)}
-.form-switch a{color:var(--green-dark);cursor:pointer;font-weight:600}
-.forgot-link{text-align:right;margin-top:-6px;margin-bottom:4px}
-.forgot-link a{font-size:12px;color:var(--text-muted);cursor:pointer}
-.forgot-link a:hover{color:var(--green-dark)}
+/* Pricing */
+.pricing-inner{width:100%;}
+.pricing-title{text-align:center;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:20px;}
+.pricing-cards{display:grid;grid-template-columns:1fr;gap:12px;}
+.pricing-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 14px;position:relative;overflow:hidden;transition:border-color 0.2s,transform 0.2s;}
+.pricing-card:hover{transform:translateY(-2px);}
+.pricing-card.featured{border-color:rgba(34,197,94,0.3);background:linear-gradient(135deg,var(--card) 0%,rgba(34,197,94,0.05) 100%);}
+.pricing-card-accent{position:absolute;top:0;left:0;right:0;height:2px;}
+.pricing-badge{position:absolute;top:12px;right:12px;background:var(--green);color:#000;font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:2px 7px;border-radius:4px;}
+.pricing-tier{font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+.pricing-price{font-size:22px;font-weight:800;color:var(--white);line-height:1;margin-bottom:4px;}
+.pricing-price span{font-size:13px;font-weight:400;color:var(--muted);}
+.pricing-desc{font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.4;}
+.pricing-features{list-style:none;display:flex;flex-direction:column;gap:4px;margin-bottom:12px;}
+.pricing-features li{font-size:11px;color:var(--text);display:flex;align-items:flex-start;gap:6px;line-height:1.3;}
+.pricing-features li::before{content:'✓';color:var(--green);font-weight:700;flex-shrink:0;font-size:11px;margin-top:1px;}
+.pricing-features li.no::before{content:'✕';color:var(--muted);}
+.pricing-features li.no{color:var(--muted);}
+.pricing-cta{display:block;width:100%;padding:10px;border-radius:9px;text-align:center;font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;transition:all 0.18s;text-decoration:none;border:none;}
+.pricing-cta.free{background:transparent;border:1px solid var(--border);color:var(--muted);}
+.pricing-cta.free:hover{border-color:rgba(255,255,255,0.2);color:var(--text);}
+.pricing-cta.pro{background:var(--green);color:#000;}
+.pricing-cta.pro:hover{background:var(--green2);transform:translateY(-1px);}
+.pricing-cta.premium{background:linear-gradient(135deg,var(--green),var(--blue));color:#000;}
+.pricing-cta.premium:hover{opacity:0.9;transform:translateY(-1px);}
 
-/* PRICING SECTION */
-.pricing-section{background:var(--surface);border-top:1px solid var(--border);padding:56px 24px}
-.pricing-inner{max-width:960px;margin:0 auto}
-.section-head{text-align:center;margin-bottom:36px}
-.section-head h2{font-size:22px;font-weight:700;letter-spacing:-.3px;margin-bottom:6px}
-.section-head p{color:var(--text-secondary);font-size:14px}
-.pricing-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
-.pricing-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;position:relative;box-shadow:var(--shadow)}
-.pricing-card.featured{border:2px solid var(--green);box-shadow:0 0 0 1px rgba(34,197,94,.1),var(--shadow-md)}
-.featured-pill{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--green);color:#fff;font-size:11px;font-weight:700;padding:4px 14px;border-radius:20px;white-space:nowrap;letter-spacing:.5px}
-.plan-name{font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px}
-.plan-price{font-size:30px;font-weight:700;color:var(--slate);line-height:1;margin-bottom:4px}
-.plan-trial{display:inline-block;font-size:11px;font-weight:600;color:var(--green-dark);background:var(--green-light);padding:3px 10px;border-radius:20px;margin:8px 0 12px}
-.plan-desc{font-size:13px;color:var(--text-secondary);margin-bottom:16px;line-height:1.55}
-.plan-features{list-style:none;margin-bottom:20px}
-.plan-features li{font-size:13px;color:var(--text-secondary);padding:5px 0;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:8px;line-height:1.5}
-.plan-features li:last-child{border-bottom:none}
-.check{color:var(--green);font-weight:700;flex-shrink:0;font-size:13px}
-.plan-btn{width:100%;padding:11px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;transition:.15s;border:1px solid var(--border);background:var(--surface);color:var(--slate)}
-.plan-btn:hover{background:var(--border)}
-.plan-btn.green{background:var(--green);color:#fff;border-color:var(--green)}
-.plan-btn.green:hover{background:var(--green-dark)}
+/* DASHBOARD */
+#dashboard-screen{min-height:100dvh;background:var(--black);position:relative;z-index:10;}
+.dash-nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 20px;height:var(--nav-h);background:rgba(8,12,8,0.95);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);}
+.dash-nav-logo{display:flex;align-items:center;gap:8px;font-size:16px;font-weight:800;color:var(--white);}
+.dash-nav-logo span{color:var(--green);}
+.dash-nav-right{display:flex;align-items:center;gap:10px;}
+.phone-chip{display:flex;align-items:center;gap:6px;padding:5px 12px;background:rgba(34,197,94,0.06);border:1px solid rgba(34,197,94,0.15);border-radius:20px;font-size:12px;color:var(--muted);}
+.udot{width:6px;height:6px;border-radius:50%;background:var(--green);}
+.nav-btn{padding:6px 14px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text);font-family:var(--font);font-size:13px;cursor:pointer;transition:all 0.18s;}
+.nav-btn:hover{border-color:rgba(34,197,94,0.3);color:var(--green);}
 
-/* ═══════════════════════════════════════════
-   DASHBOARD
-═══════════════════════════════════════════ */
-#dashboard{display:none;max-width:1100px;margin:0 auto;padding:24px 24px 64px}
-.dash-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px}
-.dash-greeting{font-size:22px;font-weight:700;font-family:inherit}
-.dash-sub{font-size:14px;color:var(--text-secondary);margin-top:2px}
-.tier-chip{font-size:11px;font-weight:700;padding:4px 12px;border-radius:20px;letter-spacing:.5px}
-.tier-coach{background:#ede9fe;color:#5b21b6}
-.tier-track{background:var(--green-light);color:var(--green-dark)}
-.tier-trainer{background:#dbeafe;color:#1e40af}
-.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px}
-.stat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow)}
-.stat-label{font-size:11px;color:var(--text-muted);font-weight:600;letter-spacing:.3px;text-transform:uppercase;margin-bottom:8px}
-.stat-value{font-size:26px;font-weight:700;font-family:inherit;color:var(--slate);line-height:1}
-.stat-sub{font-size:12px;color:var(--text-secondary);margin-top:4px}
-.main-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
-@media(max-width:720px){.main-grid{grid-template-columns:1fr}}
-.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
-.card-title{font-size:14px;font-weight:600;color:var(--slate);margin-bottom:16px;font-family:inherit;display:flex;align-items:center;gap:8px}
-.card-tag{font-size:11px;font-weight:500;color:var(--text-muted);background:var(--surface);border:1px solid var(--border);padding:2px 8px;border-radius:20px;margin-left:auto}
-.food-entry{border:1px solid var(--border);border-radius:var(--radius-sm);padding:11px;margin-bottom:8px;display:flex;gap:10px;align-items:center}
-.food-emoji{width:40px;height:40px;border-radius:8px;background:var(--green-light);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
-.food-details{flex:1;min-width:0}
-.food-name{font-size:13px;font-weight:500;margin-bottom:2px}
-.food-meta{font-size:11px;color:var(--text-muted)}
-.cal-wrap{display:flex;flex-direction:column;align-items:flex-end;gap:2px}
-.cal-input{width:60px;border:1px solid var(--border);border-radius:6px;padding:4px 6px;font-size:13px;font-weight:600;text-align:center;color:var(--slate);background:var(--green-light);font-family:inherit}
-.cal-input:focus{border-color:var(--green);background:#fff;outline:2px solid var(--green);outline-offset:0}
-.cal-unit{font-size:10px;color:var(--text-muted)}
-.ai-tag{font-size:9px;background:#ede9fe;color:#6d28d9;padding:1px 5px;border-radius:3px;font-weight:600}
-.ring-wrap{display:flex;align-items:center;gap:14px;margin-bottom:14px}
-.macro-row{display:flex;align-items:center;gap:8px;font-size:12px;margin-bottom:4px}
-.macro-label{width:46px;color:var(--text-secondary)}
-.macro-track{flex:1;height:5px;background:var(--border);border-radius:3px;overflow:hidden}
-.macro-fill{height:100%;border-radius:3px}
-.steps-num{font-size:38px;font-weight:700;font-family:inherit;line-height:1;text-align:center;padding:8px 0 4px}
-.steps-goal{font-size:13px;color:var(--text-muted);text-align:center;margin-bottom:10px}
-.steps-track{background:var(--border);border-radius:6px;height:10px;overflow:hidden;margin-bottom:6px}
-.steps-fill{height:100%;background:linear-gradient(90deg,var(--green),#14b8a6);border-radius:6px}
-.sms-hint{font-size:12px;color:var(--text-secondary);background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px 12px;margin-top:8px}
-.routine-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.routine-chip{border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px 12px;display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;cursor:pointer;transition:.15s;background:var(--card)}
-.routine-chip:hover{border-color:var(--green);background:var(--green-light)}
-.routine-chip.done{border-color:var(--green);background:var(--green-light);color:var(--green-dark)}
-.routine-check{margin-left:auto;opacity:0;color:var(--green);font-weight:700}
-.routine-chip.done .routine-check{opacity:1}
-.spider-wrap{display:flex;flex-direction:column;align-items:center;gap:12px}
-.spider-score{font-size:40px;font-weight:700;font-family:inherit;text-align:center;line-height:1}
-.spider-sub{font-size:12px;color:var(--text-muted);text-align:center}
-.spider-legend{display:grid;grid-template-columns:1fr 1fr;gap:4px 16px;width:100%}
-.legend-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-secondary)}
-.legend-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.coach-chat{display:flex;flex-direction:column;gap:10px;max-height:260px;overflow-y:auto;margin-bottom:12px}
-.chat-msg{max-width:85%;padding:10px 14px;border-radius:12px;font-size:13px;line-height:1.5}
-.chat-msg.user{background:var(--green);color:#fff;border-radius:12px 12px 4px 12px;align-self:flex-end}
-.chat-msg.ai{background:var(--surface);border:1px solid var(--border);border-radius:12px 12px 12px 4px;align-self:flex-start}
-.chat-msg .msg-time{font-size:10px;opacity:.55;margin-top:4px}
-.chat-input-wrap{display:flex;gap:8px}
-.chat-input{flex:1;border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;font-size:13px;font-family:inherit;resize:none;height:44px}
-.chat-input:focus{border-color:var(--green);outline:2px solid var(--green);outline-offset:0}
-.chat-send{background:var(--green);color:#fff;border:none;padding:10px 16px;border-radius:var(--radius-sm);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit}
-.chat-send:hover{background:var(--green-dark)}
-.entry-panel{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
-.entry-tabs{display:flex;border-bottom:1px solid var(--border)}
-.entry-tab{flex:1;padding:11px 6px;text-align:center;font-size:12px;font-weight:500;color:var(--text-secondary);cursor:pointer;border-bottom:2px solid transparent;transition:.15s;background:none;border-top:none;border-left:none;border-right:none;font-family:inherit}
-.entry-tab.active{color:var(--green-dark);border-bottom-color:var(--green);background:var(--green-light)}
-.entry-body{padding:16px}
-.entry-ta{width:100%;border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;font-size:13px;font-family:inherit;color:var(--text-primary);resize:none;height:80px;background:var(--surface)}
-.entry-ta:focus{border-color:var(--green);background:#fff;outline:2px solid var(--green);outline-offset:0}
-.entry-actions{display:flex;gap:8px;margin-top:10px;align-items:center}
-.entry-hint{font-size:12px;color:var(--text-muted);flex:1}
-.save-btn{background:var(--green);color:#fff;border:none;padding:9px 18px;border-radius:var(--radius-sm);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit}
-.save-btn:hover{background:var(--green-dark)}
-.msg-log{max-height:260px;overflow-y:auto}
-.msg-item{padding:9px 0;border-bottom:1px solid var(--border);font-size:13px}
-.msg-item:last-child{border-bottom:none}
-.msg-meta{display:flex;align-items:center;gap:6px;margin-bottom:3px}
-.msg-time{font-size:11px;color:var(--text-muted)}
-.msg-type{font-size:10px;font-weight:600;padding:2px 6px;border-radius:4px;letter-spacing:.3px}
-.mt-food{background:#dcfce7;color:#15803d}
-.mt-steps{background:#dbeafe;color:#1d4ed8}
-.mt-routine{background:#fef3c7;color:#92400e}
-.mt-sleep{background:#ede9fe;color:#6d28d9}
-.mt-coach{background:#fce7f3;color:#9d174d}
-.lab-card{background:var(--card);border:2px dashed var(--border);border-radius:var(--radius);padding:20px;margin-top:16px;background:linear-gradient(135deg,#f8fafc,#f0fdf4)}
-.lab-metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:8px;margin:12px 0}
-.lab-metric{background:#fff;border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px;text-align:center}
-.lab-metric-label{font-size:10px;color:var(--text-muted);margin-bottom:2px}
-.lab-metric-value{font-size:16px;font-weight:700;font-family:inherit;color:var(--text-muted)}
+/* Paywall */
+.paywall-banner{display:none;padding:12px 20px;background:linear-gradient(135deg,rgba(34,197,94,0.08),rgba(34,197,94,0.04));border-bottom:1px solid rgba(34,197,94,0.15);gap:12px;align-items:center;flex-wrap:wrap;}
+.paywall-banner.show{display:flex;}
+.paywall-banner-text{font-size:13px;color:var(--text);flex:1;}
+.paywall-banner-btn{padding:8px 16px;border-radius:8px;background:var(--green);color:#000;font-family:var(--font);font-size:13px;font-weight:700;text-decoration:none;white-space:nowrap;transition:background 0.18s;}
+.paywall-banner-btn:hover{background:var(--green2);}
 
-/* AUTH MODAL */
-.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:200;align-items:center;justify-content:center;padding:24px}
-.modal-bg.open{display:flex}
-.modal{background:#fff;border-radius:16px;width:100%;max-width:420px;overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,.2)}
-.modal-head{background:var(--slate);color:#fff;padding:20px 24px;font-family:inherit;font-weight:700;font-size:17px;display:flex;align-items:center;gap:10px}
-.modal-close{margin-left:auto;background:none;border:none;color:rgba(255,255,255,.5);cursor:pointer;font-size:18px;line-height:1;padding:0}
-.modal-body{padding:24px}
-.modal-label{font-size:12px;font-weight:600;color:var(--text-muted);letter-spacing:.3px;text-transform:uppercase;margin-bottom:6px;display:block}
-.modal-input{width:100%;border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;font-size:14px;font-family:inherit;margin-bottom:14px}
-.modal-input:focus{border-color:var(--green);outline:2px solid var(--green);outline-offset:0}
-.modal-submit{width:100%;background:var(--green);color:#fff;border:none;padding:12px;border-radius:var(--radius-sm);font-size:14px;font-weight:600;cursor:pointer;font-family:inherit}
-.modal-submit:hover{background:var(--green-dark)}
-.modal-trial-note{background:var(--green-light);border-radius:var(--radius-sm);padding:10px 14px;font-size:12px;color:var(--green-dark);font-weight:500;margin-bottom:16px;text-align:center}
-.modal-toggle{text-align:center;margin-top:14px;font-size:13px;color:var(--text-secondary)}
-.modal-toggle a{color:var(--green-dark);cursor:pointer;font-weight:500}
+/* Dashboard split */
+.dash-split{display:grid;grid-template-columns:1fr 340px;gap:0;min-height:calc(100dvh - var(--nav-h));}
+@media(max-width:1024px){.dash-split{grid-template-columns:1fr;}}
+.dash-main{padding:20px;overflow-y:auto;}
+.section-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.section-title{font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);}
+.cards-row{display:grid;gap:14px;margin-bottom:14px;}
+.cols-4{grid-template-columns:repeat(4,1fr);}
+.cols-3{grid-template-columns:repeat(3,1fr);}
+.cols-2{grid-template-columns:repeat(2,1fr);}
+@media(max-width:900px){.cols-4{grid-template-columns:repeat(2,1fr);}.cols-3{grid-template-columns:1fr;}.cols-2{grid-template-columns:1fr;}}
 
-footer{background:var(--slate);color:rgba(255,255,255,.4);text-align:center;padding:24px;font-size:13px}
-footer a{color:rgba(255,255,255,.55);text-decoration:none;margin:0 10px}
-footer a:hover{color:#fff}
-a:focus-visible,button:focus-visible{outline:2px solid var(--green);outline-offset:2px;}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;position:relative;overflow:hidden;}
+.stat-accent{position:absolute;top:0;left:0;right:0;height:2px;}
+.stat-icon{font-size:22px;margin-bottom:8px;}
+.stat-label{font-size:10px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;}
+.stat-value{font-size:26px;font-weight:800;color:var(--white);line-height:1;margin-bottom:2px;}
+.stat-sub{font-size:11px;color:var(--muted);}
+
+.wide-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:14px;position:relative;overflow:hidden;}
+.wide-card.locked{position:relative;}
+.wide-card.is-locked .locked-content{filter:blur(4px);pointer-events:none;}
+.wide-card-title{font-size:13px;font-weight:700;color:var(--white);margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:8px;}
+.lock-overlay{position:absolute;inset:0;background:rgba(8,12,8,0.85);display:none;flex-direction:column;align-items:center;justify-content:center;gap:8px;border-radius:14px;z-index:2;}
+.lock-icon{font-size:28px;}
+.lock-text{font-size:14px;font-weight:700;color:var(--white);}
+.lock-sub{font-size:12px;color:var(--muted);text-align:center;max-width:200px;}
+.lock-btn{padding:8px 20px;border-radius:8px;background:var(--green);color:#000;font-family:var(--font);font-size:13px;font-weight:700;text-decoration:none;transition:background 0.18s;}
+.lock-btn:hover{background:var(--green2);}
+
+.log-list{display:flex;flex-direction:column;gap:6px;}
+.log-item{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);cursor:pointer;transition:opacity 0.18s;}
+.log-item:last-child{border-bottom:none;}
+.log-item:hover{opacity:0.8;}
+.log-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px;background:var(--green);}
+.log-date{font-size:10px;color:var(--muted);margin-bottom:2px;}
+.log-body{font-size:12px;color:var(--text);line-height:1.4;}
+.empty{font-size:13px;color:var(--muted);text-align:center;padding:20px 0;}
+
+.freq-list{display:flex;flex-direction:column;gap:6px;}
+.freq-item{display:flex;align-items:center;gap:8px;}
+.freq-name{font-size:12px;color:var(--text);min-width:80px;flex-shrink:0;}
+.freq-bar-wrap{flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden;}
+.freq-bar{height:100%;border-radius:3px;transition:width 0.4s;}
+.freq-count{font-size:11px;color:var(--muted);min-width:20px;text-align:right;}
+
+/* Fitness score chart */
+.fitness-score{font-size:42px;font-weight:800;color:var(--green);}
+.fitness-label{font-size:11px;color:var(--muted);}
+.fitness-desc{font-size:12px;color:var(--text);line-height:1.5;margin-top:8px;}
+.integrity-row{display:flex;align-items:flex-start;gap:16px;margin-bottom:12px;}
+.integrity-score{font-size:42px;font-weight:800;color:var(--green);}
+.integrity-label{font-size:11px;color:var(--muted);}
+.integrity-desc{font-size:12px;color:var(--text);line-height:1.5;}
+
+/* Log widget */
+.log-widget{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:14px;}
+.log-widget-title{font-size:13px;font-weight:700;color:var(--white);margin-bottom:12px;}
+.log-boxes{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+@media(max-width:700px){.log-boxes{grid-template-columns:1fr;}}
+.log-box{background:var(--dark);border:1px solid var(--border);border-radius:10px;padding:12px;}
+.log-box-label{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;color:var(--muted);letter-spacing:0.05em;text-transform:uppercase;margin-bottom:8px;}
+.log-box-label-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.log-ta{width:100%;background:transparent;border:none;color:var(--text);font-family:var(--font);font-size:13px;line-height:1.6;resize:none;outline:none;-webkit-text-fill-color:var(--text);}
+.log-ta::placeholder{color:var(--muted);opacity:0.5;font-style:italic;}
+.log-actions-row{display:flex;align-items:center;justify-content:space-between;margin-top:8px;}
+.log-action-btns{display:flex;gap:6px;}
+.log-action-btn{width:30px;height:30px;border-radius:6px;border:1px solid var(--border);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all 0.18s;position:relative;}
+.log-action-btn:hover{border-color:rgba(34,197,94,0.3);}
+.log-action-btn.recording{background:rgba(239,68,68,0.1);border-color:var(--red);}
+.log-char-count{font-size:11px;color:var(--muted);}
+.log-send-btn{display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:8px;border:none;background:var(--green);color:#000;font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;transition:all 0.18s;}
+.log-send-btn:hover{background:var(--green2);}
+.log-success{font-size:12px;color:var(--green);display:none;margin-right:8px;}
+.log-success.show{display:inline;}
+
+/* Messages */
+.show-msgs-btn{display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:var(--font);font-size:12px;cursor:pointer;transition:all 0.18s;}
+.show-msgs-btn:hover{border-color:rgba(34,197,94,0.3);color:var(--green);}
+.msg-panel{display:none;margin-top:12px;}
+.msg-panel.open{display:block;}
+.filter-bar{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;}
+.filter-input{background:var(--dark);border:1px solid var(--border);border-radius:8px;padding:7px 12px;color:var(--text);font-family:var(--font);font-size:12px;outline:none;flex:1;min-width:140px;-webkit-text-fill-color:var(--text);}
+.filter-input:focus{border-color:rgba(34,197,94,0.3);}
+.filter-btn{padding:7px 14px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:var(--font);font-size:12px;cursor:pointer;}
+.msg-count{font-size:11px;color:var(--muted);margin-bottom:8px;}
+.msg-card{background:var(--dark);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:8px;}
+.msg-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px;}
+.msg-time{font-size:11px;color:var(--muted);}
+.msg-badge{font-size:9px;font-weight:700;letter-spacing:0.06em;padding:2px 6px;border-radius:4px;background:rgba(34,197,94,0.1);color:var(--green);}
+.msg-loc{font-size:10px;color:var(--muted);}
+.msg-body{font-size:13px;color:var(--text);line-height:1.5;}
+mark{background:rgba(34,197,94,0.2);color:var(--green2);border-radius:2px;padding:0 2px;}
+.msg-card-actions{margin-top:8px;display:flex;gap:6px;}
+.edit-btn{padding:4px 10px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:var(--font);font-size:11px;cursor:pointer;transition:all 0.18s;}
+.edit-btn:hover{border-color:rgba(34,197,94,0.3);color:var(--green);}
+
+/* Insights chat panel */
+.dash-chat-panel{background:var(--card2);border-left:1px solid var(--border);display:flex;flex-direction:column;height:calc(100dvh - var(--nav-h));position:sticky;top:var(--nav-h);}
+.dash-chat-header{padding:16px;border-bottom:1px solid var(--border);flex-shrink:0;}
+.dash-chat-header-title{font-size:13px;font-weight:700;color:var(--white);display:flex;align-items:center;justify-content:space-between;gap:8px;}
+.dash-chat-suggestions{padding:10px 16px;display:flex;flex-wrap:wrap;gap:6px;border-bottom:1px solid var(--border);flex-shrink:0;}
+.dash-chat-suggestion{padding:4px 10px;border-radius:20px;border:1px solid rgba(34,197,94,0.2);background:rgba(34,197,94,0.05);font-size:11px;color:var(--green);cursor:pointer;transition:all 0.18s;white-space:nowrap;}
+.dash-chat-suggestion:hover{background:rgba(34,197,94,0.1);}
+.dash-chat-body{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;}
+.dash-chat-footer{padding:12px 16px;border-top:1px solid var(--border);flex-shrink:0;}
+.dash-chat-input-row{display:flex;gap:8px;}
+.dash-chat-input{flex:1;background:var(--dark);border:1.5px solid var(--border);border-radius:10px;padding:8px 12px;color:var(--text);font-family:var(--font);font-size:13px;outline:none;-webkit-text-fill-color:var(--text);}
+.dash-chat-input:focus{border-color:rgba(34,197,94,0.4);}
+.dash-chat-send{padding:8px 16px;border-radius:10px;border:none;background:var(--green);color:#000;font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;transition:background 0.18s;}
+.dash-chat-send:hover{background:var(--green2);}
+.dash-chat-send:disabled{opacity:0.5;cursor:not-allowed;}
+.chat-msg{padding:10px 12px;border-radius:10px;font-size:13px;line-height:1.6;max-width:90%;}
+.chat-msg.user{background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.15);color:var(--text);align-self:flex-end;}
+.chat-msg.assistant{background:var(--dark);border:1px solid var(--border);color:var(--text);align-self:flex-start;max-width:95%;}
+.chat-msg.assistant strong{color:var(--green);}
+.chat-actions{margin-top:8px;display:flex;gap:6px;}
+.chat-save-btn{padding:4px 10px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:var(--font);font-size:11px;cursor:pointer;}
+.chat-save-btn:hover{border-color:rgba(34,197,94,0.3);color:var(--green);}
+
+/* Light mode */
+[data-theme="light"]{
+  --black:#f8fdf8;--dark:#f0f9f0;--card:#ffffff;--card2:#f4fdf4;
+  --border:rgba(34,197,94,0.15);--border2:rgba(34,197,94,0.25);
+  --muted:#5a7a5a;--text:#1a3a1a;--white:#0f2010;
+}
+[data-theme="light"] #dashboard-screen{background:#f0f9f0;}
+[data-theme="light"] .dash-nav{background:rgba(248,253,248,0.95);}
+[data-theme="light"] .stat-card,.wide-card,.log-box,.log-widget,.dash-chat-panel,.login-card{background:#ffffff;border-color:rgba(34,197,94,0.15);}
+[data-theme="light"] .f-input,.log-ta,.dash-chat-input,.filter-input,.otp-input{background:#f8fdf8;color:#1a3a1a;-webkit-text-fill-color:#1a3a1a;}
+[data-theme="light"] .msg-card{background:#f0f9f0;}
+[data-theme="light"] .pricing-card{background:#ffffff;}
+[data-theme="light"] .pricing-price,.stat-value,.wide-card-title,.dash-chat-header-title,.log-widget-title{color:#0f2010;}
+[data-theme="light"] .pl-headline,.pl-brand,.login-card::before{color:#0f2010;}
+[data-theme="light"] .convo-card.card-you{background:rgba(34,197,94,0.08);}
+[data-theme="light"] .convo-card.card-ai{background:rgba(34,197,94,0.04);}
+[data-theme="light"] .persona{background:rgba(0,0,0,0.03);}
+[data-theme="light"] .num-bridge{background:rgba(20,50,20,0.95);}
+[data-theme="light"] #login-screen{background:#f8fdf8;}
+
+/* Paywall overlay */
+.is-locked .lock-overlay{display:flex;}
+
+/* Edit modal */
+.edit-modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px;}
+.edit-modal{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;max-width:500px;width:100%;max-height:80vh;overflow-y:auto;}
+.edit-modal-title{font-size:16px;font-weight:700;color:var(--white);margin-bottom:4px;}
+.edit-modal-sub{font-size:12px;color:var(--muted);margin-bottom:16px;}
+.edit-original{background:var(--dark);border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin-bottom:12px;font-size:12px;color:var(--muted);line-height:1.5;}
+.edit-original strong{display:block;font-size:10px;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:4px;}
+.edit-ta{width:100%;background:var(--dark);border:1.5px solid var(--border);border-radius:10px;padding:10px 12px;color:var(--text);font-family:var(--font);font-size:13px;line-height:1.6;resize:vertical;outline:none;min-height:100px;-webkit-text-fill-color:var(--text);}
+.edit-ta:focus{border-color:rgba(34,197,94,0.45);}
+.edit-note{font-size:11px;color:var(--muted);margin-top:8px;line-height:1.5;}
+.edit-modal-actions{display:flex;gap:10px;margin-top:16px;}
+.edit-cancel-btn{flex:1;padding:10px;border-radius:9px;border:1px solid var(--border);background:transparent;color:var(--text);font-family:var(--font);font-size:13px;cursor:pointer;}
+.edit-save-btn{flex:2;padding:10px;border-radius:9px;border:none;background:var(--green);color:#000;font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;}
+.edit-save-btn:hover{background:var(--green2);}
+
+/* Settings */
+.settings-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:500;display:none;align-items:center;justify-content:center;padding:20px;}
+.settings-backdrop.active{display:flex;}
+.settings-modal{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;max-width:400px;width:100%;position:relative;}
+.settings-close{position:absolute;top:16px;right:16px;background:none;border:none;color:var(--muted);font-size:18px;cursor:pointer;}
+.settings-title{font-size:16px;font-weight:700;color:var(--white);margin-bottom:4px;}
+.settings-sub{font-size:12px;color:var(--muted);margin-bottom:16px;}
+.settings-current{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);margin-bottom:16px;}
+.settings-current strong{color:var(--text);}
+.settings-step{display:none;}
+.settings-step.active{display:block;}
+
+/* PDF */
+@media print{
+  #dashboard-screen,#login-screen,#app-loading{display:none!important;}
+  #pdf-print-area{display:block!important;}
+  body{background:#fff;color:#000;}
+}
+#pdf-print-area{display:none;font-family:Arial,sans-serif;padding:32px;max-width:700px;margin:0 auto;}
+.pdf-header{display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #22c55e;padding-bottom:16px;margin-bottom:20px;}
+.pdf-logo{font-size:24px;font-weight:800;color:#15803d;}
+.pdf-meta{font-size:11px;color:#666;}
+.pdf-title{font-size:18px;font-weight:700;margin-bottom:12px;}
+.pdf-question{font-size:14px;font-weight:600;color:#333;background:#f0fdf4;padding:10px 14px;border-radius:8px;margin-bottom:12px;}
+.pdf-response{font-size:13px;line-height:1.7;color:#1a3a1a;white-space:pre-wrap;}
+.pdf-verify{font-size:10px;color:#999;margin-top:16px;}
+.pdf-footer{display:flex;justify-content:space-between;border-top:1px solid #e2e8f0;margin-top:20px;padding-top:12px;font-size:11px;color:#666;}
 </style>
 </head>
 <body>
-<a href="#main-content" class="skip-link" style="position:absolute;left:-9999px;top:4px;z-index:9999;padding:8px 16px;background:var(--green);color:#fff;font-weight:700;border-radius:6px;text-decoration:none;font-size:14px;">Skip to main content</a>
 
-
-
-<!-- LANDING -->
-<main id="main-content">
-<div id="landing">
-  <div class="split">
-
-    <!-- LEFT PANEL -->
-    <div class="panel-left">
-      <div>
-        <div class="pl-brand">💪 FitLogs.<span class="ai">AI</span></div>
-
-        <div class="pl-headline">A coach in your corner,<br><em>one text away.</em></div>
-        <p class="pl-sub">Manage your fitness, nutrition, health goals, and customize your training dashboard to what you want to see, one text at a time.</p>
-
-        <!-- FEATURE CHIPS -->
-        <div style="display:flex;gap:10px;margin-bottom:24px;flex-wrap:wrap">
-          <div style="display:flex;align-items:center;gap:7px;background:#1e293b;border-radius:20px;padding:8px 16px;font-size:13px;font-weight:600;color:#fff">
-            <span>⚡</span> AI coach — 24/7
-          </div>
-          <div style="display:flex;align-items:center;gap:7px;background:#1e293b;border-radius:20px;padding:8px 16px;font-size:13px;font-weight:600;color:#fff">
-            <span>👤</span> Human coach — add-on anytime
-          </div>
-        </div>
-        <div class="convo-pair">
-
-          <!-- YOU TEXT IN — green fill -->
-          <div class="convo-card card-you">
-            <div class="convo-card-label">📲 What you text in</div>
-            <div class="convo-item"><div class="convo-dot"></div><div><strong>Goals</strong> — Target BMI, cholesterol ratio, measurements you care about</div></div>
-            <div class="convo-item"><div class="convo-dot"></div><div><strong>Habits</strong> — What you ate or drank, when, and where — from a quick lunch to a late-night snack</div></div>
-            <div class="convo-item"><div class="convo-dot"></div><div><strong>Movement</strong> — A walk, a run, the gym, a swim — time, distance, or just the vibe</div></div>
-            <div class="convo-item"><div class="convo-dot"></div><div><strong>Sleep</strong> — How long and how well you actually rested</div></div>
-            <div class="convo-item"><div class="convo-dot"></div><div><strong>Your weekly rhythm</strong> — Mon: walk the park · Wed: yoga · Sat: swim with the family</div></div>
-            <div class="convo-item"><div class="convo-dot"></div><div><strong>Your coach's personality</strong> — Tough love, gentle support, pure data, or pure hype</div></div>
-          </div>
-
-          <!-- NUMBER BRIDGE — one seamless dark card -->
-          <div style="background:#1e293b;border-radius:14px">
-            <div class="num-bridge">
-              <div class="num-bridge-arrows">
-                <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
-                  <path d="M14 4 L14 44" stroke="#22c55e" stroke-width="4" stroke-linecap="round"/>
-                  <path d="M7 36 L14 44 L21 36" stroke="#22c55e" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-                  <path d="M34 44 L34 4" stroke="#86efac" stroke-width="4" stroke-linecap="round"/>
-                  <path d="M27 12 L34 4 L41 12" stroke="#86efac" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              </div>
-              <div class="num-bridge-numbers">
-                <span class="num">1-888-596-5467</span>
-                <span class="vanity">1-888-596-LOGS</span>
-              </div>
-            </div>
-            <div class="num-bridge-tagline">No app to download. Just you and your coach texting.</div>
-          </div>
-
-          <!-- AI COACH TEXTS BACK — dark green fill -->
-          <div class="convo-card card-ai">
-            <div class="convo-card-label">🤖 What your AI coach texts back</div>
-            <div class="persona-row">
-              <div class="persona">
-                <div class="persona-dot" style="background:#dc2626"></div>
-                <div><div class="persona-name">The Drill Sergeant</div><div class="persona-quote">"520 cal logged. You're 84% to goal. The gym is not optional today."</div></div>
-              </div>
-              <div class="persona">
-                <div class="persona-dot" style="background:#2563eb"></div>
-                <div><div class="persona-name">The Wise Mentor</div><div class="persona-quote">"Your sleep score is the quiet lever pulling everything else down. Want to work on that together?"</div></div>
-              </div>
-              <div class="persona">
-                <div class="persona-dot" style="background:#d97706"></div>
-                <div><div class="persona-name">The Data Nerd</div><div class="persona-quote">"Tue/Thu strength days correlate with your best sleep scores — 3 weeks running now."</div></div>
-              </div>
-              <div class="persona">
-                <div class="persona-dot" style="background:#16a34a"></div>
-                <div><div class="persona-name">The Hype Friend</div><div class="persona-quote">"12 days straight! Hydration just went green on your spider chart for the first time 🎉"</div></div>
-              </div>
-              <div class="persona">
-                <div class="persona-dot" style="background:#7c3aed"></div>
-                <div><div class="persona-name">The Gentle One</div><div class="persona-quote">"Sounds like a hard day. Rest is part of the work. What does your body actually need right now?"</div></div>
-              </div>
-            </div>
-          </div>
-
-        </div>
-
-      </div>
-      <div class="pl-footer">© 2026 Athens Innovation and Development LLC · <a href="/terms.html" style="color:var(--text-muted);text-decoration:none">Terms</a> · <a href="/privacy.html" style="color:var(--text-muted);text-decoration:none">Privacy</a></div>
-    </div>
-
-    <!-- RIGHT PANEL -->
-    <div class="panel-right">
-      <div style="max-width:400px;width:100%;margin:0 auto">
-
-        <div style="margin-bottom:24px">
-          <div style="font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--green-dark);margin-bottom:6px">FitLogs.AI</div>
-          <h2 style="font-size:22px;font-weight:700;letter-spacing:-.3px;margin-bottom:4px;color:var(--slate)">Welcome back</h2>
-          <p style="font-size:14px;color:var(--text-muted)">Your phone number is your primary identity.</p>
-        </div>
-
-        <div class="pr-tabs">
-          <button class="pr-tab active" id="tab-signin" role="tab" aria-selected="true" aria-controls="signinForm" onclick="showTab('signin')">Sign In</button>
-          <button class="pr-tab" id="tab-create" role="tab" aria-selected="false" aria-controls="createForm" onclick="showTab('create')">Create Account</button>
-        </div>
-
-        <!-- SIGNIN FORM — default tab, matches soslogs -->
-        <div id="signinForm" class="pr-form">
-          <div id="login-err" class="form-err" role="alert" aria-live="assertive"></div>
-          <div id="login-ok" class="form-ok" role="status" aria-live="polite"></div>
-
-          <label class="form-label" for="login-id">Phone or Email</label>
-          <input id="login-id" aria-required="true" class="form-input" type="text" placeholder="e.g. 9165550123 or you@email.com">
-
-          <label class="form-label" style="margin-top:12px" for="login-pw">Password</label>
-          <input id="login-pw" aria-required="true" class="form-input" type="password" placeholder="Your password" onkeydown="if(event.key==='Enter')doLogin()" style="margin-bottom:6px">
-
-          <div class="forgot-link"><a onclick="doForgotPw()">Forgot password?</a></div>
-
-          <button id="login-btn" class="form-submit" onclick="doLogin()">Sign In</button>
-          <div class="form-switch">No account yet? <a onclick="showTab('create')">Start your free trial</a></div>
-        </div>
-
-        <!-- SIGNUP FORM -->
-        <div id="createForm" class="pr-form hidden">
-          <div class="trial-badge">🎉 Starting on <strong>Coach ($14.99/mo)</strong> — full AI coaching experience.<br>Downgrade or cancel anytime by texting STOP.</div>
-
-          <div id="signup-err" class="form-err" role="alert" aria-live="assertive"></div>
-          <div id="signup-ok" class="form-ok" role="status" aria-live="polite"></div>
-
-          <label class="form-label" for="su-phone">Phone Number</label>
-          <div class="form-row">
-            <select id="su-cc" class="form-select" aria-label="Country code"><option value="+1">🇺🇸 +1</option></select>
-            <input id="su-phone" aria-required="true" class="form-input" type="tel" placeholder="e.g. 9165550123">
-          </div>
-
-          <label class="form-label" for="su-email">Email</label>
-          <input id="su-email" aria-required="true" class="form-input" type="email" placeholder="you@email.com">
-
-          <label class="form-label" for="su-pw">Password</label>
-          <input id="su-pw" aria-required="true" class="form-input" type="password" placeholder="At least 8 characters">
-
-          <label class="form-label" for="su-pw2">Confirm Password</label>
-          <input id="su-pw2" aria-required="true" class="form-input" type="password" placeholder="Repeat password">
-
-          <div class="otp-wrap" id="otp-section">
-            <label class="form-label" for="otp-input">Verification Code</label>
-            <div style="font-size:12px;color:var(--text-muted);margin-bottom:6px">Enter the 6-digit code sent to your phone.</div>
-            <div class="otp-row" style="flex-direction:column;gap:8px">
-              <input id="otp-input" aria-required="true" class="otp-input" type="number" placeholder="000000" style="width:100%">
-              <button class="otp-verify-btn" id="otp-confirm-btn" onclick="confirmOtp()" style="width:100%;padding:12px;font-size:15px;font-weight:600;border-radius:10px">Confirm Code</button>
-            </div>
-            <div style="font-size:12px;color:var(--text-muted);margin-top:6px;text-align:center">Didn't receive a code? <a onclick="sendOtp()" style="color:var(--text-muted);cursor:pointer;text-decoration:underline;">Resend</a></div>
-          </div>
-
-          <div class="verified-badge" id="phone-verified-badge">✓ Phone number verified</div>
-
-          <button id="signup-btn" class="form-submit" onclick="sendOtp()">Send Verification Code</button>
-          <div class="form-fine">No charge for 30 days. Cancel anytime by texting STOP.</div>
-          <div class="form-switch">Already have an account? <a onclick="showTab('signin')">Sign in</a></div>
-        </div>
-
-        <!-- PREVIEW LINK -->
-        <div style="text-align:center;margin-top:20px;padding-top:16px;border-top:1px solid var(--border)">
-          <a onclick="previewDashboard()" style="font-size:13px;color:var(--text-muted);cursor:pointer">Preview the dashboard without signing up →</a>
-        </div>
-
-      </div>
-    </div>
-
-  </div><!-- /split -->
-
-  <!-- PRICING SECTION -->
-  <div class="pricing-section">
-    <div class="pricing-inner">
-      <div class="section-head">
-        <h2>Simple, honest pricing</h2>
-        <p>Every plan starts with a 30-day free trial. Downgrade or cancel anytime by text.</p>
-      </div>
-      <div class="pricing-grid">
-
-        <div class="pricing-card">
-          <div class="plan-name">Track</div>
-          <div class="plan-price">$4.99<span style="font-size:13px;font-weight:500;color:var(--text-muted)">/mo</span></div>
-          <div class="plan-trial">30-day free trial</div>
-          <div class="plan-desc">For the self-disciplined person who knows what they want and just needs the tools.</div>
-          <ul class="plan-features">
-            <li><span class="check">✓</span>SMS logging — food, steps, sleep, workouts, water</li>
-            <li><span class="check">✓</span>AI calorie and macro estimates from text</li>
-            <li><span class="check">✓</span>Full dashboard with 7-metric health spider chart</li>
-            <li><span class="check">✓</span>Weekly AI progress report</li>
-            <li><span class="check">✓</span>Works from phone or smartwatch voice-to-text</li>
-            <li><span class="check">✓</span>Streak and adherence tracking</li>
-          </ul>
-          <button class="plan-btn" onclick="showTab('create')">Start Free Trial</button>
-        </div>
-
-        <div class="pricing-card featured">
-          <div class="featured-pill">You start here</div>
-          <div class="plan-name">Coach</div>
-          <div class="plan-price">$14.99<span style="font-size:13px;font-weight:500;color:var(--text-muted)">/mo</span></div>
-          <div class="plan-trial">30-day free trial</div>
-          <div class="plan-desc">A real coaching relationship — with an AI that actually remembers your story and shows up every day.</div>
-          <ul class="plan-features">
-            <li><span class="check">✓</span>Everything in Track</li>
-            <li><span class="check">✓</span>Real-time AI coaching conversations via SMS</li>
-            <li><span class="check">✓</span>AI remembers your logs and knows your patterns</li>
-            <li><span class="check">✓</span>Choose your coach's personality</li>
-            <li><span class="check">✓</span>Check-ins, nudges, and genuine accountability</li>
-            <li><span class="check">✓</span>Text DOWNGRADE anytime to move to Track</li>
-          </ul>
-          <button class="plan-btn green" onclick="showTab('create')">Start Free Trial</button>
-        </div>
-
-        <div class="pricing-card">
-          <div class="plan-name">Trainer</div>
-          <div class="plan-price">$29.99<span style="font-size:13px;font-weight:500;color:var(--text-muted)">/mo</span></div>
-          <div class="plan-trial">30-day free trial</div>
-          <div class="plan-desc">Bring your human trainer into the picture. AI handles the daily logging. Your trainer handles the strategy.</div>
-          <ul class="plan-features">
-            <li><span class="check">✓</span>Everything in Coach</li>
-            <li><span class="check">✓</span>Invite your personal trainer or physical therapist</li>
-            <li><span class="check">✓</span>Trainer gets read-only access to your full dashboard</li>
-            <li><span class="check">✓</span>Trainer sees your spider chart, logs, and AI reports</li>
-            <li><span class="check">✓</span>You control access — revoke anytime, no questions asked</li>
-          </ul>
-          <button class="plan-btn" onclick="showTab('create')">Start Free Trial</button>
-        </div>
-
-      </div>
-
-      <!-- PT INCENTIVE -->
-      <div style="margin-top:24px;background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:1px solid #86efac;border-radius:16px;padding:20px 22px;display:flex;align-items:flex-start;gap:14px">
-        <div style="font-size:26px;flex-shrink:0">💰</div>
-        <div style="flex:1">
-          <div style="font-size:14px;font-weight:700;color:var(--slate);margin-bottom:4px">Personal trainers earn $4.99 per client per month</div>
-          <div style="font-size:13px;color:var(--text-secondary);line-height:1.6;margin-bottom:10px">Every client on your Trainer plan puts $4.99 into your FitLogs wallet each month. Cash out anytime via Stripe directly to your bank.</div>
-          <div style="display:flex;gap:20px;flex-wrap:wrap">
-            <div><div style="font-size:17px;font-weight:700;color:var(--green-dark)">$49.90</div><div style="font-size:11px;color:var(--text-muted)">10 clients/mo</div></div>
-            <div><div style="font-size:17px;font-weight:700;color:var(--green-dark)">$149.70</div><div style="font-size:11px;color:var(--text-muted)">30 clients/mo</div></div>
-            <div><div style="font-size:17px;font-weight:700;color:var(--green-dark)">$499.00</div><div style="font-size:11px;color:var(--text-muted)">100 clients/mo</div></div>
-          </div>
-          <div style="font-size:11px;color:var(--text-muted);margin-top:8px">Paid from collected revenue. Cash out requests processed within 5 business days.</div>
-        </div>
-      </div>
-
-    </div>
+<div id="app-loading">
+  <div class="loading-logo">
+    <div class="loading-text">Fit<span>Logs</span><span style="color:rgba(34,197,94,0.5);font-size:14px;font-weight:400;margin-left:4px;">.AI</span></div>
   </div>
+</div>
 
-</div><!-- /landing -->
+<div id="login-screen" class="screen active">
 
+<div style="display:flex;justify-content:center;padding:10px 0 0;position:relative;z-index:50;">
+  <button id="theme-toggle" onclick="toggleTheme()" aria-label="Toggle light/dark mode"
+    style="background:rgba(255,255,255,0.08);border:1px solid var(--border);border-radius:20px;
+    padding:6px 16px;cursor:pointer;color:var(--text);font-size:13px;font-family:var(--font);
+    font-weight:600;transition:all 0.2s;backdrop-filter:blur(8px);display:flex;align-items:center;gap:6px;">
+    <span id="theme-icon">☀️</span>
+    <span id="theme-label">Dark</span>
+  </button>
+</div>
 
-<!-- DASHBOARD -->
-<div id="dashboard" style="display:none">
-  <div style="background:#fff;border-bottom:1px solid var(--border);padding:0 24px;height:54px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:100">
-    <span style="font-size:17px;font-weight:800;color:var(--slate)">💪 FitLogs.<span style="color:var(--green-dark)">AI</span></span>
-    <div style="flex:1"></div>
-    <button onclick="signOut()" aria-label="Sign out of FitLogs" style="font-size:13px;color:var(--text-muted);background:none;border:1px solid var(--border);padding:6px 14px;border-radius:8px;cursor:pointer;font-family:inherit">Sign Out</button>
-  </div>
-  <div class="dash-top">
-    <div>
-      <div class="dash-greeting" id="dashGreeting">Good morning 👋</div>
-      <div class="dash-sub">Here is your health snapshot for today</div>
+<div class="login-body">
+
+<!-- Left panel: brand + convo cards -->
+<div class="login-left">
+<div style="display:flex;flex-direction:column;height:100%;">
+  <div>
+    <div class="pl-brand" style="font-size:32px;margin-bottom:20px;">
+      💪 <span style="color:#fff;">Fit</span><span class="ai">Logs.AI</span>
     </div>
-    <div style="display:flex;align-items:center;gap:8px">
-      <span class="tier-chip tier-coach">COACH</span>
-      <button style="font-size:12px;color:var(--text-muted);background:none;border:1px solid var(--border);padding:5px 12px;border-radius:var(--radius-sm);cursor:pointer;font-family:inherit">My Account</button>
-    </div>
-  </div>
 
-  <div class="stats-grid">
-    <div class="stat-card"><div class="stat-label">Calories Today</div><div class="stat-value">1,420</div><div class="stat-sub">of 2,000 goal</div></div>
-    <div class="stat-card"><div class="stat-label">Steps Today</div><div class="stat-value">6,240</div><div class="stat-sub">of 10,000 goal</div></div>
-    <div class="stat-card"><div class="stat-label">Log Streak</div><div class="stat-value">12</div><div class="stat-sub">days in a row 🔥</div></div>
-    <div class="stat-card"><div class="stat-label">Adherence</div><div class="stat-value">84%</div><div class="stat-sub">this week</div></div>
-    <div class="stat-card"><div class="stat-label">Avg Sleep</div><div class="stat-value">6.8</div><div class="stat-sub">hrs/night this week</div></div>
-  </div>
+    <div class="pl-headline">Your <em>AI fitness coach</em> lives in your text thread.</div>
+    <p class="pl-sub">Text your meals, steps, sleep, and workouts. Get personalized coaching back instantly — no app to download, no account needed to start.</p>
 
-  <div class="main-grid">
-    <!-- FOOD LOG -->
-    <div class="card">
-      <div class="card-title">🍽 Today's Food Log <span class="card-tag">AI estimates</span></div>
-      <div class="ring-wrap">
-        <svg viewBox="0 0 80 80" width="74" height="74" style="flex-shrink:0">
-          <circle cx="40" cy="40" r="32" fill="none" stroke="#e2e8f0" stroke-width="10"/>
-          <circle cx="40" cy="40" r="32" fill="none" stroke="#22c55e" stroke-width="10" stroke-dasharray="201" stroke-dashoffset="60" stroke-linecap="round" transform="rotate(-90 40 40)"/>
-          <text x="40" y="44" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="13" font-weight="700" fill="#0f172a">71%</text>
-        </svg>
-        <div style="flex:1">
-          <div style="font-size:22px;font-weight:700;font-family:inherit">1,420 <span style="font-size:13px;font-weight:400;color:var(--text-muted)">cal</span></div>
-          <div style="font-size:12px;color:var(--text-muted);margin-bottom:6px">580 remaining of 2,000</div>
-          <div class="macro-row"><span class="macro-label">Protein</span><div class="macro-track"><div class="macro-fill" style="width:68%;background:#3b82f6"></div></div><span style="font-size:11px;color:var(--text-muted)">102g</span></div>
-          <div class="macro-row"><span class="macro-label">Carbs</span><div class="macro-track"><div class="macro-fill" style="width:55%;background:#f59e0b"></div></div><span style="font-size:11px;color:var(--text-muted)">165g</span></div>
-          <div class="macro-row"><span class="macro-label">Fat</span><div class="macro-track"><div class="macro-fill" style="width:42%;background:#ef4444"></div></div><span style="font-size:11px;color:var(--text-muted)">38g</span></div>
+    <div class="convo-pair">
+      <!-- What you text -->
+      <div class="convo-card card-you">
+        <div class="convo-card-label" style="color:var(--green);">WHAT YOU TEXT → 1-888-596-LOGS</div>
+        <div class="convo-item"><div class="convo-dot"></div><div><strong>Food</strong> — "Had grilled chicken salad and water for lunch"</div></div>
+        <div class="convo-item"><div class="convo-dot"></div><div><strong>Movement</strong> — "Walked 8,500 steps, 30 min jog"</div></div>
+        <div class="convo-item"><div class="convo-dot"></div><div><strong>Sleep</strong> — "Slept 7.5 hrs, felt rested"</div></div>
+        <div class="convo-item"><div class="convo-dot"></div><div><strong>Workout</strong> — "Gym 45 min, chest and shoulders"</div></div>
+        <div class="convo-item"><div class="convo-dot"></div><div><strong>COACH</strong> — Ask your AI coach anything</div></div>
+      </div>
+
+      <!-- Number bridge -->
+      <div style="background:rgba(8,20,8,0.95);border:1.5px solid rgba(34,197,94,0.4);border-radius:14px;padding:14px 18px 12px;display:flex;flex-direction:column;align-items:center;gap:8px;">
+        <div style="display:flex;align-items:center;justify-content:center;gap:20px;">
+          <div class="num-bridge-numbers" style="text-align:right;">
+            <span class="num" style="color:#fff;-webkit-text-fill-color:#fff;">1 (888) 596-5467</span>
+            <span class="vanity" style="color:#22c55e;-webkit-text-fill-color:#22c55e;">1-888-596-LOGS</span>
+          </div>
+          <div class="num-bridge-arrows">
+            <svg width="44" height="44" viewBox="0 0 48 48" fill="none">
+              <path d="M14 4 L14 44" stroke="#22c55e" stroke-width="3.5" stroke-linecap="round"/>
+              <path d="M7 36 L14 44 L21 36" stroke="#22c55e" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M34 44 L34 4" stroke="#4ade80" stroke-width="3.5" stroke-linecap="round"/>
+              <path d="M27 12 L34 4 L41 12" stroke="#4ade80" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
         </div>
+        <div class="num-bridge-tagline" style="padding:0;">No app to download. Just you and your coach, by text.</div>
       </div>
-      <div class="food-entry">
-        <div class="food-emoji">🥚</div>
-        <div class="food-details"><div class="food-name">Scrambled eggs with toast</div><div class="food-meta">8:12 AM · via SMS</div></div>
-        <div class="cal-wrap"><input class="cal-input" type="number" value="380"><span class="cal-unit">kcal <span class="ai-tag">AI</span></span></div>
-      </div>
-      <div class="food-entry">
-        <div class="food-emoji">🥗</div>
-        <div class="food-details"><div class="food-name">Grilled chicken salad</div><div class="food-meta">12:44 PM · via SMS</div></div>
-        <div class="cal-wrap"><input class="cal-input" type="number" value="520"><span class="cal-unit">kcal <span class="ai-tag">AI</span></span></div>
-      </div>
-      <div class="food-entry">
-        <div class="food-emoji">🍌</div>
-        <div class="food-details"><div class="food-name">Banana + protein bar</div><div class="food-meta">3:30 PM · via SMS</div></div>
-        <div class="cal-wrap"><input class="cal-input" type="number" value="290"><span class="cal-unit">kcal</span></div>
-      </div>
-      <div style="font-size:11px;color:var(--text-muted);padding:8px 0;border-top:1px solid var(--border);margin-top:4px">💡 AI estimates — tap any number to correct it</div>
-    </div>
 
-    <!-- STEPS + ROUTINES -->
-    <div style="display:flex;flex-direction:column;gap:16px">
-      <div class="card">
-        <div class="card-title">🚶 Steps Today</div>
-        <div class="steps-num">6,240</div>
-        <div class="steps-goal">Goal: 10,000 steps</div>
-        <div class="steps-track"><div class="steps-fill" style="width:62.4%"></div></div>
-        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-muted);margin-bottom:8px"><span>0</span><span>62%</span><span>10k</span></div>
-        <div class="sms-hint">📲 Text <strong>steps 8432</strong> to 1-888-596-5467 (1-888-596-LOGS)</div>
-      </div>
-      <div class="card">
-        <div class="card-title">✅ Daily Routines</div>
-        <div class="routine-grid">
-          <div class="routine-chip done" onclick="toggleRoutine(this)"><span>💧</span>Hydration<span class="routine-check">✓</span></div>
-          <div class="routine-chip done" onclick="toggleRoutine(this)"><span>😴</span>Sleep Log<span class="routine-check">✓</span></div>
-          <div class="routine-chip" onclick="toggleRoutine(this)"><span>🏋</span>Training<span class="routine-check">✓</span></div>
-          <div class="routine-chip" onclick="toggleRoutine(this)"><span>🧘</span>Stretch<span class="routine-check">✓</span></div>
-          <div class="routine-chip" onclick="toggleRoutine(this)"><span>💊</span>Vitamins<span class="routine-check">✓</span></div>
-          <div class="routine-chip" onclick="toggleRoutine(this)"><span>🫁</span>Cardio<span class="routine-check">✓</span></div>
+      <!-- What FitLogs texts back -->
+      <div class="convo-card card-ai">
+        <div class="convo-card-label" style="letter-spacing:0.5px;">WHAT YOUR <span style="color:var(--green);">AI COACH</span> TEXTS BACK</div>
+        <div class="persona">
+          <div class="persona-dot" style="background:#22c55e;"></div>
+          <div><div class="persona-name">The Drill Sergeant</div><div class="persona-quote">"520 cal logged. You're 84% to goal. The gym is not optional today."</div></div>
+        </div>
+        <div class="persona">
+          <div class="persona-dot" style="background:#3b82f6;"></div>
+          <div><div class="persona-name">The Wise Mentor</div><div class="persona-quote">"Your sleep score is the quiet lever pulling everything else down. Want to work on that together?"</div></div>
+        </div>
+        <div class="persona">
+          <div class="persona-dot" style="background:#f5a623;"></div>
+          <div><div class="persona-name">The Data Nerd</div><div class="persona-quote">"Tue/Thu strength days correlate with your best sleep scores — 3 weeks running now."</div></div>
+        </div>
+        <div class="persona">
+          <div class="persona-dot" style="background:#22c55e;"></div>
+          <div><div class="persona-name">The Hype Friend</div><div class="persona-quote">"12 days straight! Hydration just went green on your spider chart for the first time 🎉"</div></div>
+        </div>
+        <div class="persona">
+          <div class="persona-dot" style="background:#a855f7;"></div>
+          <div><div class="persona-name">The Gentle One</div><div class="persona-quote">"Sounds like a hard day. Rest is part of the work. What does your body actually need right now?"</div></div>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="main-grid" style="margin-top:16px">
-    <!-- SPIDER -->
-    <div class="card">
-      <div class="card-title">🕸 Health Profile <span class="card-tag">7 metrics</span></div>
-      <div class="spider-wrap">
-        <div><div class="spider-score">74</div><div class="spider-sub">Overall Health Score</div></div>
-        <svg viewBox="0 0 300 300" width="228" height="228">
-          <defs><style>.ax{stroke:#e2e8f0;stroke-width:1}.rg{fill:none;stroke:#e2e8f0;stroke-width:.8}.ar{fill:rgba(34,197,94,.15);stroke:#22c55e;stroke-width:2}.lb{font-family:DM Sans,sans-serif;font-size:11px;fill:#64748b;font-weight:500}</style></defs>
-          <polygon class="rg" points="150,70 202,95 220,155 192,210 108,210 80,155 98,95"/>
-          <polygon class="rg" points="150,100 185,118 198,158 176,195 124,195 102,158 115,118"/>
-          <polygon class="rg" points="150,130 168,141 176,162 160,180 140,180 124,162 132,141"/>
-          <line class="ax" x1="150" y1="150" x2="150" y2="70"/><line class="ax" x1="150" y1="150" x2="202" y2="95"/>
-          <line class="ax" x1="150" y1="150" x2="220" y2="155"/><line class="ax" x1="150" y1="150" x2="192" y2="210"/>
-          <line class="ax" x1="150" y1="150" x2="108" y2="210"/><line class="ax" x1="150" y1="150" x2="80" y2="155"/>
-          <line class="ax" x1="150" y1="150" x2="98" y2="95"/>
-          <polygon class="ar" points="150,86 196,107 213,156 186,205 114,205 84,155 107,102"/>
-          <circle cx="150" cy="86" r="4" fill="#22c55e"/><circle cx="196" cy="107" r="4" fill="#22c55e"/>
-          <circle cx="213" cy="156" r="4" fill="#22c55e"/><circle cx="186" cy="205" r="4" fill="#22c55e"/>
-          <circle cx="114" cy="205" r="4" fill="#22c55e"/><circle cx="84" cy="155" r="4" fill="#22c55e"/>
-          <circle cx="107" cy="102" r="4" fill="#22c55e"/>
-          <text class="lb" x="150" y="60" text-anchor="middle">Nutrition</text>
-          <text class="lb" x="215" y="92" text-anchor="start">Training</text>
-          <text class="lb" x="228" y="158" text-anchor="start">Cardio</text>
-          <text class="lb" x="192" y="226" text-anchor="middle">Sleep</text>
-          <text class="lb" x="108" y="226" text-anchor="middle">Hydration</text>
-          <text class="lb" x="62" y="158" text-anchor="end">Adherence</text>
-          <text class="lb" x="85" y="92" text-anchor="end">Recovery</text>
-        </svg>
-        <div class="spider-legend">
-          <div class="legend-item"><div class="legend-dot" style="background:#22c55e"></div>Nutrition 80</div>
-          <div class="legend-item"><div class="legend-dot" style="background:#14b8a6"></div>Training 70</div>
-          <div class="legend-item"><div class="legend-dot" style="background:#3b82f6"></div>Cardio 65</div>
-          <div class="legend-item"><div class="legend-dot" style="background:#8b5cf6"></div>Sleep 55</div>
-          <div class="legend-item"><div class="legend-dot" style="background:#06b6d4"></div>Hydration 90</div>
-          <div class="legend-item"><div class="legend-dot" style="background:#f59e0b"></div>Adherence 84</div>
-          <div class="legend-item"><div class="legend-dot" style="background:#ef4444"></div>Recovery 70</div>
+  <div class="pl-footer">
+    © 2026 Athens Innovation and Development LLC ·
+    <a href="/privacy.html" style="color:var(--muted);text-decoration:none;">Privacy</a> ·
+    <a href="/terms.html" style="color:var(--muted);text-decoration:none;">Terms</a> ·
+    <a href="mailto:admin@fitlogs.ai" style="color:var(--muted);text-decoration:none;">Contact</a>
+  </div>
+</div>
+</div>
+
+<!-- Auth column -->
+<div style="display:flex;flex-direction:column;justify-content:center;padding:24px 20px;overflow-y:auto;border-right:1px solid var(--border);order:1;">
+<div class="login-wrap">
+  <div style="display:flex;gap:0;margin-bottom:16px;background:var(--dark);border-radius:10px;padding:3px;">
+    <button id="tab-login" onclick="switchTab('login')" style="flex:1;padding:8px;border:none;border-radius:8px;background:var(--green);color:#000;font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;transition:all 0.18s;">Sign In</button>
+    <button id="tab-signup" onclick="switchTab('signup')" style="flex:1;padding:8px;border:none;border-radius:8px;background:transparent;color:var(--muted);font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;transition:all 0.18s;">Create Account</button>
+  </div>
+
+  <div class="login-card">
+    <!-- Signup -->
+    <div id="step-signup" class="step">
+      <div style="font-size:14px;font-weight:700;color:var(--white);margin-bottom:4px;">Create your account</div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:12px;">Your phone number is your primary identity.</div>
+      <div class="grid-cc">
+        <div><label class="f-label" for="su-cc">Country</label><select class="f-input" id="su-cc" onchange="resetOtp()" style="cursor:pointer;" aria-label="Country code"><option value="+1">🇺🇸 +1</option></select></div>
+        <div><label class="f-label" for="su-phone">Phone</label><input class="f-input" id="su-phone" type="tel" placeholder="Phone number" autocomplete="tel" oninput="resetOtp()" aria-required="true"></div>
+      </div>
+      <div class="field-wrap"><label class="f-label" for="su-email">Email</label><input class="f-input" id="su-email" type="email" placeholder="Email address" autocomplete="email" aria-required="true"></div>
+      <div class="field-wrap"><label class="f-label" for="su-pw">Password</label><input class="f-input" id="su-pw" type="password" placeholder="Min 8 characters" autocomplete="new-password" aria-required="true"></div>
+      <div class="field-wrap"><label class="f-label" for="su-pw2">Confirm Password</label><input class="f-input" id="su-pw2" type="password" placeholder="Repeat password" autocomplete="new-password" aria-required="true"></div>
+
+      <!-- SMS Consent checkbox -->
+      <div class="consent-row">
+        <input type="checkbox" id="sms-consent" aria-required="true">
+        <label for="sms-consent">I agree to receive SMS text messages from FitLogs including AI coaching responses, workout confirmations, check-ins, and account notifications. Message and data rates may apply. Reply STOP to opt out at any time. <a href="/privacy.html" target="_blank">Privacy Policy</a> · <a href="/terms.html" target="_blank">Terms of Service</a></label>
+      </div>
+
+      <!-- OTP section -->
+      <div class="otp-section" id="otp-section">
+        <label class="f-label" for="otp-input">Verification Code</label>
+        <div class="otp-input-row">
+          <input class="otp-input" id="otp-input" aria-label="6-digit verification code" type="tel" maxlength="6" placeholder="000000" onkeydown="if(event.key==='Enter')verifyOtp()" aria-required="true">
+        </div>
+        <div class="otp-hint">Enter the 6-digit code sent to your phone.</div>
+        <button class="btn-safe" onclick="verifyOtp()" id="otp-verify-btn" style="margin-top:8px;width:100%;" aria-label="Confirm verification code">Confirm Code</button>
+        <div style="text-align:center;margin-top:8px;">
+          <span class="otp-resend" onclick="sendOtp(true)">Did not receive a code? Resend</span>
         </div>
       </div>
+      <div class="otp-verified" id="otp-verified">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Phone number verified
+      </div>
+      <button class="btn-safe" id="signup-btn" onclick="sendOtp()" style="margin-top:10px;" aria-label="Send verification code">Send Verification Code</button>
+      <div class="err-box" id="signup-err" role="alert" aria-live="assertive"></div>
+      <div class="ok-box" id="signup-ok" role="status" aria-live="polite"></div>
     </div>
 
-    <!-- AI COACH CHAT -->
-    <div class="card">
-      <div class="card-title">💬 AI Coach <span class="card-tag" style="background:#ede9fe;color:#6d28d9;border-color:#c4b5fd">Coach tier</span></div>
-      <div class="coach-chat" id="coachChat">
-        <div class="chat-msg ai">Hey! 84% adherence this week — genuinely strong. Your sleep score is the one area pulling your number down. Want to work through what's getting in the way?<div class="msg-time">9:02 AM</div></div>
-        <div class="chat-msg user">I keep staying up too late scrolling. Hard to wind down.<div class="msg-time">9:15 AM</div></div>
-        <div class="chat-msg ai">Really common — scrolling keeps your brain in alert mode right when it needs to shift down. Try a hard phone stop at 10pm just for this week. Not about sleep itself, just the phone. What time do you usually start?<div class="msg-time">9:16 AM</div></div>
-      </div>
-      <div class="chat-input-wrap">
-        <textarea class="chat-input" id="chatInput" placeholder="Talk to your AI coach..." onkeydown="handleChatKey(event)"></textarea>
-        <button class="chat-send" onclick="sendChat()">Send</button>
-      </div>
-      <div style="font-size:11px;color:var(--text-muted);margin-top:8px">💬 Also works via SMS — text anything to 1-888-596-5467</div>
-    </div>
-  </div>
-
-  <div class="main-grid" style="margin-top:16px">
-    <div class="entry-panel">
-      <div class="entry-tabs">
-        <button class="entry-tab active" onclick="switchDashTab(this,'food')">🍽 Food</button>
-        <button class="entry-tab" onclick="switchDashTab(this,'steps')">🚶 Steps</button>
-        <button class="entry-tab" onclick="switchDashTab(this,'routine')">✅ Routine</button>
-        <button class="entry-tab" onclick="switchDashTab(this,'note')">📝 Note</button>
-      </div>
-      <div class="entry-body">
-        <div id="tabFood"><textarea class="entry-ta" placeholder="Describe your meal — AI estimates the calories.&#10;&#10;e.g. grilled chicken brown rice broccoli&#10;e.g. Chipotle burrito bowl chicken guac"></textarea><div class="entry-actions"><span class="entry-hint">Or text to 1-888-596-LOGS</span><button class="save-btn" onclick="saveEntry(this)">Estimate Calories</button></div></div>
-        <div id="tabSteps" style="display:none"><div style="display:flex;gap:10px;align-items:center;margin-bottom:10px"><input type="number" id="stepsInput" placeholder="e.g. 8432" style="flex:1;border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;font-size:18px;font-weight:600;font-family:inherit"><span style="color:var(--text-muted);font-size:14px">steps</span></div><div class="sms-hint">📲 Or text: <strong>steps 8432</strong> to 1-888-596-5467</div><div class="entry-actions" style="margin-top:10px"><span class="entry-hint">Updates your daily total</span><button class="save-btn" onclick="saveEntry(this)">Log Steps</button></div></div>
-        <div id="tabRoutine" style="display:none"><textarea class="entry-ta" placeholder="Log any routine:&#10;• gym 45min strength&#10;• ran 3 miles&#10;• yoga 30min&#10;• vitamins taken&#10;• 8hr sleep · 2L water"></textarea><div class="entry-actions"><span class="entry-hint">Or text to 1-888-596-LOGS</span><button class="save-btn" onclick="saveEntry(this)">Log Routine</button></div></div>
-        <div id="tabNote" style="display:none"><textarea class="entry-ta" placeholder="Personal note — energy, soreness, motivation, stress..."></textarea><div class="entry-actions"><span class="entry-hint">Private — visible only to you</span><button class="save-btn" onclick="saveEntry(this)">Save Note</button></div></div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">📨 SMS Log <span class="card-tag">Latest first</span></div>
-      <div class="msg-log">
-        <div class="msg-item"><div class="msg-meta"><span class="msg-type mt-food">food</span><span class="msg-time">Today 3:30 PM</span></div><div>banana protein bar — AI estimated 290 kcal ✅</div></div>
-        <div class="msg-item"><div class="msg-meta"><span class="msg-type mt-steps">steps</span><span class="msg-time">Today 2:15 PM</span></div><div>steps 6240 — 62% of 10k goal</div></div>
-        <div class="msg-item"><div class="msg-meta"><span class="msg-type mt-coach">coach</span><span class="msg-time">Today 9:16 AM</span></div><div>AI coach — sleep and wind-down routine discussion</div></div>
-        <div class="msg-item"><div class="msg-meta"><span class="msg-type mt-food">food</span><span class="msg-time">Today 12:44 PM</span></div><div>grilled chicken salad — AI estimated 520 kcal ✅</div></div>
-        <div class="msg-item"><div class="msg-meta"><span class="msg-type mt-routine">routine</span><span class="msg-time">Today 10:00 AM</span></div><div>2L water ✅</div></div>
-        <div class="msg-item"><div class="msg-meta"><span class="msg-type mt-food">food</span><span class="msg-time">Today 8:12 AM</span></div><div>scrambled eggs toast — AI estimated 380 kcal ✅</div></div>
-        <div class="msg-item"><div class="msg-meta"><span class="msg-type mt-sleep">sleep</span><span class="msg-time">Yesterday 10:30 PM</span></div><div>slept 6.5 hours ✅</div></div>
-        <div class="msg-item"><div class="msg-meta"><span class="msg-type mt-routine">routine</span><span class="msg-time">Yesterday 6:00 PM</span></div><div>gym 60min strength bench squat deadlift ✅</div></div>
-      </div>
+    <!-- Login -->
+    <div id="step-login" class="step active">
+      <div style="font-size:14px;font-weight:700;color:var(--white);margin-bottom:4px;">Welcome back</div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:12px;">Enter your phone or email and password.</div>
+      <div class="field-wrap"><label class="f-label" for="login-id">Phone or Email</label><input class="f-input" id="login-id" type="text" placeholder="Email or 10-digit US phone number" autocomplete="off" aria-required="true"></div>
+      <div class="field-wrap"><label class="f-label" for="login-pw">Password</label><input class="f-input" id="login-pw" type="password" placeholder="Your password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()" aria-required="true"></div>
+      <div class="forgot-link"><a onclick="doForgotPw()" aria-label="Reset your password">Forgot password?</a></div>
+      <div class="err-box" id="login-err" role="alert" aria-live="assertive"></div>
+      <div class="ok-box" id="login-ok" role="status" aria-live="polite"></div>
+      <button class="btn-safe" onclick="doLogin()" id="login-btn" style="margin-top:6px;width:100%;">Sign In</button>
     </div>
   </div>
+</div>
+</div>
 
-  <div class="lab-card">
-    <div style="display:flex;align-items:flex-start;gap:16px">
-      <div style="font-size:30px;flex-shrink:0">🧪</div>
-      <div style="flex:1">
-        <div style="font-family:inherit;font-size:14px;font-weight:700;color:var(--slate);margin-bottom:4px;display:flex;align-items:center;gap:8px">Lab Report Tracking <span style="font-size:10px;font-weight:700;background:var(--amber);color:#fff;padding:2px 8px;border-radius:20px;letter-spacing:.5px">COMING IN V2</span></div>
-        <div style="font-size:13px;color:var(--text-secondary);margin-bottom:10px">Upload your lipid panel, A1C, blood pressure and other lab results. AI extracts the values — only numbers you confirm are saved. Documents are never stored.</div>
-        <div class="lab-metrics">
-          <div class="lab-metric"><div class="lab-metric-label">LDL</div><div class="lab-metric-value">—</div></div>
-          <div class="lab-metric"><div class="lab-metric-label">HDL</div><div class="lab-metric-value">—</div></div>
-          <div class="lab-metric"><div class="lab-metric-label">A1C</div><div class="lab-metric-value">—</div></div>
-          <div class="lab-metric"><div class="lab-metric-label">Blood Pressure</div><div class="lab-metric-value">—</div></div>
-          <div class="lab-metric"><div class="lab-metric-label">Vitamin D</div><div class="lab-metric-value">—</div></div>
-          <div class="lab-metric"><div class="lab-metric-label">Thyroid</div><div class="lab-metric-value">—</div></div>
-        </div>
-        <div style="font-size:11px;color:var(--text-muted)">🔒 Full HIPAA disclosure required before upload. Documents analyzed then discarded.</div>
-      </div>
+<!-- Pricing column -->
+<div class="login-right">
+<div class="pricing-inner">
+  <div class="pricing-title">Choose your plan</div>
+  <div class="pricing-cards">
+
+    <div class="pricing-card">
+      <div class="pricing-card-accent" style="background:var(--muted);"></div>
+      <div class="pricing-tier">Track</div>
+      <div class="pricing-price">$4.99<span>/month</span></div>
+      <div class="pricing-desc">Log your fitness journey via SMS. AI coach responds to every text.</div>
+      <ul class="pricing-features">
+        <li>Unlimited SMS fitness logging</li>
+        <li>AI coach replies to every log</li>
+        <li>SUMMARY and COACH commands</li>
+        <li class="no">No dashboard</li>
+        <li class="no">No analytics</li>
+      </ul>
+      <a href="#" onclick="document.getElementById('login-id').focus();return false;" class="pricing-cta free">Start Logging</a>
     </div>
+
+    <div class="pricing-card featured">
+      <div class="pricing-card-accent" style="background:var(--green);"></div>
+      <div class="pricing-badge">Most Popular</div>
+      <div class="pricing-tier">Coach</div>
+      <div class="pricing-price">$14.99<span>/month</span></div>
+      <div class="pricing-desc">Full dashboard with AI insights, progress charts, and coaching history.</div>
+      <div style="background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.2);border-radius:6px;padding:5px 10px;font-size:11px;color:var(--green);margin-bottom:8px;text-align:center;">✨ 30-day free trial</div>
+      <ul class="pricing-features">
+        <li>Everything in Track</li>
+        <li>Full fitness dashboard</li>
+        <li>Progress charts and streaks</li>
+        <li>Calorie and macro tracking</li>
+        <li>Daily email summary</li>
+        <li>AI coach chat on dashboard</li>
+      </ul>
+      <a href="#" class="pricing-cta pro">Start Free Trial</a>
+    </div>
+
+    <div class="pricing-card">
+      <div class="pricing-card-accent" style="background:var(--blue);"></div>
+      <div class="pricing-tier">Trainer</div>
+      <div class="pricing-price">$29.99<span>/month</span></div>
+      <div class="pricing-desc">For personal trainers managing multiple clients via SMS.</div>
+      <ul class="pricing-features">
+        <li>Everything in Coach</li>
+        <li>Up to 10 client accounts</li>
+        <li>Earn $4.99/client/month</li>
+        <li>Client progress overview</li>
+        <li>Weekly digest for all clients</li>
+      </ul>
+      <a href="#" class="pricing-cta premium">Get Trainer Plan</a>
+    </div>
+
   </div>
+</div>
+</div>
 
-</div><!-- /dashboard -->
+</div><!-- end login-body -->
 
-
-</main>
-<footer>
-  © 2026 Athens Innovation and Development LLC &nbsp;·&nbsp;
-  <a href="/">Home</a>
-  <a href="/terms.html">Terms of Service</a>
-  <a href="/privacy.html">Privacy Policy</a>
-  <a href="mailto:hello@fitlogs.ai">Contact</a>
+<footer style="position:relative;z-index:1;text-align:center;padding:20px 24px;border-top:1px solid var(--border);font-size:11px;color:var(--muted);line-height:2;">
+  <div>© 2026 Athens Innovation and Development LLC</div>
+  <div style="display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:4px;">
+    <a href="/privacy.html" style="color:var(--muted);text-decoration:none;">Privacy Policy</a>
+    <span>·</span>
+    <a href="/terms.html" style="color:var(--muted);text-decoration:none;">Terms of Service</a>
+    <span>·</span>
+    <a href="mailto:admin@fitlogs.ai" style="color:var(--muted);text-decoration:none;">Contact</a>
+  </div>
 </footer>
 
+</div><!-- end login-screen -->
 
-<!-- FIREBASE AUTH (module) -->
+<!-- DASHBOARD -->
+<div id="dashboard-screen" class="screen">
+  <nav class="dash-nav" role="navigation" aria-label="Dashboard navigation">
+    <div class="dash-nav-logo">
+      💪 Fit<span>Logs</span><span style="font-size:11px;font-weight:400;color:rgba(34,197,94,0.6);margin-left:2px;">.AI</span>
+    </div>
+    <div class="dash-nav-right">
+      <button id="dash-theme-toggle" onclick="toggleTheme()" aria-label="Toggle light/dark mode"
+        style="background:rgba(34,197,94,0.06);border:1px solid var(--border);border-radius:16px;padding:5px 12px;cursor:pointer;color:var(--text);font-size:12px;font-family:var(--font);font-weight:600;display:flex;align-items:center;gap:5px;">
+        <span id="dash-theme-icon">☀️</span><span id="dash-theme-label">Dark</span>
+      </button>
+      <div class="phone-chip"><div class="udot"></div><span id="nav-phone">...</span></div>
+      <button class="nav-btn" onclick="openSettings()" aria-label="Account settings">⚙️</button>
+      <button class="nav-btn" onclick="doLogout()">Sign Out</button>
+    </div>
+  </nav>
+
+  <div class="paywall-banner" id="paywall-banner">
+    <div class="paywall-banner-text">You are on the <strong>Track tier</strong> — upgrade to <strong>Coach</strong> to unlock your full dashboard, analytics, and AI coach chat.</div>
+    <a href="#" class="paywall-banner-btn">Upgrade to Coach — $14.99/mo</a>
+  </div>
+
+  <div class="dash-split">
+    <div class="dash-main">
+
+      <div class="section-hdr"><span class="section-title">Overview — Last 30 Days</span></div>
+
+      <div class="cards-row cols-4">
+        <div class="stat-card"><div class="stat-accent" style="background:var(--green);"></div><div class="stat-icon">📋</div><div class="stat-label">Total Logs</div><div class="stat-value" id="stat-total">—</div><div class="stat-sub" id="stat-total-sub">Loading...</div></div>
+        <div class="stat-card"><div class="stat-accent" style="background:var(--blue);"></div><div class="stat-icon">🔥</div><div class="stat-label">Day Streak</div><div class="stat-value" id="stat-streak">—</div><div class="stat-sub">Consecutive days</div></div>
+        <div class="stat-card"><div class="stat-accent" style="background:var(--warn);"></div><div class="stat-icon">🍽️</div><div class="stat-label">Food Logs</div><div class="stat-value" id="stat-food">—</div><div class="stat-sub" id="stat-food-sub">Meals tracked</div></div>
+        <div class="stat-card"><div class="stat-accent" style="background:var(--purple);"></div><div class="stat-icon">💪</div><div class="stat-label">Workouts</div><div class="stat-value" id="stat-workouts">—</div><div class="stat-sub" id="stat-workouts-sub">Sessions logged</div></div>
+      </div>
+
+      <div class="cards-row cols-3">
+        <div class="wide-card" style="margin-bottom:0;"><div class="wide-card-title">Recent Activity</div><div id="recent-logs" class="log-list"><div class="empty">Loading...</div></div></div>
+        <div class="wide-card locked" id="food-card" style="margin-bottom:0;">
+          <div class="wide-card-title">Food Log <span style="font-size:10px;color:var(--muted);font-weight:400;">Last 30 days</span></div>
+          <div id="food-list" class="freq-list locked-content"><div class="empty">Loading...</div></div>
+          <div class="lock-overlay" id="food-lock" style="display:none;">
+            <div class="lock-icon">🍽️</div><div class="lock-text">Food Analysis Locked</div>
+            <div class="lock-sub">Upgrade to see your nutrition patterns</div>
+            <a href="#" class="lock-btn">Upgrade — $14.99/mo</a>
+          </div>
+        </div>
+        <div class="wide-card locked" id="activity-card" style="margin-bottom:0;">
+          <div class="wide-card-title">Activity Log <span style="font-size:10px;color:var(--muted);font-weight:400;">Last 30 days</span></div>
+          <div id="activity-list" class="freq-list locked-content"><div class="empty">Loading...</div></div>
+          <div class="lock-overlay" id="activity-lock" style="display:none;">
+            <div class="lock-icon">🏃</div><div class="lock-text">Activity Analysis Locked</div>
+            <div class="lock-sub">Upgrade to see your movement patterns</div>
+            <a href="#" class="lock-btn">Upgrade — $14.99/mo</a>
+          </div>
+        </div>
+      </div>
+      <div style="margin-bottom:24px;"></div>
+
+      <div class="cards-row cols-2">
+        <div class="wide-card locked" id="spider-card" style="margin-bottom:0;">
+          <div class="wide-card-title">Fitness Profile <span style="font-size:10px;color:var(--muted);font-weight:400;">Consistency score</span></div>
+          <div class="locked-content">
+            <div class="integrity-row">
+              <div><div class="integrity-score" id="integrity-score">—</div><div class="integrity-label">Overall Score</div></div>
+              <div class="integrity-desc" id="integrity-desc">Analyzing your fitness logs...</div>
+            </div>
+            <canvas id="spider-canvas" width="300" height="260" style="display:block;margin:0 auto;" role="img" aria-label="Fitness profile chart showing scores across: Consistency, Nutrition, Sleep, Movement, Hydration, Workouts, Streak"></canvas>
+          </div>
+          <div class="lock-overlay" id="spider-lock" style="display:none;">
+            <div class="lock-icon">📊</div><div class="lock-text">Fitness Profile Locked</div>
+            <div class="lock-sub">Upgrade to see your fitness score</div>
+            <a href="#" class="lock-btn">Upgrade — $14.99/mo</a>
+          </div>
+        </div>
+        <div class="wide-card locked" id="sleep-card" style="margin-bottom:0;">
+          <div class="wide-card-title">Sleep & Recovery <span style="font-size:10px;color:var(--muted);font-weight:400;">Last 30 days</span></div>
+          <div id="sleep-list" class="freq-list locked-content"><div class="empty">Loading...</div></div>
+          <div class="lock-overlay" id="sleep-lock" style="display:none;">
+            <div class="lock-icon">😴</div><div class="lock-text">Sleep Analysis Locked</div>
+            <div class="lock-sub">Upgrade to see your sleep patterns</div>
+            <a href="#" class="lock-btn">Upgrade — $14.99/mo</a>
+          </div>
+        </div>
+      </div>
+      <div style="margin-bottom:24px;"></div>
+
+      <!-- Log entry widget -->
+      <div class="log-widget">
+        <div class="log-widget-title">📝 Add a Log Entry</div>
+        <div class="log-boxes">
+          <div class="log-box">
+            <div class="log-box-label"><div class="log-box-label-dot" style="background:var(--green);"></div>Food & Nutrition</div>
+            <textarea class="log-ta" id="food-ta" placeholder="What did you eat? E.g. 'Had oatmeal with berries and black coffee for breakfast around 8am'" rows="4" oninput="updateCharCount('food-ta','food-count')"></textarea>
+            <div class="log-actions-row">
+              <div style="display:flex;align-items:center;gap:10px;">
+                <div class="log-action-btns">
+                  <button class="log-action-btn" id="food-mic-btn" onclick="toggleVoice('food-ta','food-mic-btn')" title="Voice input">🎤</button>
+                </div>
+                <span class="log-char-count" id="food-count">0 / 500</span>
+              </div>
+              <div>
+                <span class="log-success" id="food-success">✅ Saved!</span>
+                <button class="log-send-btn" data-type="food" onclick="submitLog('food')">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="#000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  Log It
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="log-box">
+            <div class="log-box-label"><div class="log-box-label-dot" style="background:var(--blue);"></div>Movement & Workout</div>
+            <textarea class="log-ta" id="activity-ta" placeholder="What did you do? E.g. 'Ran 3 miles in 28 minutes, felt strong' or 'Gym 45 min, chest day — 3 sets bench'" rows="4" oninput="updateCharCount('activity-ta','activity-count')"></textarea>
+            <div class="log-actions-row">
+              <div style="display:flex;align-items:center;gap:10px;">
+                <div class="log-action-btns">
+                  <button class="log-action-btn" id="activity-mic-btn" onclick="toggleVoice('activity-ta','activity-mic-btn')" title="Voice input">🎤</button>
+                </div>
+                <span class="log-char-count" id="activity-count">0 / 500</span>
+              </div>
+              <div>
+                <span class="log-success" id="activity-success">✅ Saved!</span>
+                <button class="log-send-btn" data-type="activity" onclick="submitLog('activity')">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="#000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  Log It
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Messages -->
+      <div class="wide-card locked" id="messages-card">
+        <div class="wide-card-title">
+          Log History
+          <button class="show-msgs-btn" id="show-msgs-btn" onclick="toggleMessages()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            Show Logs
+          </button>
+        </div>
+        <div class="msg-panel" id="msg-panel">
+          <div class="filter-bar">
+            <input class="filter-input" id="filter-keyword" type="text" placeholder="Search keyword e.g. chicken, gym, sleep..." oninput="applyFilters()">
+            <input class="filter-input" id="filter-date-from" type="date" onchange="applyFilters()" style="max-width:150px;">
+            <input class="filter-input" id="filter-date-to" type="date" onchange="applyFilters()" style="max-width:150px;">
+            <button class="filter-btn" onclick="clearFilters()">Clear</button>
+          </div>
+          <div class="msg-count" id="msg-count"></div>
+          <div id="msg-list"></div>
+        </div>
+      </div>
+
+    </div><!-- end dash-main -->
+
+    <!-- AI Coach Chat Panel -->
+    <div class="dash-chat-panel" id="insights-widget">
+      <div class="dash-chat-header">
+        <div class="dash-chat-header-title">
+          🤖 Ask Your AI Coach
+          <span style="font-size:10px;font-weight:400;color:var(--muted);">Claude AI</span>
+        </div>
+      </div>
+      <div class="dash-chat-suggestions">
+        <span class="dash-chat-suggestion" onclick="askInsight('Summarize my last 30 days')">📋 30-day summary</span>
+        <span class="dash-chat-suggestion" onclick="askInsight('How is my nutrition looking?')">🍽️ Nutrition</span>
+        <span class="dash-chat-suggestion" onclick="askInsight('What does my sleep look like?')">😴 Sleep</span>
+        <span class="dash-chat-suggestion" onclick="askInsight('What patterns do you see in my workouts?')">💪 Workouts</span>
+        <span class="dash-chat-suggestion" onclick="askInsight('What should I focus on this week?')">🎯 This week</span>
+        <span class="dash-chat-suggestion" onclick="askInsight('How is my consistency streak?')">🔥 Streak</span>
+      </div>
+      <div class="dash-chat-body" id="insights-chat"></div>
+      <div class="dash-chat-footer">
+        <div class="dash-chat-input-row">
+          <input class="dash-chat-input" id="insights-input" type="text"
+            placeholder="Ask your coach anything..."
+            onkeydown="if(event.key==='Enter')sendInsight()">
+          <button class="dash-chat-send" id="insights-send-btn" onclick="sendInsight()">Ask</button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end dash-split -->
+</div><!-- end dashboard-screen -->
+
+<script>
+function toggleTheme(){
+  const current = document.documentElement.getAttribute('data-theme') || 'light';
+  const next = current === 'light' ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('fitlogs-theme', next);
+  updateThemeButtons(next);
+}
+function updateThemeButtons(theme){
+  const isLight = theme === 'light';
+  const icon = isLight ? '☀️' : '🌙';
+  const label = isLight ? 'Dark' : 'Light';
+  ['theme-icon','dash-theme-icon'].forEach(id => { const el = document.getElementById(id); if(el) el.textContent = icon; });
+  ['theme-label','dash-theme-label'].forEach(id => { const el = document.getElementById(id); if(el) el.textContent = label; });
+}
+(function(){
+  const saved = localStorage.getItem('fitlogs-theme') || 'light';
+  document.documentElement.setAttribute('data-theme', saved);
+  document.addEventListener('DOMContentLoaded', () => updateThemeButtons(saved));
+})();
+</script>
+
 <script type="module">
-import { initializeApp }              from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword,
-         signInWithEmailAndPassword, signOut, updateProfile,
-         sendPasswordResetEmail }     from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, doc, setDoc, getDoc, getDocs, collection,
-         query, where, collectionGroup,
-         serverTimestamp }            from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword,
+         signOut, onAuthStateChanged, sendPasswordResetEmail, updateProfile }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, collection, collectionGroup, doc, setDoc, getDoc, getDocs,
+         addDoc, query, where, orderBy, serverTimestamp }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const fbApp = initializeApp({
-  apiKey:            "AIzaSyB4tzLecMq4YdFsNvhSyPBTMWYhgtiv1Y0",
-  authDomain:        "fitlogs-dev.firebaseapp.com",
-  projectId:         "fitlogs-dev",
-  storageBucket:     "fitlogs-dev.firebasestorage.app",
-  messagingSenderId: "449996807760",
-  appId:             "1:449996807760:web:3b79c5788e88dbf4b57b55"
+  apiKey:            "AIzaSyCijB-swICTSogPkJEy4IUskw4IRCc5eas",
+  authDomain:        "fitlogs-prod.firebaseapp.com",
+  projectId:         "fitlogs-prod",
+  storageBucket:     "fitlogs-prod.firebasestorage.app",
+  messagingSenderId: "637779864992",
+  appId:             "1:637779864992:web:2a709ffa36c49e557e48c5"
 });
-
 const auth = getAuth(fbApp);
 const db   = getFirestore(fbApp);
 
-// ── Helpers ──────────────────────────────────────────────────────
-const encEmail   = e => e.replace(/\./g,'_dot_').replace(/@/g,'_at_');
+const RAILWAY_URL = 'https://fitlogs-webhook-production.up.railway.app';
+
+const encEmail = e => e.replace(/\./g,'_dot_').replace(/@/g,'_at_');
 const emailsCol  = p => collection(db,'users',p,'emails');
-const normPhone  = (cc,ph) => '+' + cc.replace(/\D/g,'') + ph.replace(/\D/g,'');
-const WEBHOOK    = 'https://fitlogs-webhook-production.up.railway.app';
+const logsCol    = p => collection(db,'users',p,'logs');
+const normPhone  = (cc,ph) => '+'+cc.replace(/\D/g,'')+ph.replace(/\D/g,'');
 
-let currentPhone  = null;
-let phoneVerified = false;
+let currentPhone = null;
+let allLogs      = [];
+let msgsVisible  = false;
 
-// ── Error messages ────────────────────────────────────────────────
-const ERR = {
-  'auth/email-already-in-use':  'An account with that email already exists.',
-  'auth/invalid-email':         'Please enter a valid email address.',
-  'auth/weak-password':         'Password must be at least 8 characters.',
-  'auth/user-not-found':        'No account found. Please check your details.',
-  'auth/wrong-password':        'Incorrect password. Please try again.',
-  'auth/too-many-requests':     'Too many attempts. Please wait a moment and try again.',
-  'auth/network-request-failed':'Network error. Please check your connection.',
-};
-const fErr = code => ERR[code] || 'Something went wrong. Please try again.';
-const showErr = (id,msg) => { const el=document.getElementById(id); el.textContent=msg; el.style.display='block'; };
-const showOk  = (id,msg) => { const el=document.getElementById(id); el.textContent=msg; el.style.display='block'; };
-const clearMsg = id => { const el=document.getElementById(id); if(el){el.textContent=''; el.style.display='none';} };
-
-// ── Auth state ────────────────────────────────────────────────────
+// AUTH STATE
 onAuthStateChanged(auth, async user => {
+  document.getElementById('app-loading').classList.add('hide');
   if(user){
+    await user.reload();
     currentPhone = await resolvePhone(user);
-    await showDashboardForUser(user);
+    await showDashboard(user);
   } else {
-    showLanding();
+    // Reset stale state
+    phoneVerified = false;
+    const sBtn = document.getElementById('signup-btn');
+    if(sBtn){ sBtn.disabled=false; sBtn.textContent='Send Verification Code'; sBtn.onclick=()=>sendOtp(); }
+    const oSection = document.getElementById('otp-section');
+    if(oSection) oSection.classList.remove('show');
+    const oVerified = document.getElementById('otp-verified');
+    if(oVerified) oVerified.classList.remove('show');
+    ['su-phone','su-email','su-pw','su-pw2','otp-input'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+    ['signup-err','signup-ok','login-err','login-ok'].forEach(id=>{ const el=document.getElementById(id); if(el){ el.textContent=''; el.classList.remove('show'); } });
+    switchTab('login');
+    showScreen('login-screen');
   }
 });
 
 async function resolvePhone(user){
-  if(user.displayName && /^\+?\d{7,}$/.test(user.displayName.replace(/[\s\-()]/g,''))){
-    return user.displayName;
-  }
+  if(user.displayName && /^\+?\d{7,}$/.test(user.displayName.replace(/[\s\-()]/g,''))) return user.displayName;
   try{
     const q = query(collectionGroup(db,'profile'), where('uid','==',user.uid));
     const snap = await getDocs(q);
@@ -768,7 +867,7 @@ async function resolvePhone(user){
         if(phone && /^\+?\d{7,}$/.test(phone.replace(/\s/g,''))) return phone;
       }
     }
-  } catch(e){}
+  } catch(e){ console.warn('resolvePhone profile failed:',e); }
   try{
     const q = query(collectionGroup(db,'emails'), where('email','==',user.email));
     const snap = await getDocs(q);
@@ -776,257 +875,614 @@ async function resolvePhone(user){
       const phone = snap.docs[0].ref.parent.parent?.id;
       if(phone && /^\+?\d{7,}$/.test(phone.replace(/\s/g,''))) return phone;
     }
-  } catch(e){}
+  } catch(e){ console.warn('resolvePhone emails failed:',e); }
   return user.displayName || user.email;
 }
 
-async function showDashboardForUser(user){
-  document.getElementById('landing').style.display   = 'none';
-  document.getElementById('dashboard').style.display = 'block';
-  const h = new Date().getHours();
-  document.getElementById('dashGreeting').textContent =
-    (h<12?'Good morning':h<17?'Good afternoon':'Good evening') + ' 👋';
-}
-
-function showLanding(){
-  document.getElementById('landing').style.display   = 'block';
-  document.getElementById('dashboard').style.display = 'none';
-}
-
-// ── OTP ───────────────────────────────────────────────────────────
-window.sendOtp = async function(){
-  const cc    = document.getElementById('su-cc').value.trim() || '+1';
-  const phone = document.getElementById('su-phone').value.trim();
-  clearMsg('signup-err'); clearMsg('signup-ok');
-  if(!phone){ showErr('signup-err','Please enter your phone number.'); return; }
-  const fullPhone = normPhone(cc, phone);
-  const btn = document.getElementById('signup-btn');
-  btn.disabled = true; btn.textContent = 'Sending...';
-  try{
-    const res = await fetch(`${WEBHOOK}/verify/send`, {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({phone: fullPhone})
-    });
-    const data = await res.json();
-    if(data.success){
-      document.getElementById('otp-section').style.display = 'block';
-      btn.textContent = 'Create Account';
-      btn.onclick = () => doSignup();
-      showOk('signup-ok', `Code sent to ${fullPhone}`);
-    } else {
-      showErr('signup-err', data.error || 'Could not send code. Please try again.');
-      btn.disabled = false; btn.textContent = 'Send Verification Code';
-    }
-  } catch(e){
-    showErr('signup-err','Connection error. Please try again.');
-    btn.disabled = false; btn.textContent = 'Send Verification Code';
-  }
-};
-
-window.confirmOtp = async function(){
-  const cc    = document.getElementById('su-cc').value.trim() || '+1';
-  const phone = document.getElementById('su-phone').value.trim();
-  const code  = document.getElementById('otp-input').value.trim();
-  clearMsg('signup-err');
-  if(!code){ showErr('signup-err','Please enter the verification code.'); return; }
-  const fullPhone = normPhone(cc, phone);
-  try{
-    const res = await fetch(`${WEBHOOK}/verify/check`, {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({phone: fullPhone, code})
-    });
-    const data = await res.json();
-    if(data.success){
-      phoneVerified = true;
-      document.getElementById('otp-section').style.display       = 'none';
-      document.getElementById('phone-verified-badge').style.display = 'block';
-      const btn = document.getElementById('signup-btn');
-      btn.disabled = false; btn.textContent = 'Create Account & Start Trial';
-      btn.onclick = () => doSignup();
-    } else {
-      showErr('signup-err', 'Invalid code. Please try again.');
-    }
-  } catch(e){
-    showErr('signup-err','Connection error. Please try again.');
-  }
-};
-
-// ── Signup ────────────────────────────────────────────────────────
-window.doSignup = async function(){
-  const cc    = document.getElementById('su-cc').value.trim() || '+1';
-  const phone = document.getElementById('su-phone').value.trim();
-  const email = document.getElementById('su-email').value.trim();
-  const pw    = document.getElementById('su-pw').value;
-  const pw2   = document.getElementById('su-pw2').value;
-  const btn   = document.getElementById('signup-btn');
-  clearMsg('signup-err'); clearMsg('signup-ok');
-  if(!phone||!email){ showErr('signup-err','Please fill in all fields.'); return; }
-  if(pw.length < 8){ showErr('signup-err','Password must be at least 8 characters.'); return; }
-  if(pw !== pw2){ showErr('signup-err','Passwords do not match.'); return; }
-  if(!phoneVerified){ showErr('signup-err','Please verify your phone number first.'); return; }
-  const fullPhone = normPhone(cc, phone);
-  btn.disabled = true; btn.textContent = 'Creating account...';
-  try{
-    const cred = await createUserWithEmailAndPassword(auth, email, pw);
-    await updateProfile(cred.user, {displayName: fullPhone});
-    await setDoc(doc(db,'users',fullPhone,'profile','data'), {
-      uid:         cred.user.uid,
-      phone:       fullPhone,
-      plan:        'coach',
-      tier:        'coach',
-      status:      'trial',
-      trialStart:  serverTimestamp(),
-      joinedAt:    serverTimestamp(),
-      joinedLocal: new Date().toISOString()
-    });
-    await setDoc(doc(emailsCol(fullPhone), encEmail(email)), {
-      email, addedAt: serverTimestamp(), primary: true
-    });
-    showOk('signup-ok','Account created! Welcome to FitLogs 🎉');
-    closeModal();
-  } catch(e){
-    btn.disabled = false; btn.textContent = 'Create Account & Start Trial';
-    showErr('signup-err', fErr(e.code));
-  }
-};
-
-// ── Login ─────────────────────────────────────────────────────────
+// LOGIN
 window.doLogin = async function(){
-  const id  = document.getElementById('login-id').value.trim();
-  const pw  = document.getElementById('login-pw').value;
-  const btn = document.getElementById('login-btn');
+  const id=document.getElementById('login-id').value.trim();
+  const pw=document.getElementById('login-pw').value;
+  const btn=document.getElementById('login-btn');
   clearMsg('login-err'); clearMsg('login-ok');
   if(!id||!pw){ showErr('login-err','Please enter your phone/email and password.'); return; }
-  btn.textContent = 'Signing in...'; btn.disabled = true;
-  const reset = () => { btn.textContent = 'Sign In'; btn.disabled = false; };
+  btn.innerHTML='<div class="spinner spinner-g" style="width:14px;height:14px;border-width:1.5px;display:inline-block;margin-right:6px;"></div> Signing in...'; btn.disabled=true;
+  const resetBtn = () => { btn.innerHTML='Sign In'; btn.disabled=false; };
   try{
     let loginEmail = id;
     if(!id.includes('@')){
       let digits = id.replace(/\D/g,'');
-      if(digits.length===11 && digits.startsWith('1')) digits = digits.slice(1);
-      if(digits.length!==10){ showErr('login-err','Please enter a valid 10-digit US phone number.'); reset(); return; }
-      const phone = '+1' + digits;
-      const emailsSnap = await getDocs(emailsCol(phone));
-      if(!emailsSnap.empty){
-        const primary = emailsSnap.docs.find(d=>d.data().primary);
-        loginEmail = (primary||emailsSnap.docs[0]).data().email || '';
-        if(!loginEmail){ showErr('login-err','Account found but no email on file. Please contact support.'); reset(); return; }
-      } else {
-        showErr('login-err','No account found for that phone number. Please try your email address.'); reset(); return;
-      }
+      if(digits.length===11&&digits.startsWith('1')) digits=digits.slice(1);
+      if(digits.length!==10){ showErr('login-err','Please enter a valid 10-digit US phone number.'); resetBtn(); return; }
+      const phone = '+1'+digits;
+      try{
+        const snap = await getDocs(collection(db,'users',phone,'emails'));
+        if(!snap.empty){
+          const primary = snap.docs.find(d=>d.data().primary);
+          loginEmail = (primary||snap.docs[0]).data().email||'';
+          if(!loginEmail){ showErr('login-err','Account found but no email on file.'); resetBtn(); return; }
+        } else { showErr('login-err','No account found for that phone number.'); resetBtn(); return; }
+      } catch(e){ showErr('login-err','Could not look up account. Please use your email.'); resetBtn(); return; }
     }
     await signInWithEmailAndPassword(auth, loginEmail, pw);
-    closeModal(); reset();
-  } catch(e){ reset(); showErr('login-err', fErr(e.code)); }
+    resetBtn();
+  } catch(e){ resetBtn(); showErr('login-err',fErr(e.code)); }
 };
 
-// ── Forgot password ───────────────────────────────────────────────
+// SIGNUP
+window.doSignup = async function(){
+  const cc=document.getElementById('su-cc').value.trim()||'+1';
+  const phone=document.getElementById('su-phone').value.trim();
+  const email=document.getElementById('su-email').value.trim();
+  const pw=document.getElementById('su-pw').value;
+  const pw2=document.getElementById('su-pw2').value;
+  const consent=document.getElementById('sms-consent').checked;
+  const btn=document.getElementById('signup-btn');
+  clearMsg('signup-err'); clearMsg('signup-ok');
+  if(!phone||!email){ showErr('signup-err','Please fill in all fields.'); return; }
+  if(!consent){ showErr('signup-err','Please agree to receive SMS messages to create your account.'); return; }
+  if(pw.length<8){ showErr('signup-err','Password must be at least 8 characters.'); return; }
+  if(pw!==pw2){ showErr('signup-err','Passwords do not match.'); return; }
+  if(!phoneVerified){ showErr('signup-err','Please verify your phone number first.'); return; }
+  const fullPhone=normPhone(cc,phone);
+  btn.disabled=true; btn.innerHTML='<div class="spinner spinner-g"></div> Creating...';
+  try{
+    const cred=await createUserWithEmailAndPassword(auth,email,pw);
+    await updateProfile(cred.user,{displayName:fullPhone});
+    await setDoc(doc(db,'users',fullPhone,'profile','data'),{
+      uid:cred.user.uid, phone:fullPhone, plan:'free',
+      status:'active', smsConsent:true,
+      joinedAt:serverTimestamp(), joinedLocal:new Date().toISOString()
+    });
+    await setDoc(doc(emailsCol(fullPhone),encEmail(email)),{email,addedAt:serverTimestamp(),primary:true});
+    showOk('signup-ok','Account created! Signing you in...');
+  } catch(e){ btn.disabled=false; btn.innerHTML='Create Account & Start Trial'; showErr('signup-err',fErr(e.code)); }
+};
+
 window.doForgotPw = async function(){
   let id = document.getElementById('login-id').value.trim();
   clearMsg('login-err');
   if(!id){ showErr('login-err','Enter your email or phone number first.'); return; }
   if(!id.includes('@')){
-    let digits = id.replace(/\D/g,'');
-    if(digits.length===11 && digits.startsWith('1')) digits = digits.slice(1);
-    const phone = '+1' + digits;
+    let digits=id.replace(/\D/g,'');
+    if(digits.length===11&&digits.startsWith('1')) digits=digits.slice(1);
+    const phone='+1'+digits;
     try{
-      const emailsSnap = await getDocs(emailsCol(phone));
-      if(!emailsSnap.empty){
-        const primary = emailsSnap.docs.find(d=>d.data().primary);
-        id = primary ? primary.data().email : emailsSnap.docs[0].data().email;
-      } else { showErr('login-err','No account found for that phone number.'); return; }
-    } catch(e){ showErr('login-err','Please enter your email address to reset password.'); return; }
+      const snap=await getDocs(collection(db,'users',phone,'emails'));
+      if(!snap.empty){ id=(snap.docs.find(d=>d.data().primary)||snap.docs[0]).data().email; }
+      else{ showErr('login-err','No account found for that phone.'); return; }
+    } catch(e){ showErr('login-err','Please enter your email address.'); return; }
   }
-  try{ await sendPasswordResetEmail(auth, id); showOk('login-ok','Password reset email sent.'); }
-  catch(e){ showErr('login-err', fErr(e.code)); }
+  try{ await sendPasswordResetEmail(auth,id); showOk('login-ok','Password reset email sent.'); }
+  catch(e){ showErr('login-err',fErr(e.code)); }
 };
 
-// ── Sign out ──────────────────────────────────────────────────────
-window.doLogout = async function(){
-  await signOut(auth);
-  // Reset signup form state so "Creating..." never persists after logout
+window.doLogout = async () => {
   phoneVerified = false;
-  const signupBtn = document.getElementById('signup-btn');
-  if(signupBtn){ signupBtn.disabled = false; signupBtn.textContent = 'Send Verification Code'; }
-  const otpConfirmBtn = document.getElementById('otp-confirm-btn');
-  if(otpConfirmBtn){ otpConfirmBtn.disabled = false; otpConfirmBtn.textContent = 'Confirm Code'; }
-  const otpSection = document.getElementById('otp-section');
-  if(otpSection){ otpSection.style.display = 'none'; }
-  const badge = document.getElementById('phone-verified-badge');
-  if(badge){ badge.style.display = 'none'; }
-  ['su-phone','su-email','su-pw','su-pw2','otp-input'].forEach(id => {
-    const el = document.getElementById(id);
-    if(el) el.value = '';
-  });
-  ['signup-err','signup-ok','login-err','login-ok'].forEach(id => {
-    const el = document.getElementById(id);
-    if(el) el.textContent = '';
-  });
-  showTab('signin');
-  showLanding();
+  await signOut(auth);
   window.history.replaceState({},'','/');
 };
-</script>
 
-<!-- NON-MODULE SCRIPT -->
-<script>
-function previewDashboard(){
-  document.getElementById('landing').style.display='none';
-  document.getElementById('dashboard').style.display='block';
-  const h=new Date().getHours();
-  document.getElementById('dashGreeting').textContent=(h<12?'Good morning':h<17?'Good afternoon':'Good evening')+' 👋';
+// DASHBOARD
+async function showDashboard(user){
+  const dashBody = document.querySelector('.dash-split');
+  if(dashBody) dashBody.style.visibility='hidden';
+  showScreen('dashboard-screen');
+  document.getElementById('nav-phone').textContent = fmtPhone(currentPhone);
+  await checkPlanAndApplyPaywall(currentPhone);
+  allLogs = await loadAllLogs();
+  renderStats(allLogs);
+  renderRecentLogs(allLogs);
+  if(userPlan !== 'free'){
+    renderFoodList(allLogs);
+    renderActivityList(allLogs);
+    renderSpider(allLogs);
+    renderSleepList(allLogs);
+  }
+  if(dashBody) dashBody.style.visibility='visible';
 }
-function showTab(tab){
-  const isSignin=tab==='signin';
-  const cf=document.getElementById('createForm');
-  const sf=document.getElementById('signinForm');
-  if(cf){cf.classList.toggle('hidden',isSignin);}
-  if(sf){sf.classList.toggle('hidden',!isSignin);}
-  const tc=document.getElementById('tab-create');
-  const ts=document.getElementById('tab-signin');
-  if(tc){tc.classList.toggle('active',!isSignin);}
-  if(ts){ts.classList.toggle('active',isSignin);}
-  if(!isSignin){
-    const os=document.getElementById('otp-section');
-    const pb=document.getElementById('phone-verified-badge');
-    if(os)os.style.display='none';
-    if(pb)pb.style.display='none';
-    const btn=document.getElementById('signup-btn');
-    if(btn){btn.textContent='Send Verification Code';btn.disabled=false;btn.onclick=()=>window.sendOtp();}
+
+async function loadAllLogs(){
+  const logs=[];
+  if(!currentPhone) return logs;
+  try{
+    const snap=await getDocs(query(logsCol(currentPhone),orderBy('timestamp','desc')));
+    snap.forEach(d=>logs.push({...d.data(),_id:d.id}));
+  } catch(e){ console.warn('loadAllLogs flat error:',e); }
+  try{
+    const emailSnap=await getDocs(emailsCol(currentPhone));
+    for(const eDoc of emailSnap.docs){
+      try{
+        const snap=await getDocs(query(collection(db,'users',currentPhone,'emails',eDoc.id,'logs'),orderBy('timestamp','desc')));
+        snap.forEach(d=>logs.push({...d.data(),_id:d.id}));
+      } catch(_){}
+    }
+  } catch(e){ console.warn('loadAllLogs email error:',e); }
+  const seen=new Set();
+  const unique=logs.filter(r=>{ const k=r.messageSid||r._id; if(seen.has(k)) return false; seen.add(k); return true; });
+  unique.sort((a,b)=>getTs(b)-getTs(a));
+  return unique;
+}
+
+function getTs(r){
+  if(r.timestamp?.toDate) return r.timestamp.toDate().getTime();
+  if(r.timestampLocal) return new Date(r.timestampLocal).getTime();
+  return 0;
+}
+
+function last30(logs){
+  const cutoff=Date.now()-30*24*60*60*1000;
+  return logs.filter(r=>getTs(r)>cutoff);
+}
+
+function renderStats(logs){
+  const r30=last30(logs);
+  document.getElementById('stat-total').textContent=r30.length;
+  document.getElementById('stat-total-sub').textContent=logs.length+' total all time';
+  // Streak
+  const days=new Set(r30.map(r=>new Date(getTs(r)).toDateString()));
+  let streak=0; const today=new Date();
+  for(let i=0;i<30;i++){
+    const d=new Date(today); d.setDate(d.getDate()-i);
+    if(days.has(d.toDateString())) streak++; else break;
+  }
+  document.getElementById('stat-streak').textContent=streak;
+  // Food logs
+  const foodLogs=r30.filter(r=>r.type==='food'||classify(r.body||'')===('food'));
+  document.getElementById('stat-food').textContent=foodLogs.length;
+  document.getElementById('stat-food-sub').textContent=foodLogs.length===1?'1 meal tracked':foodLogs.length+' meals tracked';
+  // Workouts
+  const workoutLogs=r30.filter(r=>r.type==='workout'||r.type==='movement'||classify(r.body||'')===('workout'));
+  document.getElementById('stat-workouts').textContent=workoutLogs.length;
+  document.getElementById('stat-workouts-sub').textContent=workoutLogs.length+' sessions logged';
+}
+
+function classify(body){
+  const lower=body.toLowerCase();
+  if(/workout|gym|lift|bench|squat|deadlift|hiit|yoga|pilates|sets|reps/.test(lower)) return 'workout';
+  if(/slept|sleep|hrs sleep|nap|woke/.test(lower)) return 'sleep';
+  if(/steps|walked|run|ran|jog|miles|km|bike|swim/.test(lower)) return 'movement';
+  if(/water|hydrat|oz water|glasses/.test(lower)) return 'water';
+  if(/ate|had|eaten|breakfast|lunch|dinner|snack|drank|coffee|tea|meal|cal/.test(lower)) return 'food';
+  return 'general';
+}
+
+function renderRecentLogs(logs){
+  const el=document.getElementById('recent-logs');
+  const recent=last30(logs).slice(0,8);
+  if(!recent.length){ el.innerHTML='<div class="empty">No logs in last 30 days. Text 1-888-596-LOGS to start!</div>'; return; }
+  el.innerHTML=recent.map(r=>{
+    const ts=new Date(getTs(r));
+    const dateStr=ts.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+    const timeStr=ts.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true});
+    const type=r.type||classify(r.body||'');
+    const emoji={food:'🍽️',workout:'💪',movement:'🏃',sleep:'😴',water:'💧',mood:'😊',weight:'⚖️',general:'📋'}[type]||'📋';
+    return '<div class="log-item" onclick="openMessages()"><div class="log-dot" style="background:var(--green);"></div><div style="flex:1;min-width:0;"><div class="log-date">'+dateStr+' '+timeStr+' '+emoji+'</div><div class="log-body">'+esc((r.body||'').slice(0,100))+'</div></div></div>';
+  }).join('');
+}
+
+function renderFoodList(logs){
+  const r30=last30(logs).filter(r=>(r.type||classify(r.body||''))==='food');
+  const el=document.getElementById('food-list');
+  if(!r30.length){ el.innerHTML='<div class="empty">No food logs yet. Text what you ate to 1-888-596-LOGS!</div>'; return; }
+  el.innerHTML=r30.slice(0,6).map(r=>{
+    const ts=new Date(getTs(r));
+    return '<div class="freq-item"><div class="freq-name" style="min-width:60px;font-size:11px;color:var(--muted);">'+ts.toLocaleDateString('en-US',{month:'short',day:'numeric'})+'</div><div style="flex:1;font-size:12px;color:var(--text);">'+esc((r.body||'').slice(0,80))+'</div></div>';
+  }).join('');
+}
+
+function renderActivityList(logs){
+  const r30=last30(logs).filter(r=>['workout','movement'].includes(r.type||classify(r.body||'')));
+  const el=document.getElementById('activity-list');
+  if(!r30.length){ el.innerHTML='<div class="empty">No activity logs yet. Text your workouts to 1-888-596-LOGS!</div>'; return; }
+  el.innerHTML=r30.slice(0,6).map(r=>{
+    const ts=new Date(getTs(r));
+    return '<div class="freq-item"><div class="freq-name" style="min-width:60px;font-size:11px;color:var(--muted);">'+ts.toLocaleDateString('en-US',{month:'short',day:'numeric'})+'</div><div style="flex:1;font-size:12px;color:var(--text);">'+esc((r.body||'').slice(0,80))+'</div></div>';
+  }).join('');
+}
+
+function renderSleepList(logs){
+  const r30=last30(logs).filter(r=>(r.type||classify(r.body||''))==='sleep');
+  const el=document.getElementById('sleep-list');
+  if(!r30.length){ el.innerHTML='<div class="empty">No sleep logs yet. Text your sleep to 1-888-596-LOGS!</div>'; return; }
+  el.innerHTML=r30.slice(0,6).map(r=>{
+    const ts=new Date(getTs(r));
+    return '<div class="freq-item"><div class="freq-name" style="min-width:60px;font-size:11px;color:var(--muted);">'+ts.toLocaleDateString('en-US',{month:'short',day:'numeric'})+'</div><div style="flex:1;font-size:12px;color:var(--text);">'+esc((r.body||'').slice(0,80))+'</div></div>';
+  }).join('');
+}
+
+function renderSpider(logs){
+  const r30=last30(logs);
+  if(!r30.length){ document.getElementById('integrity-score').textContent='0'; document.getElementById('integrity-desc').textContent='Start logging to build your fitness profile.'; return; }
+  const food=r30.filter(r=>(r.type||classify(r.body||''))==='food').length;
+  const workout=r30.filter(r=>['workout','movement'].includes(r.type||classify(r.body||''))).length;
+  const sleep=r30.filter(r=>(r.type||classify(r.body||''))==='sleep').length;
+  const water=r30.filter(r=>(r.type||classify(r.body||''))==='water').length;
+  const days=new Set(r30.map(r=>new Date(getTs(r)).toDateString())).size;
+  const streak=Math.min(100,Math.round(days/30*100));
+  const nutritionScore=Math.min(100,Math.round(food/30*100));
+  const workoutScore=Math.min(100,Math.round(workout/12*100));
+  const sleepScore=Math.min(100,Math.round(sleep/20*100));
+  const hydrationScore=Math.min(100,Math.round(water/30*100));
+  const consistencyScore=streak;
+  const scores={Consistency:consistencyScore,Nutrition:nutritionScore,Workouts:workoutScore,Sleep:sleepScore,Hydration:hydrationScore};
+  const overall=Math.round(Object.values(scores).reduce((a,b)=>a+b,0)/Object.keys(scores).length);
+  document.getElementById('integrity-score').textContent=overall;
+  document.getElementById('integrity-desc').textContent=overall>=80?'Excellent fitness consistency. Keep up the great work!':overall>=60?'Good momentum. Focus on consistency across all categories.':'Building your fitness foundation. Every log counts!';
+  const canvas=document.getElementById('spider-canvas');
+  const ctx=canvas.getContext('2d');
+  const keys=Object.keys(scores);
+  const vals=Object.values(scores);
+  const n=keys.length,W=300,H=260,cx=W/2,cy=H/2,R=90;
+  ctx.clearRect(0,0,W,H);
+  [20,40,60,80,100].forEach(pct=>{
+    ctx.beginPath();
+    for(let i=0;i<n;i++){ const angle=(i/n)*Math.PI*2-Math.PI/2; const r=R*(pct/100); const x=cx+r*Math.cos(angle),y=cy+r*Math.sin(angle); i===0?ctx.moveTo(x,y):ctx.lineTo(x,y); }
+    ctx.closePath(); ctx.strokeStyle='rgba(34,197,94,0.08)'; ctx.lineWidth=1; ctx.stroke();
+  });
+  keys.forEach((_,i)=>{ const angle=(i/n)*Math.PI*2-Math.PI/2; ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(cx+R*Math.cos(angle),cy+R*Math.sin(angle)); ctx.strokeStyle='rgba(34,197,94,0.1)'; ctx.lineWidth=1; ctx.stroke(); });
+  ctx.beginPath();
+  vals.forEach((v,i)=>{ const angle=(i/n)*Math.PI*2-Math.PI/2; const r=R*(v/100); const x=cx+r*Math.cos(angle),y=cy+r*Math.sin(angle); i===0?ctx.moveTo(x,y):ctx.lineTo(x,y); });
+  ctx.closePath(); ctx.fillStyle='rgba(34,197,94,0.15)'; ctx.strokeStyle='rgba(34,197,94,0.8)'; ctx.lineWidth=2; ctx.fill(); ctx.stroke();
+  vals.forEach((v,i)=>{ const angle=(i/n)*Math.PI*2-Math.PI/2; const r=R*(v/100); const x=cx+r*Math.cos(angle),y=cy+r*Math.sin(angle); ctx.beginPath(); ctx.arc(x,y,4,0,Math.PI*2); ctx.fillStyle='#22c55e'; ctx.fill(); });
+  ctx.fillStyle='rgba(200,220,200,0.8)'; ctx.font='11px -apple-system,sans-serif'; ctx.textAlign='center';
+  keys.forEach((k,i)=>{ const angle=(i/n)*Math.PI*2-Math.PI/2; const r=R+22; const x=cx+r*Math.cos(angle),y=cy+r*Math.sin(angle)+4; ctx.fillText(k,x,y); });
+}
+
+// MESSAGES
+window.toggleMessages = function(){
+  msgsVisible=!msgsVisible;
+  const panel=document.getElementById('msg-panel');
+  const btn=document.getElementById('show-msgs-btn');
+  panel.classList.toggle('open',msgsVisible);
+  btn.innerHTML=msgsVisible?'Hide Logs':'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg> Show Logs';
+  if(msgsVisible) renderMessages(allLogs);
+};
+window.openMessages = function(){ if(!msgsVisible) toggleMessages(); document.getElementById('msg-panel').scrollIntoView({behavior:'smooth'}); };
+window.applyFilters = function(){ renderMessages(allLogs); };
+window.clearFilters = function(){ document.getElementById('filter-keyword').value=''; document.getElementById('filter-date-from').value=''; document.getElementById('filter-date-to').value=''; renderMessages(allLogs); };
+
+let renderedMessages=[];
+
+function renderMessages(logs){
+  const keyword=document.getElementById('filter-keyword').value.trim().toLowerCase();
+  const dateFrom=document.getElementById('filter-date-from').value;
+  const dateTo=document.getElementById('filter-date-to').value;
+  let filtered=[...logs];
+  if(keyword) filtered=filtered.filter(r=>(r.body||'').toLowerCase().includes(keyword));
+  if(dateFrom) filtered=filtered.filter(r=>getTs(r)>=new Date(dateFrom).getTime());
+  if(dateTo) filtered=filtered.filter(r=>getTs(r)<=new Date(dateTo).getTime()+86400000);
+  document.getElementById('msg-count').textContent=filtered.length+' log'+(filtered.length!==1?'s':'')+' found';
+  if(!filtered.length){ document.getElementById('msg-list').innerHTML='<div class="empty">No logs match your filters.</div>'; return; }
+  renderedMessages=filtered;
+  let idx=-1;
+  document.getElementById('msg-list').innerHTML=filtered.map(r=>{
+    idx++;
+    const ts=new Date(getTs(r));
+    const timeStr=ts.toLocaleString('en-US',{month:'short',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit',hour12:true});
+    let body=esc(r.body||'');
+    if(keyword){ const re=new RegExp('('+keyword.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi'); body=body.replace(re,'<mark>$1</mark>'); }
+    const type=r.type||classify(r.body||'');
+    const emoji={food:'🍽️',workout:'💪',movement:'🏃',sleep:'😴',water:'💧',mood:'😊',weight:'⚖️',general:'📋'}[type]||'📋';
+    return '<div class="msg-card"><div class="msg-meta"><span class="msg-time">'+timeStr+'</span><span class="msg-badge">'+(r.source==='web'?'WEB':'SMS')+'</span><span style="font-size:12px;">'+emoji+'</span></div><div class="msg-body">'+body+'</div></div>';
+  }).join('');
+}
+
+// LOG ENTRY WIDGET
+window.submitLog = async function(type){ return submitLogFn(type); };
+window.toggleVoice = function(taId,btnId){ return toggleVoiceFn(taId,btnId); };
+window.updateCharCount = function(taId,countId){ return updateCharCountFn(taId,countId); };
+
+let activeRecognition=null;
+
+function updateCharCountFn(taId,countId){
+  const ta=document.getElementById(taId),count=document.getElementById(countId);
+  const len=ta.value.length; count.textContent=len+' / 500';
+  count.style.color=len>450?'var(--warn)':'var(--muted)';
+  if(len>500) ta.value=ta.value.slice(0,500);
+}
+
+function toggleVoiceFn(taId,btnId){
+  const btn=document.getElementById(btnId);
+  if(activeRecognition){ activeRecognition.stop(); activeRecognition=null; btn.classList.remove('recording'); btn.textContent='🎤'; return; }
+  if(!('webkitSpeechRecognition' in window)&&!('SpeechRecognition' in window)){ alert('Voice input is not supported in this browser. Please use Chrome.'); return; }
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  const recognition=new SR(); recognition.continuous=true; recognition.interimResults=true; recognition.lang='en-US';
+  const ta=document.getElementById(taId); let finalTranscript=ta.value;
+  recognition.onresult=e=>{ let interim=''; for(let i=e.resultIndex;i<e.results.length;i++){ if(e.results[i].isFinal) finalTranscript+=e.results[i][0].transcript+' '; else interim+=e.results[i][0].transcript; } ta.value=finalTranscript+interim; };
+  recognition.onend=()=>{ btn.classList.remove('recording'); btn.textContent='🎤'; activeRecognition=null; };
+  recognition.start(); activeRecognition=recognition; btn.classList.add('recording'); btn.textContent='⏹';
+}
+
+async function submitLogFn(type){
+  const taMap={food:'food-ta',activity:'activity-ta'};
+  const taId=taMap[type]||type+'-ta';
+  const ta=document.getElementById(taId);
+  const body=ta.value.trim();
+  const successId=type+'-success';
+  const btn=document.querySelector('.log-send-btn[data-type="'+type+'"]');
+  if(!body){ ta.focus(); return; }
+  if(!currentPhone){ alert('Please log in to save entries.'); return; }
+  const origHTML=btn.innerHTML; btn.innerHTML='<div class="spinner spinner-g" style="width:12px;height:12px;border-width:1.5px;"></div>'; btn.disabled=true;
+  try{
+    const logType=type==='food'?'food':type==='activity'?'movement':'general';
+    await addDoc(logsCol(currentPhone),{
+      body, source:'web', type:logType,
+      timestamp:serverTimestamp(), timestampLocal:new Date().toISOString(), from:currentPhone,
+    });
+    ta.value=''; updateCharCountFn(taId,type+'-count');
+    const success=document.getElementById(successId); success.classList.add('show'); setTimeout(()=>success.classList.remove('show'),3000);
+    btn.innerHTML=origHTML; btn.disabled=false;
+    allLogs=await loadAllLogs();
+    renderStats(allLogs); renderRecentLogs(allLogs);
+    if(userPlan!=='free'){ renderFoodList(allLogs); renderActivityList(allLogs); renderSpider(allLogs); renderSleepList(allLogs); }
+  } catch(e){ console.error('submitLog error:',e); btn.innerHTML=origHTML; btn.disabled=false; alert('Could not save. Please try again.'); }
+}
+
+// PAYWALL
+let userPlan='free';
+
+async function checkPlanAndApplyPaywall(phone){
+  try{
+    const profileSnap=await getDoc(doc(db,'users',phone,'profile','data'));
+    if(profileSnap.exists()) userPlan=profileSnap.data().plan||'free';
+    else userPlan='free';
+  } catch(e){ userPlan='free'; }
+  const isLocked=userPlan==='free';
+  document.getElementById('paywall-banner').classList.toggle('show',isLocked);
+  document.querySelectorAll('.locked').forEach(el=>el.classList.toggle('is-locked',isLocked));
+  ['food-lock','activity-lock','spider-lock','sleep-lock'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.style.display=isLocked?'flex':'none';
+  });
+  document.querySelectorAll('.locked-content').forEach(el=>{ el.style.filter=isLocked?'blur(4px)':'none'; el.style.pointerEvents=isLocked?'none':''; });
+  const showBtn=document.getElementById('show-msgs-btn');
+  if(showBtn){
+    if(isLocked){ showBtn.onclick=()=>{}; showBtn.innerHTML='🔒 Upgrade to View Logs'; showBtn.style.color='var(--warn)'; }
+    else{ showBtn.onclick=toggleMessages; showBtn.style.color=''; }
   }
 }
-function openModal(type){showTab(type==='create'?'create':'signin')}
-function closeModal(){}
-function switchModal(type){showTab(type==='create'?'create':'signin')}
-function signOut(){if(window.doLogout)window.doLogout();}
-function toggleRoutine(el){el.classList.toggle('done')}
-function switchDashTab(btn,tab){
-  document.querySelectorAll('.entry-tab').forEach(t=>t.classList.remove('active'));
-  btn.classList.add('active');
-  ['tabFood','tabSteps','tabRoutine','tabNote'].forEach(id=>document.getElementById(id).style.display='none');
-  document.getElementById({food:'tabFood',steps:'tabSteps',routine:'tabRoutine',note:'tabNote'}[tab]).style.display='block';
+
+// OTP
+let phoneVerified=false;
+const RAILWAY_URL_BASE='https://fitlogs-webhook-production.up.railway.app';
+
+window.resetOtp=function(){
+  phoneVerified=false;
+  document.getElementById('otp-section').classList.remove('show');
+  document.getElementById('otp-verified').classList.remove('show');
+  document.getElementById('otp-input').value='';
+  document.getElementById('signup-btn').textContent='Send Verification Code';
+  document.getElementById('signup-btn').onclick=()=>sendOtp();
+};
+
+window.sendOtp=async function(resend=false){
+  const cc=document.getElementById('su-cc').value.trim();
+  const phone=document.getElementById('su-phone').value.trim();
+  const btn=document.getElementById('signup-btn');
+  clearMsg('signup-err');
+  if(!phone){ showErr('signup-err','Please enter your phone number first.'); return; }
+  const consent=document.getElementById('sms-consent').checked;
+  if(!consent){ showErr('signup-err','Please agree to receive SMS messages first.'); return; }
+  const digitsOnly=phone.replace(/\D/g,'');
+  const fullPhone=cc+digitsOnly;
+  if(digitsOnly.length!==10){ showErr('signup-err','Please enter a valid 10-digit phone number.'); return; }
+  btn.disabled=true; btn.innerHTML='<div class="spinner spinner-g"></div> Sending...';
+  try{
+    const res=await fetch(RAILWAY_URL_BASE+'/verify/send',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({phone:fullPhone})});
+    const data=await res.json();
+    if(res.ok){
+      document.getElementById('otp-section').classList.add('show');
+      document.getElementById('otp-input').focus();
+      showOk('signup-ok',resend?'New code sent!':'Verification code sent to your phone.');
+      btn.innerHTML='Resend Code'; btn.disabled=false; btn.onclick=()=>sendOtp(true);
+    } else { showErr('signup-err',data.error||'Could not send code. Please try again.'); btn.innerHTML='Send Verification Code'; btn.disabled=false; }
+  } catch(e){ showErr('signup-err','Connection error. Please try again.'); btn.innerHTML='Send Verification Code'; btn.disabled=false; }
+};
+
+window.verifyOtp=async function(){
+  const phone=document.getElementById('su-phone').value.trim();
+  const code=document.getElementById('otp-input').value.trim();
+  const btn=document.getElementById('otp-verify-btn');
+  clearMsg('signup-err');
+  if(!code||code.length!==6){ showErr('signup-err','Please enter the 6-digit verification code.'); return; }
+  const cc=document.getElementById('su-cc').value;
+  const fullPhone=cc+phone.replace(/\D/g,'');
+  btn.innerHTML='<div class="spinner spinner-g" style="width:14px;height:14px;border-width:1.5px;display:inline-block;margin-right:6px;"></div> Verifying...'; btn.disabled=true;
+  try{
+    const res=await fetch(RAILWAY_URL_BASE+'/verify/check',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({phone:fullPhone,code})});
+    const data=await res.json();
+    if(res.ok&&data.status==='approved'){
+      phoneVerified=true;
+      document.getElementById('otp-section').classList.remove('show');
+      document.getElementById('otp-verified').classList.add('show');
+      clearMsg('signup-ok');
+      const signupBtn=document.getElementById('signup-btn');
+      signupBtn.textContent='Create Account & Start Trial';
+      signupBtn.onclick=doSignup; signupBtn.style.display='flex';
+    } else { showErr('signup-err',data.error||'Invalid code. Please try again.'); }
+  } catch(e){ showErr('signup-err','Connection error. Please try again.'); }
+  finally{ btn.innerHTML='Confirm Code'; btn.disabled=false; }
+};
+
+// INSIGHTS
+let insightsHistory=[];
+
+window.askInsight=function(question){ document.getElementById('insights-input').value=question; sendInsight(); };
+
+window.sendInsight=async function(){
+  const input=document.getElementById('insights-input');
+  const btn=document.getElementById('insights-send-btn');
+  const chat=document.getElementById('insights-chat');
+  const question=input.value.trim();
+  if(!question) return;
+  const userMsg=document.createElement('div'); userMsg.className='chat-msg user'; userMsg.textContent=question; chat.appendChild(userMsg);
+  input.value=''; btn.disabled=true; btn.textContent='Thinking...'; chat.scrollTop=chat.scrollHeight;
+  const recordSummary=buildLogContext(allLogs);
+  insightsHistory.push({role:'user',content:question});
+  try{
+    const response=await fetch(RAILWAY_URL+'/insights',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({phone:currentPhone,records:recordSummary,messages:insightsHistory})});
+    const data=await response.json();
+    const reply=data.reply||'I could not generate a response. Please try again.';
+    insightsHistory.push({role:'assistant',content:reply});
+    const assistantMsg=document.createElement('div'); assistantMsg.className='chat-msg assistant';
+    assistantMsg.innerHTML=reply.replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>');
+    const actions=document.createElement('div'); actions.className='chat-actions';
+    const saveBtn=document.createElement('button'); saveBtn.className='chat-save-btn'; saveBtn.textContent='📄 Save as PDF';
+    saveBtn.onclick=()=>saveInsightAsPDF(question,reply,saveBtn); actions.appendChild(saveBtn); assistantMsg.appendChild(actions);
+    chat.appendChild(assistantMsg); chat.scrollTop=chat.scrollHeight;
+  } catch(e){ const err=document.createElement('div'); err.className='chat-msg assistant'; err.textContent='Could not connect. Please try again.'; chat.appendChild(err); }
+  finally{ btn.disabled=false; btn.textContent='Ask'; chat.scrollTop=chat.scrollHeight; }
+};
+
+function buildLogContext(logs){
+  if(!logs||!logs.length) return 'No logs found.';
+  const recent=logs.slice(0,50);
+  const summary=recent.map(r=>{
+    const date=r.timestampLocal?r.timestampLocal.slice(0,10):'Unknown';
+    const type=r.type||classify(r.body||'');
+    return `[${date}] (${type}) ${(r.body||'').slice(0,200)}`;
+  }).join('\n');
+  return `Total logs: ${logs.length}\n\nRecent entries:\n${summary}`;
 }
-function saveEntry(btn){const o=btn.textContent;btn.textContent='Saved ✓';btn.style.background='#10b981';setTimeout(()=>{btn.textContent=o;btn.style.background=''},2000)}
-function handleChatKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendChat()}}
-function sendChat(){
-  const input=document.getElementById('chatInput');
-  const text=input.value.trim();
-  if(!text)return;
-  const chat=document.getElementById('coachChat');
-  const u=document.createElement('div');
-  u.className='chat-msg user';
-  u.innerHTML=text+'<div class="msg-time">Just now</div>';
-  chat.appendChild(u);
-  input.value='';
-  chat.scrollTop=chat.scrollHeight;
-  setTimeout(()=>{
-    const a=document.createElement('div');
-    a.className='chat-msg ai';
-    a.innerHTML='Got it — keep going. What else is on your mind?<div class="msg-time">Just now</div>';
-    chat.appendChild(a);
-    chat.scrollTop=chat.scrollHeight;
-  },900);
+
+function saveInsightAsPDF(question,answer,btn){
+  btn.textContent='⏳ Preparing...'; btn.disabled=true;
+  const now=new Date();
+  document.getElementById('pdf-meta').textContent='Generated: '+now.toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'})+' at '+now.toLocaleTimeString('en-US')+' | Account: '+(auth.currentUser?.email||currentPhone);
+  document.getElementById('pdf-question').textContent='Q: '+question;
+  document.getElementById('pdf-response').textContent=answer.replace(/\*\*(.*?)\*\*/g,'$1');
+  document.getElementById('pdf-date').textContent=now.toISOString().slice(0,10);
+  document.getElementById('pdf-print-area').style.display='block';
+  setTimeout(()=>{ window.print(); document.getElementById('pdf-print-area').style.display='none'; btn.textContent='📄 Save as PDF'; btn.disabled=false; },300);
 }
+
+// SETTINGS
+let settingsNewPhone='';
+
+window.openSettings=function(){
+  document.getElementById('settings-current-phone').textContent=fmtPhone(currentPhone);
+  document.getElementById('settings-backdrop').classList.add('active');
+  ['settings-step1','settings-step2','settings-step3'].forEach(id=>document.getElementById(id).classList.remove('active'));
+  document.getElementById('settings-step1').classList.add('active');
+  document.getElementById('settings-new-phone').value='';
+  document.getElementById('settings-otp').value='';
+  clearMsg('settings-err1'); clearMsg('settings-err2');
+};
+
+window.closeSettings=function(){ document.getElementById('settings-backdrop').classList.remove('active'); };
+
+window.sendSettingsOtp=async function(){
+  const digits=document.getElementById('settings-new-phone').value.replace(/\D/g,'');
+  clearMsg('settings-err1');
+  if(digits.length!==10){ showErr('settings-err1','Please enter a valid 10-digit US number.'); return; }
+  settingsNewPhone='+1'+digits;
+  if(settingsNewPhone===currentPhone){ showErr('settings-err1','That is already your current number.'); return; }
+  const btn=document.getElementById('settings-send-btn');
+  btn.textContent='Sending...'; btn.disabled=true;
+  try{
+    const res=await fetch(RAILWAY_URL_BASE+'/verify/send',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({phone:settingsNewPhone})});
+    const data=await res.json();
+    if(data.status==='ok'||res.ok){
+      document.getElementById('settings-step1').classList.remove('active');
+      document.getElementById('settings-step2').classList.add('active');
+    } else { showErr('settings-err1',data.error||'Could not send code.'); }
+  } catch(e){ showErr('settings-err1','Connection error.'); }
+  finally{ btn.textContent='Send Verification Code'; btn.disabled=false; }
+};
+
+window.verifySettingsOtp=async function(){
+  const code=document.getElementById('settings-otp').value.trim();
+  clearMsg('settings-err2');
+  if(code.length!==6){ showErr('settings-err2','Please enter the 6-digit code.'); return; }
+  const btn=document.getElementById('settings-verify-btn');
+  btn.textContent='Verifying...'; btn.disabled=true;
+  try{
+    const verifyRes=await fetch(RAILWAY_URL_BASE+'/verify/check',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({phone:settingsNewPhone,code})});
+    const verifyData=await verifyRes.json();
+    if(verifyData.status!=='approved'){ showErr('settings-err2','Invalid code. Please try again.'); btn.textContent='Confirm & Update Number'; btn.disabled=false; return; }
+    btn.textContent='Migrating...';
+    const migrateRes=await fetch(RAILWAY_URL_BASE+'/account/update-phone',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({old_phone:currentPhone,new_phone:settingsNewPhone,email:auth.currentUser?.email||''})});
+    const migrateData=await migrateRes.json();
+    if(migrateData.status==='ok'){
+      document.getElementById('settings-step2').classList.remove('active');
+      document.getElementById('settings-step3').classList.add('active');
+    } else { showErr('settings-err2',migrateData.error||'Migration failed.'); btn.textContent='Confirm & Update Number'; btn.disabled=false; }
+  } catch(e){ showErr('settings-err2','Connection error.'); btn.textContent='Confirm & Update Number'; btn.disabled=false; }
+};
+
+// UTILS
+function showScreen(id){ document.querySelectorAll('.screen').forEach(s=>{ s.classList.remove('active'); s.style.display='none'; }); const el=document.getElementById(id); el.classList.add('active'); el.style.display=id==='login-screen'?'flex':'block'; }
+window.switchTab=function(tab){ const isSignup=tab==='signup',isLogin=tab==='login'; document.getElementById('step-signup').classList.toggle('active',isSignup); document.getElementById('step-login').classList.toggle('active',isLogin); const tS=document.getElementById('tab-signup'),tL=document.getElementById('tab-login'); tL.style.background=isLogin?'var(--green)':'transparent'; tL.style.color=isLogin?'#000':'var(--muted)'; tS.style.background=isSignup?'var(--green)':'transparent'; tS.style.color=isSignup?'#000':'var(--muted)'; };
+function showErr(id,msg){ const e=document.getElementById(id); e.textContent=msg; e.classList.add('show'); }
+function showOk(id,msg){ const e=document.getElementById(id); e.textContent=msg; e.classList.add('show'); }
+function clearMsg(id){ const e=document.getElementById(id); e.textContent=''; e.classList.remove('show'); }
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function fmtPhone(p){ if(!p) return ''; const d=p.replace(/\D/g,''); if(d.length===11&&d[0]==='1') return '+1 ('+d.slice(1,4)+') '+d.slice(4,7)+'-'+d.slice(7); return p; }
+function fErr(code){ return({'auth/user-not-found':'No account found.','auth/wrong-password':'Incorrect password.','auth/invalid-credential':'Invalid credentials.','auth/email-already-in-use':'An account with that email already exists.','auth/weak-password':'Password must be at least 8 characters.','auth/invalid-email':'Please enter a valid email address.','auth/too-many-requests':'Too many attempts. Try again later.'}[code]||'Something went wrong.'); }
 </script>
+
+<!-- Edit modal -->
+<div class="edit-modal-backdrop" id="edit-modal" style="display:none;" onclick="if(event.target===this)closeEditModal()">
+  <div class="edit-modal">
+    <div class="edit-modal-title">✏️ Edit Log Entry</div>
+    <div class="edit-modal-sub">Original entry is preserved. A new timestamped entry will be created.</div>
+    <div class="edit-original"><strong>Original</strong><span id="edit-original-text"></span></div>
+    <textarea class="edit-ta" id="edit-new-text" placeholder="Enter your updated log entry..."></textarea>
+    <div class="edit-modal-actions">
+      <button class="edit-cancel-btn" onclick="closeEditModal()">Cancel</button>
+      <button class="edit-save-btn" id="edit-save-btn" onclick="saveEditEntry()">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="#000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Save as New Entry
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- PDF print area -->
+<div id="pdf-print-area" style="display:none;">
+  <div class="pdf-header"><div class="pdf-logo">FitLogs.AI</div><div class="pdf-meta" id="pdf-meta"></div></div>
+  <div class="pdf-title">AI Coach Insight Report</div>
+  <div class="pdf-question" id="pdf-question"></div>
+  <div class="pdf-response" id="pdf-response"></div>
+  <div class="pdf-verify">Generated by FitLogs.AI — fitlogs.ai | Athens Innovation and Development LLC</div>
+  <div class="pdf-footer"><span>FitLogs.AI — SMS Fitness Coaching Platform</span><span id="pdf-date"></span></div>
+</div>
+
+<!-- Settings modal -->
+<div class="settings-backdrop" id="settings-backdrop" onclick="if(event.target===this)closeSettings()">
+  <div class="settings-modal">
+    <button class="settings-close" onclick="closeSettings()">×</button>
+    <div class="settings-title">Account Settings</div>
+    <div class="settings-sub">Update your phone number with OTP verification</div>
+    <div class="settings-current">📱 Current: <strong id="settings-current-phone">...</strong></div>
+    <div class="settings-step active" id="settings-step1">
+      <div class="field-wrap">
+        <label class="f-label" for="settings-new-phone">New Phone Number</label>
+        <div style="display:flex;gap:8px;">
+          <div class="f-input" style="width:70px;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:13px;">+1 🇺🇸</div>
+          <input class="f-input" id="settings-new-phone" type="tel" placeholder="10-digit US number" style="flex:1;" maxlength="10" onkeydown="if(event.key==='Enter')sendSettingsOtp()">
+        </div>
+      </div>
+      <div class="err-box" id="settings-err1" role="alert"></div>
+      <button class="btn-safe" onclick="sendSettingsOtp()" id="settings-send-btn" style="width:100%;margin-top:8px;">Send Verification Code</button>
+    </div>
+    <div class="settings-step" id="settings-step2">
+      <div class="field-wrap"><label class="f-label" for="settings-otp">Verification Code</label><input class="f-input" id="settings-otp" type="tel" maxlength="6" placeholder="000000" onkeydown="if(event.key==='Enter')verifySettingsOtp()"></div>
+      <div class="otp-hint">Enter the 6-digit code sent to your new number.</div>
+      <div class="err-box" id="settings-err2" role="alert"></div>
+      <button class="btn-safe" onclick="verifySettingsOtp()" id="settings-verify-btn" style="width:100%;margin-top:8px;">Confirm & Update Number</button>
+      <div style="text-align:center;margin-top:8px;"><span class="otp-resend" onclick="sendSettingsOtp()">Resend code</span></div>
+    </div>
+    <div class="settings-step" id="settings-step3">
+      <div style="text-align:center;padding:20px 0;">
+        <div style="font-size:40px;margin-bottom:12px;">✅</div>
+        <div style="font-size:15px;font-weight:700;color:var(--green);margin-bottom:8px;">Phone number updated!</div>
+        <div style="font-size:13px;color:var(--muted);margin-bottom:20px;">Your logs have been migrated. Please sign in again.</div>
+        <button class="btn-safe" onclick="doLogout()" style="width:100%;">Sign Out & Sign Back In</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
