@@ -471,63 +471,69 @@ mark{background:rgba(34,197,94,0.2);color:var(--green2);border-radius:2px;paddin
 <!-- Auth column -->
 <div style="display:flex;flex-direction:column;justify-content:center;padding:24px 20px;overflow-y:auto;border-right:1px solid var(--border);order:1;">
 <div class="login-wrap">
-  <div style="display:flex;gap:0;margin-bottom:16px;background:var(--dark);border-radius:10px;padding:3px;">
-    <button id="tab-login" onclick="switchTab('login')" style="flex:1;padding:8px;border:none;border-radius:8px;background:var(--green);color:#000;font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;transition:all 0.18s;">Sign In</button>
-    <button id="tab-signup" onclick="switchTab('signup')" style="flex:1;padding:8px;border:none;border-radius:8px;background:transparent;color:var(--muted);font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;transition:all 0.18s;">Create Account</button>
+
+  <!-- SIGN IN — always visible at top -->
+  <div class="login-card" style="margin-bottom:16px;">
+    <div style="font-size:15px;font-weight:700;color:var(--white);margin-bottom:2px;">Sign In</div>
+    <div style="font-size:11px;color:var(--muted);margin-bottom:12px;">Welcome back to FitLogs.</div>
+    <div class="field-wrap"><label class="f-label" for="login-id">Phone or Email</label><input class="f-input" id="login-id" type="text" placeholder="Email or 10-digit US phone number" autocomplete="off" aria-required="true"></div>
+    <div class="field-wrap"><label class="f-label" for="login-pw">Password</label><input class="f-input" id="login-pw" type="password" placeholder="Your password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()" aria-required="true"></div>
+    <div class="forgot-link"><a onclick="doForgotPw()" aria-label="Reset your password">Forgot password?</a></div>
+    <div class="err-box" id="login-err" role="alert" aria-live="assertive"></div>
+    <div class="ok-box" id="login-ok" role="status" aria-live="polite"></div>
+    <button class="btn-safe" onclick="doLogin()" id="login-btn" style="margin-top:6px;width:100%;">Sign In</button>
   </div>
 
-  <div class="login-card">
-    <!-- Signup -->
-    <div id="step-signup" class="step">
-      <div style="font-size:14px;font-weight:700;color:var(--white);margin-bottom:4px;">Create your account</div>
-      <div style="font-size:11px;color:var(--muted);margin-bottom:12px;">Your phone number is your primary identity.</div>
-      <div class="grid-cc">
-        <div><label class="f-label" for="su-cc">Country</label><select class="f-input" id="su-cc" onchange="resetOtp()" style="cursor:pointer;" aria-label="Country code"><option value="+1">🇺🇸 +1</option></select></div>
-        <div><label class="f-label" for="su-phone">Phone</label><input class="f-input" id="su-phone" type="tel" placeholder="Phone number" autocomplete="tel" oninput="resetOtp()" aria-required="true"></div>
-      </div>
-      <div class="field-wrap"><label class="f-label" for="su-email">Email</label><input class="f-input" id="su-email" type="email" placeholder="Email address" autocomplete="email" aria-required="true"></div>
-      <div class="field-wrap"><label class="f-label" for="su-pw">Password</label><input class="f-input" id="su-pw" type="password" placeholder="Min 8 characters" autocomplete="new-password" aria-required="true"></div>
-      <div class="field-wrap"><label class="f-label" for="su-pw2">Confirm Password</label><input class="f-input" id="su-pw2" type="password" placeholder="Repeat password" autocomplete="new-password" aria-required="true"></div>
-
-      <!-- SMS Consent checkbox -->
-      <div class="consent-row">
-        <input type="checkbox" id="sms-consent" aria-required="true">
-        <label for="sms-consent">I agree to receive SMS text messages from FitLogs including AI coaching responses, workout confirmations, check-ins, and account notifications. Message and data rates may apply. Reply STOP to opt out at any time. <a href="/privacy.html" target="_blank">Privacy Policy</a> · <a href="/terms.html" target="_blank">Terms of Service</a></label>
-      </div>
-
-      <!-- OTP section -->
-      <div class="otp-section" id="otp-section">
-        <label class="f-label" for="otp-input">Verification Code</label>
-        <div class="otp-input-row">
-          <input class="otp-input" id="otp-input" aria-label="6-digit verification code" type="tel" maxlength="6" placeholder="000000" onkeydown="if(event.key==='Enter')verifyOtp()" aria-required="true">
-        </div>
-        <div class="otp-hint">Enter the 6-digit code sent to your phone.</div>
-        <button class="btn-safe" onclick="verifyOtp()" id="otp-verify-btn" style="margin-top:8px;width:100%;" aria-label="Confirm verification code">Confirm Code</button>
-        <div style="text-align:center;margin-top:8px;">
-          <span class="otp-resend" onclick="sendOtp(true)">Did not receive a code? Resend</span>
-        </div>
-      </div>
-      <div class="otp-verified" id="otp-verified">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        Phone number verified
-      </div>
-      <button class="btn-safe" id="signup-btn" onclick="sendOtp()" style="margin-top:10px;" aria-label="Send verification code">Send Verification Code</button>
-      <div class="err-box" id="signup-err" role="alert" aria-live="assertive"></div>
-      <div class="ok-box" id="signup-ok" role="status" aria-live="polite"></div>
-    </div>
-
-    <!-- Login -->
-    <div id="step-login" class="step active">
-      <div style="font-size:14px;font-weight:700;color:var(--white);margin-bottom:4px;">Welcome back</div>
-      <div style="font-size:11px;color:var(--muted);margin-bottom:12px;">Enter your phone or email and password.</div>
-      <div class="field-wrap"><label class="f-label" for="login-id">Phone or Email</label><input class="f-input" id="login-id" type="text" placeholder="Email or 10-digit US phone number" autocomplete="off" aria-required="true"></div>
-      <div class="field-wrap"><label class="f-label" for="login-pw">Password</label><input class="f-input" id="login-pw" type="password" placeholder="Your password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()" aria-required="true"></div>
-      <div class="forgot-link"><a onclick="doForgotPw()" aria-label="Reset your password">Forgot password?</a></div>
-      <div class="err-box" id="login-err" role="alert" aria-live="assertive"></div>
-      <div class="ok-box" id="login-ok" role="status" aria-live="polite"></div>
-      <button class="btn-safe" onclick="doLogin()" id="login-btn" style="margin-top:6px;width:100%;">Sign In</button>
-    </div>
+  <!-- DIVIDER -->
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+    <div style="flex:1;height:1px;background:var(--border);"></div>
+    <span style="font-size:11px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;">New to FitLogs?</span>
+    <div style="flex:1;height:1px;background:var(--border);"></div>
   </div>
+
+  <!-- CREATE ACCOUNT — always visible below -->
+  <div class="login-card" id="step-signup">
+    <div style="font-size:15px;font-weight:700;color:var(--white);margin-bottom:2px;">Create Account</div>
+    <div style="font-size:11px;color:var(--muted);margin-bottom:12px;">Your phone number is your primary identity.</div>
+    <div class="grid-cc">
+      <div><label class="f-label" for="su-cc">Country</label><select class="f-input" id="su-cc" onchange="resetOtp()" style="cursor:pointer;" aria-label="Country code"><option value="+1">🇺🇸 +1</option></select></div>
+      <div><label class="f-label" for="su-phone">Phone</label><input class="f-input" id="su-phone" type="tel" placeholder="Phone number" autocomplete="tel" oninput="resetOtp()" aria-required="true"></div>
+    </div>
+    <div class="field-wrap"><label class="f-label" for="su-email">Email</label><input class="f-input" id="su-email" type="email" placeholder="Email address" autocomplete="email" aria-required="true"></div>
+    <div class="field-wrap"><label class="f-label" for="su-pw">Password</label><input class="f-input" id="su-pw" type="password" placeholder="Min 8 characters" autocomplete="new-password" aria-required="true"></div>
+    <div class="field-wrap"><label class="f-label" for="su-pw2">Confirm Password</label><input class="f-input" id="su-pw2" type="password" placeholder="Repeat password" autocomplete="new-password" aria-required="true"></div>
+
+    <!-- SMS Consent checkbox -->
+    <div class="consent-row">
+      <input type="checkbox" id="sms-consent">
+      <label for="sms-consent">
+        <strong style="color:var(--text);display:block;margin-bottom:4px;">FitLogs SMS Coaching (Optional)</strong>
+        By checking this box, I agree to receive recurring automated SMS text messages from FitLogs (Athens Innovation and Development LLC) including AI coaching responses, workout confirmations, daily check-ins, and account notifications. Message frequency varies based on activity. Message and data rates may apply. Reply <strong>HELP</strong> for help, <strong>STOP</strong> to cancel at any time. Opting in is not a condition of purchase or account creation.
+        <span style="display:block;margin-top:4px;"><a href="/privacy.html" target="_blank">Privacy Policy</a> · <a href="/terms.html" target="_blank">Terms of Service</a></span>
+      </label>
+    </div>
+
+    <!-- OTP section -->
+    <div class="otp-section" id="otp-section">
+      <label class="f-label" for="otp-input">Verification Code</label>
+      <div class="otp-input-row">
+        <input class="otp-input" id="otp-input" aria-label="6-digit verification code" type="tel" maxlength="6" placeholder="000000" onkeydown="if(event.key==='Enter')verifyOtp()" aria-required="true">
+      </div>
+      <div class="otp-hint">Enter the 6-digit code sent to your phone.</div>
+      <button class="btn-safe" onclick="verifyOtp()" id="otp-verify-btn" style="margin-top:8px;width:100%;" aria-label="Confirm verification code">Confirm Code</button>
+      <div style="text-align:center;margin-top:8px;">
+        <span class="otp-resend" onclick="sendOtp(true)">Did not receive a code? Resend</span>
+      </div>
+    </div>
+    <div class="otp-verified" id="otp-verified">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Phone number verified
+    </div>
+    <button class="btn-safe" id="signup-btn" onclick="sendOtp()" style="margin-top:10px;width:100%;" aria-label="Send verification code">Send Verification Code</button>
+    <div class="err-box" id="signup-err" role="alert" aria-live="assertive"></div>
+    <div class="ok-box" id="signup-ok" role="status" aria-live="polite"></div>
+  </div>
+
 </div>
 </div>
 
@@ -923,11 +929,10 @@ window.doSignup = async function(){
   const email=document.getElementById('su-email').value.trim();
   const pw=document.getElementById('su-pw').value;
   const pw2=document.getElementById('su-pw2').value;
-  const consent=document.getElementById('sms-consent').checked;
   const btn=document.getElementById('signup-btn');
   clearMsg('signup-err'); clearMsg('signup-ok');
   if(!phone||!email){ showErr('signup-err','Please fill in all fields.'); return; }
-  if(!consent){ showErr('signup-err','Please agree to receive SMS messages to create your account.'); return; }
+  // SMS consent is optional
   if(pw.length<8){ showErr('signup-err','Password must be at least 8 characters.'); return; }
   if(pw!==pw2){ showErr('signup-err','Passwords do not match.'); return; }
   if(!phoneVerified){ showErr('signup-err','Please verify your phone number first.'); return; }
@@ -938,7 +943,7 @@ window.doSignup = async function(){
     await updateProfile(cred.user,{displayName:fullPhone});
     await setDoc(doc(db,'users',fullPhone,'profile','data'),{
       uid:cred.user.uid, phone:fullPhone, plan:'free',
-      status:'active', smsConsent:true,
+      status:'active', smsConsent:document.getElementById('sms-consent').checked,
       joinedAt:serverTimestamp(), joinedLocal:new Date().toISOString()
     });
     await setDoc(doc(emailsCol(fullPhone),encEmail(email)),{email,addedAt:serverTimestamp(),primary:true});
@@ -1268,8 +1273,7 @@ window.sendOtp=async function(resend=false){
   const btn=document.getElementById('signup-btn');
   clearMsg('signup-err');
   if(!phone){ showErr('signup-err','Please enter your phone number first.'); return; }
-  const consent=document.getElementById('sms-consent').checked;
-  if(!consent){ showErr('signup-err','Please agree to receive SMS messages first.'); return; }
+  // SMS consent is optional — OTP verifies phone ownership only
   const digitsOnly=phone.replace(/\D/g,'');
   const fullPhone=cc+digitsOnly;
   if(digitsOnly.length!==10){ showErr('signup-err','Please enter a valid 10-digit phone number.'); return; }
@@ -1419,7 +1423,7 @@ window.verifySettingsOtp=async function(){
 
 // UTILS
 function showScreen(id){ document.querySelectorAll('.screen').forEach(s=>{ s.classList.remove('active'); s.style.display='none'; }); const el=document.getElementById(id); el.classList.add('active'); el.style.display=id==='login-screen'?'flex':'block'; }
-window.switchTab=function(tab){ const isSignup=tab==='signup',isLogin=tab==='login'; document.getElementById('step-signup').classList.toggle('active',isSignup); document.getElementById('step-login').classList.toggle('active',isLogin); const tS=document.getElementById('tab-signup'),tL=document.getElementById('tab-login'); tL.style.background=isLogin?'var(--green)':'transparent'; tL.style.color=isLogin?'#000':'var(--muted)'; tS.style.background=isSignup?'var(--green)':'transparent'; tS.style.color=isSignup?'#000':'var(--muted)'; };
+window.switchTab=function(tab){}; // tabs replaced with stacked layout
 function showErr(id,msg){ const e=document.getElementById(id); e.textContent=msg; e.classList.add('show'); }
 function showOk(id,msg){ const e=document.getElementById(id); e.textContent=msg; e.classList.add('show'); }
 function clearMsg(id){ const e=document.getElementById(id); e.textContent=''; e.classList.remove('show'); }
