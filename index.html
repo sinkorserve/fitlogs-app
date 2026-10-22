@@ -379,7 +379,7 @@ mark{background:rgba(34,197,94,0.2);color:var(--green2);border-radius:2px;paddin
 
 <div id="login-screen" class="screen active">
 
-<div style="display:flex;justify-content:center;padding:10px 0 0;position:relative;z-index:50;">
+<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 16px 0;position:relative;z-index:50;"><button onclick="enterSOSMode()" title="Private Journal" style="width:28px;height:28px;border-radius:50%;background:#e63e2f;border:none;cursor:pointer;box-shadow:0 0 0 3px rgba(230,62,47,0.25);display:flex;align-items:center;justify-content:center;padding:0;"><span style="color:#fff;font-size:11px;font-weight:800;letter-spacing:-0.5px;">SOS</span></button>
   <button id="theme-toggle" onclick="toggleTheme()" aria-label="Toggle light/dark mode"
     style="background:rgba(255,255,255,0.08);border:1px solid var(--border);border-radius:20px;
     padding:6px 16px;cursor:pointer;color:var(--text);font-size:13px;font-family:var(--font);
@@ -471,83 +471,63 @@ mark{background:rgba(34,197,94,0.2);color:var(--green2);border-radius:2px;paddin
 <!-- Auth column -->
 <div style="display:flex;flex-direction:column;justify-content:center;padding:24px 20px;overflow-y:auto;border-right:1px solid var(--border);order:1;">
 <div class="login-wrap">
-
-  <!-- SIGN IN — always visible at top -->
-  <div class="login-card" style="margin-bottom:16px;">
-    <div style="font-size:15px;font-weight:700;color:var(--white);margin-bottom:2px;">Sign In</div>
-    <div style="font-size:11px;color:var(--muted);margin-bottom:12px;">Welcome back to FitLogs.</div>
-    <div class="field-wrap"><label class="f-label" for="login-id">Phone or Email</label><input class="f-input" id="login-id" type="text" placeholder="Email or 10-digit US phone number" autocomplete="off" aria-required="true"></div>
-    <div class="field-wrap"><label class="f-label" for="login-pw">Password</label><input class="f-input" id="login-pw" type="password" placeholder="Your password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()" aria-required="true"></div>
-    <div class="forgot-link"><a onclick="doForgotPw()" aria-label="Reset your password">Forgot password?</a></div>
-    <div class="err-box" id="login-err" role="alert" aria-live="assertive"></div>
-    <div class="ok-box" id="login-ok" role="status" aria-live="polite"></div>
-    <button class="btn-safe" onclick="doLogin()" id="login-btn" style="margin-top:6px;width:100%;">Sign In</button>
+  <div style="display:flex;gap:0;margin-bottom:16px;background:var(--dark);border-radius:10px;padding:3px;">
+    <button id="tab-login" onclick="switchTab('login')" style="flex:1;padding:8px;border:none;border-radius:8px;background:var(--green);color:#000;font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;transition:all 0.18s;">Sign In</button>
+    <button id="tab-signup" onclick="switchTab('signup')" style="flex:1;padding:8px;border:none;border-radius:8px;background:transparent;color:var(--muted);font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;transition:all 0.18s;">Create Account</button>
   </div>
 
-  <!-- DIVIDER -->
-  <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
-    <div style="flex:1;height:1px;background:var(--border);"></div>
-    <span style="font-size:11px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;">New to FitLogs?</span>
-    <div style="flex:1;height:1px;background:var(--border);"></div>
-  </div>
-
-  <!-- CREATE ACCOUNT — always visible below -->
-  <div class="login-card" id="step-signup">
-    <div style="font-size:15px;font-weight:700;color:var(--white);margin-bottom:2px;">Create Account</div>
-    <div style="font-size:11px;color:var(--muted);margin-bottom:12px;">Your phone number is your primary identity.</div>
-    <div class="grid-cc">
-      <div><label class="f-label" for="su-cc">Country</label><select class="f-input" id="su-cc" onchange="resetOtp()" style="cursor:pointer;" aria-label="Country code"><option value="+1">🇺🇸 +1</option></select></div>
-      <div><label class="f-label" for="su-phone">Phone</label><input class="f-input" id="su-phone" type="tel" placeholder="Phone number" autocomplete="tel" oninput="resetOtp()" aria-required="true"></div>
-    </div>
-    <div class="field-wrap"><label class="f-label" for="su-email">Email</label><input class="f-input" id="su-email" type="email" placeholder="Email address" autocomplete="email" aria-required="true"></div>
-    <div class="field-wrap"><label class="f-label" for="su-pw">Password</label><input class="f-input" id="su-pw" type="password" placeholder="Min 8 characters" autocomplete="new-password" aria-required="true"></div>
-    <div class="field-wrap"><label class="f-label" for="su-pw2">Confirm Password</label><input class="f-input" id="su-pw2" type="password" placeholder="Repeat password" autocomplete="new-password" aria-required="true"></div>
-
-    <!-- SMS Transactional Consent (Optional) -->
-    <div class="consent-row" style="margin-bottom:8px;">
-      <input type="checkbox" id="sms-consent">
-      <label for="sms-consent">
-        By checking, you are allowing to receive <strong style="color:var(--text);">transactional/informational SMS</strong> communications from <strong style="color:var(--text);">FitLogs</strong> (Athens Innovation and Development LLC) including AI coaching responses, workout confirmations, account notifications, and daily check-ins. Message frequency varies based on your activity (typically 1-3 messages per day). Message and data rates may apply. Reply <strong>STOP</strong> to opt out.
-      </label>
-    </div>
-
-    <!-- SMS Promotional Consent (Optional) -->
-    <div class="consent-row" style="margin-bottom:8px;">
-      <input type="checkbox" id="sms-promo-consent">
-      <label for="sms-promo-consent">
-        By checking, you are allowing to receive <strong style="color:var(--text);">promotional/marketing SMS</strong> communications from <strong style="color:var(--text);">FitLogs</strong> (Athens Innovation and Development LLC) including special offers and new feature announcements. Message frequency varies based on your activity (typically 1-3 messages per day). Message and data rates may apply. Reply <strong>HELP</strong> for help or <strong>STOP</strong> to opt out.
-      </label>
-    </div>
-
-    <!-- Terms and Conditions (Required) -->
-    <div class="consent-row" style="background:rgba(34,197,94,0.06);border-color:rgba(34,197,94,0.25);">
-      <input type="checkbox" id="terms-consent" aria-required="true">
-      <label for="terms-consent">
-        By checking, I accept the <a href="/terms.html" target="_blank">Terms of Service</a> &amp; <a href="/privacy.html" target="_blank">Privacy Policy</a>. <span style="color:var(--red);font-size:10px;">Required</span>
-      </label>
-    </div>
-
-    <!-- OTP section -->
-    <div class="otp-section" id="otp-section">
-      <label class="f-label" for="otp-input">Verification Code</label>
-      <div class="otp-input-row">
-        <input class="otp-input" id="otp-input" aria-label="6-digit verification code" type="tel" maxlength="6" placeholder="000000" onkeydown="if(event.key==='Enter')verifyOtp()" aria-required="true">
+  <div class="login-card">
+    <!-- Signup -->
+    <div id="step-signup" class="step">
+      <div style="font-size:14px;font-weight:700;color:var(--white);margin-bottom:4px;">Create your account</div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:12px;">Your phone number is your primary identity.</div>
+      <div class="grid-cc">
+        <div><label class="f-label" for="su-cc">Country</label><select class="f-input" id="su-cc" onchange="resetOtp()" style="cursor:pointer;" aria-label="Country code"><option value="+1">🇺🇸 +1</option></select></div>
+        <div><label class="f-label" for="su-phone">Phone</label><input class="f-input" id="su-phone" type="tel" placeholder="Phone number" autocomplete="tel" oninput="resetOtp()" aria-required="true"></div>
       </div>
-      <div class="otp-hint">Enter the 6-digit code sent to your phone.</div>
-      <button class="btn-safe" onclick="verifyOtp()" id="otp-verify-btn" style="margin-top:8px;width:100%;" aria-label="Confirm verification code">Confirm Code</button>
-      <div style="text-align:center;margin-top:8px;">
-        <span class="otp-resend" onclick="sendOtp(true)">Did not receive a code? Resend</span>
-      </div>
-    </div>
-    <div class="otp-verified" id="otp-verified">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      Phone number verified
-    </div>
-    <button class="btn-safe" id="signup-btn" onclick="sendOtp()" style="margin-top:10px;width:100%;" aria-label="Send verification code">Send Verification Code</button>
-    <div class="err-box" id="signup-err" role="alert" aria-live="assertive"></div>
-    <div class="ok-box" id="signup-ok" role="status" aria-live="polite"></div>
-  </div>
+      <div class="field-wrap"><label class="f-label" for="su-email">Email</label><input class="f-input" id="su-email" type="email" placeholder="Email address" autocomplete="email" aria-required="true"></div>
+      <div class="field-wrap"><label class="f-label" for="su-pw">Password</label><input class="f-input" id="su-pw" type="password" placeholder="Min 8 characters" autocomplete="new-password" aria-required="true"></div>
+      <div class="field-wrap"><label class="f-label" for="su-pw2">Confirm Password</label><input class="f-input" id="su-pw2" type="password" placeholder="Repeat password" autocomplete="new-password" aria-required="true"></div>
 
+      <!-- SMS Consent checkbox -->
+      <div class="consent-row">
+        <input type="checkbox" id="sms-consent" aria-required="true">
+        <label for="sms-consent">I agree to receive SMS text messages from FitLogs including AI coaching responses, workout confirmations, check-ins, and account notifications. Message and data rates may apply. Reply STOP to opt out at any time. <a href="/privacy.html" target="_blank">Privacy Policy</a> · <a href="/terms.html" target="_blank">Terms of Service</a></label>
+      </div>
+
+      <!-- OTP section -->
+      <div class="otp-section" id="otp-section">
+        <label class="f-label" for="otp-input">Verification Code</label>
+        <div class="otp-input-row">
+          <input class="otp-input" id="otp-input" aria-label="6-digit verification code" type="tel" maxlength="6" placeholder="000000" onkeydown="if(event.key==='Enter')verifyOtp()" aria-required="true">
+        </div>
+        <div class="otp-hint">Enter the 6-digit code sent to your phone.</div>
+        <button class="btn-safe" onclick="verifyOtp()" id="otp-verify-btn" style="margin-top:8px;width:100%;" aria-label="Confirm verification code">Confirm Code</button>
+        <div style="text-align:center;margin-top:8px;">
+          <span class="otp-resend" onclick="sendOtp(true)">Did not receive a code? Resend</span>
+        </div>
+      </div>
+      <div class="otp-verified" id="otp-verified">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Phone number verified
+      </div>
+      <button class="btn-safe" id="signup-btn" onclick="sendOtp()" style="margin-top:10px;" aria-label="Send verification code">Send Verification Code</button>
+      <div class="err-box" id="signup-err" role="alert" aria-live="assertive"></div>
+      <div class="ok-box" id="signup-ok" role="status" aria-live="polite"></div>
+    </div>
+
+    <!-- Login -->
+    <div id="step-login" class="step active">
+      <div style="font-size:14px;font-weight:700;color:var(--white);margin-bottom:4px;">Welcome back</div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:12px;">Enter your phone or email and password.</div>
+      <div class="field-wrap"><label class="f-label" for="login-id">Phone or Email</label><input class="f-input" id="login-id" type="text" placeholder="Email or 10-digit US phone number" autocomplete="off" aria-required="true"></div>
+      <div class="field-wrap"><label class="f-label" for="login-pw">Password</label><input class="f-input" id="login-pw" type="password" placeholder="Your password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()" aria-required="true"></div>
+      <div class="forgot-link"><a onclick="doForgotPw()" aria-label="Reset your password">Forgot password?</a></div>
+      <div class="err-box" id="login-err" role="alert" aria-live="assertive"></div>
+      <div class="ok-box" id="login-ok" role="status" aria-live="polite"></div>
+      <button class="btn-safe" onclick="doLogin()" id="login-btn" style="margin-top:6px;width:100%;">Sign In</button>
+    </div>
+  </div>
 </div>
 </div>
 
@@ -631,6 +611,8 @@ mark{background:rgba(34,197,94,0.2);color:var(--green2);border-radius:2px;paddin
       💪 Fit<span>Logs</span><span style="font-size:11px;font-weight:400;color:rgba(34,197,94,0.6);margin-left:2px;">.AI</span>
     </div>
     <div class="dash-nav-right">
+      <button id="sos-toggle-btn" onclick="enterSOSMode()" title="Private Journal" aria-label="Switch to Private Journal"
+        style="width:28px;height:28px;border-radius:50%;background:#e63e2f;border:none;cursor:pointer;box-shadow:0 0 0 3px rgba(230,62,47,0.25);transition:all 0.2s;flex-shrink:0;display:flex;align-items:center;justify-content:center;padding:0;"><span style="color:#fff;font-size:11px;font-weight:800;letter-spacing:-0.5px;">SOS</span></button>
       <button id="dash-theme-toggle" onclick="toggleTheme()" aria-label="Toggle light/dark mode"
         style="background:rgba(34,197,94,0.06);border:1px solid var(--border);border-radius:16px;padding:5px 12px;cursor:pointer;color:var(--text);font-size:12px;font-family:var(--font);font-weight:600;display:flex;align-items:center;gap:5px;">
         <span id="dash-theme-icon">☀️</span><span id="dash-theme-label">Dark</span>
@@ -879,7 +861,7 @@ onAuthStateChanged(auth, async user => {
     ['su-phone','su-email','su-pw','su-pw2','otp-input'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
     ['signup-err','signup-ok','login-err','login-ok'].forEach(id=>{ const el=document.getElementById(id); if(el){ el.textContent=''; el.classList.remove('show'); } });
     switchTab('login');
-    showScreen('login-screen');
+    showScreen('login-screen'); window._fitlogsLoggedIn = false;
   }
 });
 
@@ -943,11 +925,11 @@ window.doSignup = async function(){
   const email=document.getElementById('su-email').value.trim();
   const pw=document.getElementById('su-pw').value;
   const pw2=document.getElementById('su-pw2').value;
+  const consent=document.getElementById('sms-consent').checked;
   const btn=document.getElementById('signup-btn');
   clearMsg('signup-err'); clearMsg('signup-ok');
   if(!phone||!email){ showErr('signup-err','Please fill in all fields.'); return; }
-  const terms=document.getElementById('terms-consent').checked;
-  if(!terms){ showErr('signup-err','Please accept the Terms of Service to create your account.'); return; }
+  if(!consent){ showErr('signup-err','Please agree to receive SMS messages to create your account.'); return; }
   if(pw.length<8){ showErr('signup-err','Password must be at least 8 characters.'); return; }
   if(pw!==pw2){ showErr('signup-err','Passwords do not match.'); return; }
   if(!phoneVerified){ showErr('signup-err','Please verify your phone number first.'); return; }
@@ -958,9 +940,7 @@ window.doSignup = async function(){
     await updateProfile(cred.user,{displayName:fullPhone});
     await setDoc(doc(db,'users',fullPhone,'profile','data'),{
       uid:cred.user.uid, phone:fullPhone, plan:'free',
-      status:'active', smsConsent:document.getElementById('sms-consent').checked,
-      smsPromoConsent:document.getElementById('sms-promo-consent').checked,
-      termsAccepted:true,
+      status:'active', smsConsent:true,
       joinedAt:serverTimestamp(), joinedLocal:new Date().toISOString()
     });
     await setDoc(doc(emailsCol(fullPhone),encEmail(email)),{email,addedAt:serverTimestamp(),primary:true});
@@ -996,7 +976,7 @@ window.doLogout = async () => {
 async function showDashboard(user){
   const dashBody = document.querySelector('.dash-split');
   if(dashBody) dashBody.style.visibility='hidden';
-  showScreen('dashboard-screen');
+  showScreen('dashboard-screen'); window._fitlogsLoggedIn = true;
   document.getElementById('nav-phone').textContent = fmtPhone(currentPhone);
   await checkPlanAndApplyPaywall(currentPhone);
   allLogs = await loadAllLogs();
@@ -1290,7 +1270,8 @@ window.sendOtp=async function(resend=false){
   const btn=document.getElementById('signup-btn');
   clearMsg('signup-err');
   if(!phone){ showErr('signup-err','Please enter your phone number first.'); return; }
-  // SMS consent is optional — OTP verifies phone ownership only
+  const consent=document.getElementById('sms-consent').checked;
+  if(!consent){ showErr('signup-err','Please agree to receive SMS messages first.'); return; }
   const digitsOnly=phone.replace(/\D/g,'');
   const fullPhone=cc+digitsOnly;
   if(digitsOnly.length!==10){ showErr('signup-err','Please enter a valid 10-digit phone number.'); return; }
@@ -1440,7 +1421,7 @@ window.verifySettingsOtp=async function(){
 
 // UTILS
 function showScreen(id){ document.querySelectorAll('.screen').forEach(s=>{ s.classList.remove('active'); s.style.display='none'; }); const el=document.getElementById(id); el.classList.add('active'); el.style.display=id==='login-screen'?'flex':'block'; }
-window.switchTab=function(tab){}; // tabs replaced with stacked layout
+window.switchTab=function(tab){ const isSignup=tab==='signup',isLogin=tab==='login'; document.getElementById('step-signup').classList.toggle('active',isSignup); document.getElementById('step-login').classList.toggle('active',isLogin); const tS=document.getElementById('tab-signup'),tL=document.getElementById('tab-login'); tL.style.background=isLogin?'var(--green)':'transparent'; tL.style.color=isLogin?'#000':'var(--muted)'; tS.style.background=isSignup?'var(--green)':'transparent'; tS.style.color=isSignup?'#000':'var(--muted)'; };
 function showErr(id,msg){ const e=document.getElementById(id); e.textContent=msg; e.classList.add('show'); }
 function showOk(id,msg){ const e=document.getElementById(id); e.textContent=msg; e.classList.add('show'); }
 function clearMsg(id){ const e=document.getElementById(id); e.textContent=''; e.classList.remove('show'); }
@@ -1511,6 +1492,3267 @@ function fErr(code){ return({'auth/user-not-found':'No account found.','auth/wro
     </div>
   </div>
 </div>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     SOS PRIVATE JOURNAL — Hidden overlay, toggled by red dot
+     ═══════════════════════════════════════════════════════════ -->
+<div id="sos-wrapper" style="display:none;position:fixed;inset:0;z-index:9000;overflow-y:auto;background:#080a0c;">
+
+<!-- SOS-scoped CSS -->
+<style id="sos-styles">
+#sos-wrapper {
+  --black:#080a0c;--dark:#0e1318;--card:#13191f;--card2:#192028;
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.12);
+  --danger:#e63e2f;--safe:#1db87a;--safe2:#3dd68c;--safe-dim:rgba(29,184,122,0.1);
+  --warn:#f5a623;--blue:#3b82f6;--purple:#a855f7;
+  --muted:#5a7090;--text:#ccd8e8;--white:#f0f6ff;
+  --font:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif;
+  --nav-h:54px;
+}
+#sos-wrapper * {box-sizing:border-box;margin:0;padding:0;}
+#sos-wrapper { height: 100%; overflow-y: auto; }
+#sos-wrapper #app-loading {position:fixed;inset:0;z-index:999;background:var(--black);display:flex;align-items:center;justify-content:center;}
+#sos-wrapper #app-loading.hide {display:none;}
+#sos-wrapper .loading-logo {display:flex;align-items:center;gap:10px;animation:blink 1.4s ease infinite;}
+@keyframes blink {0%,100%{opacity:1;}50%{opacity:0.3;}}
+#sos-wrapper .loading-text {font-size:22px;font-weight:800;color:var(--white);}
+#sos-wrapper .loading-text span {color:var(--safe);}
+#sos-wrapper .screen {display:none;}
+#sos-wrapper .screen.active {display:block;}
+#sos-wrapper /* LOGIN */
+#login-screen {
+  min-height:100dvh;
+  display:flex;
+  flex-direction:column;
+  background:var(--black);
+  overflow-y:auto;
+}
+#sos-wrapper #login-screen::before {content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(29,184,122,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(29,184,122,0.02) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;z-index:0;}
+#sos-wrapper /* Hero section - full width top */
+.login-hero {
+  position:relative;z-index:1;
+  text-align:center;
+  padding:20px 24px 16px;
+  border-bottom:1px solid var(--border);
+  background:linear-gradient(180deg,rgba(29,184,122,0.03) 0%,transparent 100%);
+}
+#sos-wrapper .hero-logo {display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:4px;}
+#sos-wrapper .hero-logo-text {font-size:30px;font-weight:800;color:var(--white);letter-spacing:-0.5px;}
+#sos-wrapper .hero-logo-text span {color:var(--safe);}
+#sos-wrapper .hero-tagline {font-size:10px;color:var(--muted);letter-spacing:0.14em;text-transform:uppercase;margin-bottom:10px;}
+#sos-wrapper .hero-statement {font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:0;max-width:620px;margin-left:auto;margin-right:auto;}
+#sos-wrapper .hero-statement strong {color:var(--text);}
+#sos-wrapper .hero-badges {display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-bottom:10px;}
+#sos-wrapper .hero-badge-pill {background:rgba(29,184,122,0.08);border:1px solid rgba(29,184,122,0.2);border-radius:20px;padding:3px 10px;font-size:10px;color:var(--safe);letter-spacing:0.04em;font-weight:600;}
+#sos-wrapper .hero-sub {font-size:12px;color:var(--muted);line-height:1.6;max-width:480px;margin:0 auto 0;}
+#sos-wrapper .hero-sms {
+  display:inline-flex;align-items:center;gap:10px;
+  margin-top:10px;padding:10px 20px;
+  background:rgba(29,184,122,0.06);
+  border:1px solid rgba(29,184,122,0.2);
+  border-radius:12px;
+  font-size:16px;font-weight:700;color:var(--safe);
+  letter-spacing:0.02em;
+}
+#sos-wrapper .hero-sms svg {flex-shrink:0;}
+#sos-wrapper /* Auth + pricing row */
+.login-body {
+  display:grid;
+  grid-template-columns:25% 1fr 20%;
+  position:relative;
+  z-index:1;
+  min-height:100dvh;
+}
+@media(max-width:860px) {
+#sos-wrapper .login-body {grid-template-columns:1fr;}
+
+}
+#sos-wrapper /* Left panel - auth */
+.login-left {
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  padding:24px 20px;
+  border-right:1px solid var(--border);
+  border-left:1px solid var(--border);
+  background:rgba(0,0,0,0.15);
+  overflow-y:auto;
+  order:2;
+}
+@media(max-width:860px) {
+#sos-wrapper .login-left {border-right:none;border-bottom:1px solid var(--border);}
+
+}
+#sos-wrapper /* Right panel - pricing */
+.login-right {
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-start;
+  padding:24px 16px;
+  overflow-y:auto;
+  order:3;
+}
+@media(max-width:860px) {
+#sos-wrapper .login-right {border-left:none;border-top:1px solid var(--border);}
+
+}
+#sos-wrapper .login-wrap {position:relative;z-index:1;width:100%;animation:fadeUp 0.4s cubic-bezier(.22,.68,0,1.2) both;}
+#sos-wrapper /* ── Fitlogs-style convo cards ──────────────────────────────── */
+.convo-pair {display:flex;flex-direction:column;gap:8px;margin-bottom:16px;}
+#sos-wrapper .convo-card {padding:14px 16px;border-radius:14px;margin-bottom:0;}
+#sos-wrapper .convo-card.card-you {background:rgba(29,184,122,0.1);border:1.5px solid rgba(29,184,122,0.3);}
+#sos-wrapper .convo-card.card-ai {background:rgba(29,184,122,0.06);border:1.5px solid rgba(29,184,122,0.18);}
+#sos-wrapper .convo-card-label {font-size:11px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;color:var(--safe);margin-bottom:10px;}
+#sos-wrapper .convo-item {display:flex;align-items:flex-start;gap:8px;margin-bottom:7px;font-size:12px;color:var(--text);line-height:1.5;font-family:var(--font);}
+#sos-wrapper .convo-item:last-child {margin-bottom:0;}
+#sos-wrapper .convo-dot {width:5px;height:5px;border-radius:50%;flex-shrink:0;margin-top:5px;background:var(--safe);}
+#sos-wrapper .convo-item strong {color:var(--safe2);font-weight:600;}
+#sos-wrapper .num-bridge {display:flex;flex-direction:row;align-items:center;gap:14px;padding:14px 18px;background:rgba(14,19,24,0.9);border-left:1.5px solid rgba(29,184,122,0.3);border-right:1.5px solid rgba(29,184,122,0.3);}
+#sos-wrapper .num-bridge-arrows {display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+#sos-wrapper .num-bridge-numbers {display:flex;flex-direction:column;gap:4px;}
+#sos-wrapper .num-bridge .num {font-size:16px;font-weight:800;color:#fff;letter-spacing:0.5px;white-space:nowrap;-webkit-text-fill-color:#fff;font-family:var(--font);}
+#sos-wrapper .num-bridge .vanity {font-size:16px;font-weight:800;color:var(--safe);letter-spacing:0.5px;white-space:nowrap;-webkit-text-fill-color:var(--safe);font-family:var(--font);}
+#sos-wrapper .num-bridge-tagline {text-align:center;font-size:11px;color:var(--muted);letter-spacing:0.2px;padding:0 18px 12px;font-style:italic;}
+#sos-wrapper .persona {display:flex;align-items:flex-start;gap:10px;padding:7px 9px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;margin-bottom:6px;}
+#sos-wrapper .persona:last-child {margin-bottom:0;}
+#sos-wrapper .persona-dot {width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px;}
+#sos-wrapper .persona-name {font-size:11px;font-weight:400;color:var(--text);margin-bottom:2px;font-family:var(--font);}
+#sos-wrapper .persona-quote {font-size:11px;color:var(--muted);line-height:1.45;font-style:italic;font-family:var(--font);}
+#sos-wrapper .pl-headline {font-size:clamp(18px,2.5vw,24px);font-weight:800;line-height:1.2;letter-spacing:-0.5px;margin-bottom:6px;color:var(--white);font-family:var(--font);}
+#sos-wrapper .pl-headline em {font-style:normal;color:var(--safe);}
+#sos-wrapper .pl-sub {font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:18px;max-width:420px;font-family:var(--font);}
+#sos-wrapper .pl-brand {font-size:20px;font-weight:800;letter-spacing:-0.5px;margin-bottom:16px;display:flex;align-items:center;gap:8px;color:var(--white);font-family:var(--font);}
+#sos-wrapper .pl-brand .ai {color:var(--safe);}
+#sos-wrapper .pl-footer {font-size:11px;color:var(--muted);border-top:1px solid var(--border);padding-top:12px;margin-top:auto;}
+@keyframes fadeUp {from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+#sos-wrapper .login-logo {display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:4px;}
+#sos-wrapper .login-logo-text {font-size:26px;font-weight:800;color:var(--white);}
+#sos-wrapper .login-logo-text span {color:var(--safe);}
+#sos-wrapper .login-tagline {text-align:center;font-size:11px;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:14px;}
+#sos-wrapper .login-card {background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px 20px;position:relative;overflow:hidden;}
+#sos-wrapper .login-card::before {content:'';position:absolute;top:-80px;right:-80px;width:200px;height:200px;background:radial-gradient(circle,rgba(29,184,122,0.05) 0%,transparent 70%);pointer-events:none;}
+#sos-wrapper .f-label {display:block;font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:5px;}
+#sos-wrapper .f-input {width:100%;background:var(--dark);border:1.5px solid var(--border);border-radius:10px;padding:8px 13px;color:var(--text);font-family:var(--font);font-size:14px;outline:none;transition:border-color 0.2s,box-shadow 0.2s;-webkit-text-fill-color:var(--text);}
+#sos-wrapper .f-input::placeholder {color:var(--muted);opacity:0.5;}
+#sos-wrapper input::placeholder, #sos-wrapper textarea::placeholder, #sos-wrapper select::placeholder {color:var(--muted);opacity:0.5;font-style:italic;}
+#sos-wrapper .f-input:focus {border-color:rgba(29,184,122,0.45);box-shadow:0 0 0 3px rgba(29,184,122,0.07);}
+#sos-wrapper .f-input:focus-visible {outline:2px solid var(--safe);outline-offset:2px;}
+#sos-wrapper button:focus-visible, #sos-wrapper a:focus-visible, #sos-wrapper select:focus-visible, #sos-wrapper [contenteditable]:focus-visible {outline:2px solid var(--safe);outline-offset:2px;}
+#sos-wrapper .f-input:-webkit-autofill, #sos-wrapper .f-input:-webkit-autofill:hover, #sos-wrapper .f-input:-webkit-autofill:focus {
+  -webkit-box-shadow:0 0 0 1000px var(--dark) inset !important;
+  -webkit-text-fill-color:var(--text) !important;
+  border-color:var(--border) !important;
+  caret-color:var(--text);
+}
+#sos-wrapper .field-wrap {margin-bottom:8px;}
+#sos-wrapper .grid-cc {display:grid;grid-template-columns:80px 1fr;gap:8px;margin-bottom:8px;}
+#sos-wrapper .grid-2 {display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;}
+#sos-wrapper .pw-row {display:flex;gap:8px;margin-top:5px;}
+#sos-wrapper .btn-safe {width:100%;padding:12px;border:none;border-radius:10px;background:var(--safe);color:#000;font-family:var(--font);font-size:15px;font-weight:700;cursor:pointer;transition:all 0.18s;display:flex;align-items:center;justify-content:center;gap:8px;}
+#sos-wrapper .btn-safe:hover:not(:disabled) {background:var(--safe2);transform:translateY(-1px);}
+#sos-wrapper .btn-safe:disabled {opacity:0.45;cursor:not-allowed;transform:none;}
+#sos-wrapper .btn-icon {flex-shrink:0;width:42px;height:42px;border-radius:10px;border:none;background:var(--safe);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.18s;}
+#sos-wrapper .forgot-link {text-align:right;margin-top:-2px;margin-bottom:8px;}
+#sos-wrapper .forgot-link a {font-size:12px;color:var(--muted);cursor:pointer;text-decoration:none;transition:color 0.2s;}
+#sos-wrapper .forgot-link a:hover {color:var(--safe);}
+#sos-wrapper .btn-icon:hover {background:var(--safe2);}
+#sos-wrapper .btn-ghost {flex:1;padding:9px 12px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text);font-family:var(--font);font-size:13px;cursor:pointer;transition:all 0.18s;}
+#sos-wrapper .btn-ghost:hover {border-color:rgba(255,255,255,0.2);}
+#sos-wrapper .btn-warn {border-color:rgba(245,166,35,0.3)!important;color:var(--warn)!important;}
+#sos-wrapper .err-box {display:none;padding:9px 12px;border-radius:8px;font-size:13px;margin:8px 0;background:rgba(230,62,47,0.08);border:1px solid rgba(230,62,47,0.18);color:#ff6b4a;}
+#sos-wrapper .err-box.show {display:block;}
+#sos-wrapper .ok-box {display:none;padding:9px 12px;border-radius:8px;font-size:13px;margin:8px 0;background:rgba(29,184,122,0.08);border:1px solid rgba(29,184,122,0.18);color:var(--safe2);}
+#sos-wrapper .ok-box.show {display:block;}
+#sos-wrapper .toggle-link {font-size:12px;color:var(--safe);cursor:pointer;text-decoration:none;display:inline-block;margin-top:10px;}
+#sos-wrapper .muted-link {color:var(--muted)!important;}
+#sos-wrapper .step {display:none;}
+#sos-wrapper .step.active {display:block;}
+#sos-wrapper .spinner {width:16px;height:16px;border:2px solid rgba(0,0,0,0.25);border-top-color:#000;border-radius:50%;animation:spin 0.6s linear infinite;display:inline-block;}
+#sos-wrapper .spinner-g {border-color:rgba(29,184,122,0.2);border-top-color:var(--safe);}
+@keyframes spin {to{transform:rotate(360deg);}}
+#sos-wrapper .sms-hint {margin-top:10px;padding:8px 12px;background:rgba(29,184,122,0.04);border:1px solid rgba(29,184,122,0.1);border-radius:10px;display:flex;align-items:center;gap:10px;font-size:11px;color:var(--muted);}
+#sos-wrapper .sms-hint strong {color:var(--safe);}
+#sos-wrapper .login-footer {text-align:center;margin-top:10px;font-size:11px;color:var(--muted);line-height:1.8;}
+#sos-wrapper .login-footer a {color:var(--muted);text-decoration:none;transition:color 0.2s;}
+#sos-wrapper .login-footer a:hover {color:var(--safe);}
+#sos-wrapper /* ── Pricing cards ─────────────────────────────────────────── */
+.pricing-inner {
+  width:100%;
+}
+#sos-wrapper .pricing-outer {display:none;}
+#sos-wrapper .pricing-title {text-align:center;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:20px;}
+#sos-wrapper .pricing-cards {display:grid;grid-template-columns:1fr;gap:12px;}
+#sos-wrapper .pricing-card {background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 14px;position:relative;overflow:hidden;transition:border-color 0.2s,transform 0.2s;}
+#sos-wrapper .pricing-card:hover {transform:translateY(-2px);}
+#sos-wrapper .pricing-card.featured {border-color:rgba(29,184,122,0.3);background:linear-gradient(135deg,var(--card) 0%,rgba(29,184,122,0.05) 100%);}
+#sos-wrapper .pricing-card-accent {position:absolute;top:0;left:0;right:0;height:2px;}
+#sos-wrapper .pricing-badge {position:absolute;top:12px;right:12px;background:var(--safe);color:#000;font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:2px 7px;border-radius:4px;}
+#sos-wrapper .pricing-tier {font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+#sos-wrapper .pricing-price {font-size:22px;font-weight:800;color:var(--white);line-height:1;margin-bottom:4px;}
+#sos-wrapper .pricing-price span {font-size:13px;font-weight:400;color:var(--muted);}
+#sos-wrapper .pricing-desc {font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.4;}
+#sos-wrapper .pricing-features {list-style:none;display:flex;flex-direction:column;gap:4px;margin-bottom:12px;}
+#sos-wrapper .pricing-features li {font-size:11px;color:var(--text);display:flex;align-items:flex-start;gap:6px;line-height:1.3;}
+#sos-wrapper .pricing-features li::before {content:'✓';color:var(--safe);font-weight:700;flex-shrink:0;font-size:11px;margin-top:1px;}
+#sos-wrapper .pricing-features li.no::before {content:'✕';color:var(--muted);}
+#sos-wrapper .pricing-features li.no {color:var(--muted);}
+#sos-wrapper .pricing-cta {display:block;width:100%;padding:10px;border-radius:9px;text-align:center;font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;transition:all 0.18s;text-decoration:none;border:none;}
+#sos-wrapper .pricing-cta.free {background:transparent;border:1px solid var(--border);color:var(--muted);}
+#sos-wrapper .pricing-cta.free:hover {border-color:rgba(255,255,255,0.2);color:var(--text);}
+#sos-wrapper .pricing-cta.pro {background:var(--safe);color:#000;}
+#sos-wrapper .pricing-cta.pro:hover {background:var(--safe2);transform:translateY(-1px);}
+#sos-wrapper .pricing-cta.premium {background:linear-gradient(135deg,var(--safe),var(--blue));color:#000;}
+#sos-wrapper .pricing-cta.premium:hover {opacity:0.9;transform:translateY(-1px);}
+#sos-wrapper /* DASHBOARD */
+#dashboard-screen {min-height:100dvh;background:var(--black);position:relative;z-index:10;}
+#sos-wrapper .dash-nav {position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 20px;height:var(--nav-h);background:rgba(8,10,12,0.95);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);}
+#sos-wrapper .dash-nav-logo {display:flex;align-items:center;gap:8px;font-size:16px;font-weight:800;color:var(--white);}
+#sos-wrapper .dash-nav-logo span {color:var(--safe);}
+#sos-wrapper .dash-nav-right {display:flex;align-items:center;gap:10px;}
+#sos-wrapper .phone-chip {display:flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--border);border-radius:20px;padding:5px 12px;font-size:12px;color:var(--text);font-weight:600;}
+#sos-wrapper .udot {width:7px;height:7px;border-radius:50%;background:var(--safe);box-shadow:0 0 6px var(--safe);}
+#sos-wrapper .nav-btn {background:transparent;border:1px solid var(--border);border-radius:8px;padding:5px 10px;color:var(--muted);font-family:var(--font);font-size:12px;cursor:pointer;transition:all 0.18s;}
+#sos-wrapper .nav-btn:hover {border-color:var(--danger);color:var(--danger);}
+#sos-wrapper .dash-body {padding:24px 20px 60px;max-width:1200px;margin:0 auto;}
+#sos-wrapper /* legacy */
+.section-hdr {display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+#sos-wrapper .section-title {font-size:13px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);}
+#sos-wrapper .cards-row {display:grid;gap:14px;margin-bottom:24px;}
+#sos-wrapper .cols-4 {grid-template-columns:repeat(4,1fr);}
+#sos-wrapper .cols-3 {grid-template-columns:repeat(3,1fr);}
+#sos-wrapper .cols-2 {grid-template-columns:repeat(2,1fr);}
+@media(max-width:900px) {
+#sos-wrapper .cols-4, #sos-wrapper .cols-3 {grid-template-columns:repeat(2,1fr);}
+
+}
+@media(max-width:600px) {
+#sos-wrapper .cols-4, #sos-wrapper .cols-3, #sos-wrapper .cols-2 {grid-template-columns:1fr;}
+
+}
+#sos-wrapper .stat-card {background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px 20px;position:relative;overflow:hidden;transition:border-color 0.2s;}
+#sos-wrapper .stat-card:hover {border-color:var(--border2);}
+#sos-wrapper .stat-accent {position:absolute;top:0;left:0;right:0;height:2px;}
+#sos-wrapper .stat-label {font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+#sos-wrapper .stat-value {font-size:32px;font-weight:800;color:var(--white);line-height:1;margin-bottom:4px;}
+#sos-wrapper .stat-sub {font-size:12px;color:var(--muted);}
+#sos-wrapper .stat-icon {position:absolute;top:16px;right:16px;font-size:20px;opacity:0.35;}
+#sos-wrapper .wide-card {background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:24px;}
+#sos-wrapper .wide-card-title {font-size:13px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+#sos-wrapper .log-list {display:flex;flex-direction:column;gap:8px;}
+#sos-wrapper .log-item {display:flex;align-items:flex-start;gap:12px;padding:10px 12px;background:var(--dark);border:1px solid var(--border);border-radius:10px;cursor:pointer;transition:border-color 0.18s;}
+#sos-wrapper .log-item:hover {border-color:var(--border2);}
+#sos-wrapper .log-dot {width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px;}
+#sos-wrapper .log-date {font-size:11px;color:var(--muted);flex-shrink:0;min-width:90px;}
+#sos-wrapper .log-body {font-size:13px;color:var(--text);line-height:1.5;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
+#sos-wrapper .freq-list {display:flex;flex-direction:column;gap:8px;}
+#sos-wrapper .freq-item {display:flex;align-items:center;gap:10px;}
+#sos-wrapper .freq-name {font-size:13px;color:var(--text);min-width:90px;flex-shrink:0;}
+#sos-wrapper .freq-bar-wrap {flex:1;background:var(--dark);border-radius:4px;height:6px;overflow:hidden;}
+#sos-wrapper .freq-bar {height:100%;border-radius:4px;transition:width 0.8s ease;}
+#sos-wrapper .freq-count {font-size:11px;color:var(--muted);min-width:24px;text-align:right;}
+#sos-wrapper #mini-map {width:100%;height:220px;border-radius:10px;overflow:hidden;background:var(--dark);}
+#sos-wrapper .integrity-row {display:flex;align-items:center;gap:16px;margin-bottom:16px;flex-wrap:wrap;}
+#sos-wrapper .integrity-score {font-size:48px;font-weight:800;color:var(--safe);line-height:1;}
+#sos-wrapper .integrity-label {font-size:11px;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase;margin-top:2px;}
+#sos-wrapper .integrity-desc {font-size:13px;color:var(--text);line-height:1.6;flex:1;min-width:180px;}
+#sos-wrapper .show-msgs-btn {display:flex;align-items:center;gap:7px;padding:8px 14px;border-radius:8px;border:1px solid var(--safe);background:transparent;color:var(--safe);font-family:var(--font);font-size:12px;font-weight:600;cursor:pointer;transition:all 0.18s;white-space:nowrap;}
+#sos-wrapper .show-msgs-btn:hover {background:var(--safe-dim);}
+#sos-wrapper .msg-panel {display:none;margin-top:4px;}
+#sos-wrapper .msg-panel.open {display:block;}
+#sos-wrapper .filter-bar {display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;}
+#sos-wrapper .filter-input {flex:1;min-width:130px;background:var(--dark);border:1.5px solid var(--border);border-radius:10px;padding:8px 12px;color:var(--text);font-family:var(--font);font-size:13px;outline:none;transition:border-color 0.2s;}
+#sos-wrapper .filter-input:focus {border-color:rgba(29,184,122,0.4);}
+#sos-wrapper .filter-select {background:var(--dark);border:1.5px solid var(--border);border-radius:10px;padding:8px 12px;color:var(--text);font-family:var(--font);font-size:13px;outline:none;cursor:pointer;}
+#sos-wrapper .filter-btn {padding:8px 14px;border-radius:10px;border:none;background:var(--safe);color:#000;font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;}
+#sos-wrapper .msg-count {font-size:12px;color:var(--muted);margin-bottom:12px;}
+#sos-wrapper .msg-card {background:var(--dark);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:10px;animation:fadeIn 0.2s ease both;}
+@keyframes fadeIn {from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
+#sos-wrapper .msg-meta {display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap;}
+#sos-wrapper .msg-time {font-size:11px;color:var(--muted);}
+#sos-wrapper .msg-badge {background:rgba(29,184,122,0.1);border:1px solid rgba(29,184,122,0.2);border-radius:4px;padding:1px 7px;font-size:10px;color:var(--safe);letter-spacing:0.05em;}
+#sos-wrapper .msg-loc {font-size:10px;color:var(--muted);}
+#sos-wrapper .msg-body {font-size:14px;color:var(--text);line-height:1.7;}
+#sos-wrapper .msg-body mark {background:rgba(245,166,35,0.2);color:var(--warn);border-radius:2px;padding:0 2px;}
+#sos-wrapper .empty {padding:24px 0;text-align:center;color:var(--muted);font-size:13px;}
+#sos-wrapper /* ── Log entry widget ─────────────────────────────────────────── */
+.log-widget {background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:24px;}
+#sos-wrapper .log-widget-title {font-size:13px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);margin-bottom:16px;}
+#sos-wrapper .log-boxes {display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+@media(max-width:640px) {
+#sos-wrapper .log-boxes {grid-template-columns:1fr;}
+
+}
+#sos-wrapper .log-box {background:var(--dark);border:1px solid var(--border);border-radius:12px;padding:14px;}
+#sos-wrapper .log-box-label {font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+#sos-wrapper .log-box-label-dot {width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+#sos-wrapper .log-ta {width:100%;background:transparent;border:none;color:var(--text);font-family:var(--font);font-size:13px;line-height:1.6;resize:none;outline:none;min-height:80px;-webkit-text-fill-color:var(--text);}
+#sos-wrapper .log-ta::placeholder {color:var(--muted);}
+#sos-wrapper .log-actions-row {display:flex;align-items:center;justify-content:space-between;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);}
+#sos-wrapper .log-action-btns {display:flex;gap:8px;}
+#sos-wrapper .log-action-btn {width:32px;height:32px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.18s;position:relative;}
+#sos-wrapper .log-action-btn:hover {border-color:rgba(255,255,255,0.2);color:var(--text);}
+#sos-wrapper .log-action-btn.recording {border-color:var(--danger);color:var(--danger);animation:pulse-red 1s ease infinite;}
+@keyframes pulse-red {0%,100%{box-shadow:0 0 0 0 rgba(230,62,47,0.3);}50%{box-shadow:0 0 0 6px rgba(230,62,47,0);}}
+#sos-wrapper .log-send-btn {display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:8px;border:none;background:var(--safe);color:#000;font-family:var(--font);font-size:12px;font-weight:700;cursor:pointer;transition:all 0.18s;}
+#sos-wrapper .log-send-btn:hover {background:var(--safe2);}
+#sos-wrapper .log-char-count {font-size:10px;color:var(--muted);}
+#sos-wrapper .log-success {font-size:12px;color:var(--safe);display:none;animation:fadeIn 0.2s ease;}
+#sos-wrapper .log-success.show {display:block;}
+#sos-wrapper .map-legend {margin-top:10px;display:flex;gap:14px;font-size:11px;color:var(--muted);}
+#sos-wrapper .map-legend-dot {width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+#sos-wrapper /* ── Media Upload ───────────────────────────────────────────── */
+.media-upload-area {border:1.5px dashed var(--border2);border-radius:10px;padding:12px;margin-top:8px;display:none;}
+#sos-wrapper .media-upload-area.has-file {border-color:rgba(29,184,122,0.4);background:rgba(29,184,122,0.04);}
+#sos-wrapper .media-preview {display:flex;align-items:center;gap:10px;font-size:12px;color:var(--text);}
+#sos-wrapper .media-preview img, #sos-wrapper .media-preview video {max-width:80px;max-height:60px;border-radius:6px;object-fit:cover;}
+#sos-wrapper .media-remove-btn {background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;line-height:1;padding:2px 6px;}
+#sos-wrapper .media-remove-btn:hover {color:var(--danger);}
+#sos-wrapper .media-status {font-size:11px;color:var(--muted);margin-top:4px;}
+#sos-wrapper .media-status.error {color:var(--danger);}
+#sos-wrapper .media-status.ok {color:var(--safe);}
+#sos-wrapper .media-moderation-badge {display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;}
+#sos-wrapper .media-moderation-badge.approved {background:rgba(29,184,122,0.1);color:var(--safe);}
+#sos-wrapper .media-moderation-badge.rejected {background:rgba(230,62,47,0.1);color:var(--danger);}
+#sos-wrapper /* ── Settings Modal ─────────────────────────────────────────── */
+.settings-backdrop {display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:500;align-items:center;justify-content:center;}
+#sos-wrapper .settings-backdrop.active {display:flex;}
+#sos-wrapper .settings-modal {background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px;width:100%;max-width:420px;position:relative;animation:fadeUp 0.25s ease both;}
+#sos-wrapper .settings-title {font-size:16px;font-weight:700;color:var(--white);margin-bottom:4px;}
+#sos-wrapper .settings-sub {font-size:12px;color:var(--muted);margin-bottom:20px;}
+#sos-wrapper .settings-current {display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--dark);border:1px solid var(--border);border-radius:10px;margin-bottom:16px;font-size:13px;color:var(--muted);}
+#sos-wrapper .settings-current strong {color:var(--text);font-weight:600;}
+#sos-wrapper .settings-step {display:none;}
+#sos-wrapper .settings-step.active {display:block;}
+#sos-wrapper .settings-close {position:absolute;top:16px;right:16px;background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;line-height:1;padding:4px;}
+#sos-wrapper .settings-close:hover {color:var(--text);}
+#sos-wrapper /* ── PDF Print Styles ────────────────────────────────────────── */
+@media print {
+  body * { visibility: hidden; }
+  #pdf-print-area, #pdf-print-area * { visibility: visible; }
+  #pdf-print-area {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%;
+    background: white;
+    color: #111;
+    font-family: Georgia, serif;
+    padding: 40px;
+    box-sizing: border-box;
+  }
+  .pdf-header { border-bottom: 2px solid #1db87a; padding-bottom: 16px; margin-bottom: 24px; }
+  .pdf-logo { font-size: 22px; font-weight: 800; color: #1db87a; }
+  .pdf-meta { font-size: 11px; color: #666; margin-top: 4px; }
+  .pdf-title { font-size: 16px; font-weight: 700; color: #111; margin: 20px 0 8px; }
+  .pdf-question { font-size: 13px; color: #333; font-style: italic; margin-bottom: 16px; padding: 12px; background: #f5f5f5; border-left: 3px solid #1db87a; border-radius: 4px; }
+  .pdf-response { font-size: 13px; color: #111; line-height: 1.8; white-space: pre-wrap; }
+  .pdf-footer { margin-top: 40px; padding-top: 12px; border-top: 1px solid #ddd; font-size: 10px; color: #999; display: flex; justify-content: space-between; }
+  .pdf-verify { font-size: 10px; color: #666; margin-top: 12px; }
+}
+#sos-wrapper /* ── Split Dashboard Layout ─────────────────────────────────── */
+.dash-split {
+  display:grid;
+  grid-template-columns:1fr 35%;
+  gap:20px;
+  align-items:start;
+  max-width:1400px;
+  margin:0 auto;
+  padding:24px 20px 60px;
+}
+#sos-wrapper .dash-main {min-width:0;}
+#sos-wrapper .dash-chat-panel {
+  position:sticky;
+  top:calc(var(--nav-h) + 16px);
+  max-height:calc(100vh - var(--nav-h) - 32px);
+  display:flex;
+  flex-direction:column;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:14px;
+  overflow:hidden;
+}
+#sos-wrapper .dash-chat-header {
+  padding:14px 16px;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  flex-shrink:0;
+}
+#sos-wrapper .dash-chat-header-title {
+  font-size:13px;font-weight:700;
+  color:var(--white);
+  display:flex;align-items:center;gap:8px;
+}
+#sos-wrapper .dash-chat-body {
+  flex:1;
+  overflow-y:auto;
+  padding:12px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+#sos-wrapper .dash-chat-footer {
+  padding:12px;
+  border-top:1px solid var(--border);
+  flex-shrink:0;
+}
+#sos-wrapper .dash-chat-suggestions {
+  display:flex;flex-wrap:wrap;gap:6px;
+  padding:8px 12px;
+  border-bottom:1px solid var(--border);
+  flex-shrink:0;
+}
+#sos-wrapper .dash-chat-suggestion {
+  background:rgba(29,184,122,0.06);
+  border:1px solid rgba(29,184,122,0.15);
+  border-radius:20px;padding:4px 10px;
+  font-size:10px;color:var(--safe);
+  cursor:pointer;transition:all 0.18s;
+  white-space:nowrap;
+}
+#sos-wrapper .dash-chat-suggestion:hover {background:rgba(29,184,122,0.12);}
+#sos-wrapper .dash-chat-input-row {display:flex;gap:8px;}
+#sos-wrapper .dash-chat-input {
+  flex:1;background:var(--dark);
+  border:1.5px solid var(--border);
+  border-radius:10px;padding:9px 12px;
+  color:var(--text);font-family:var(--font);
+  font-size:12px;outline:none;
+  transition:border-color 0.2s;
+  -webkit-text-fill-color:var(--text);
+}
+#sos-wrapper .dash-chat-input:focus {border-color:rgba(29,184,122,0.4);}
+#sos-wrapper .dash-chat-input::placeholder {color:var(--muted);opacity:0.5;font-style:italic;}
+#sos-wrapper .dash-chat-send {
+  padding:9px 14px;border-radius:10px;border:none;
+  background:var(--safe);color:#000;
+  font-family:var(--font);font-size:12px;font-weight:700;
+  cursor:pointer;transition:all 0.18s;white-space:nowrap;
+}
+#sos-wrapper .dash-chat-send:hover {background:var(--safe2);}
+#sos-wrapper .dash-chat-send:disabled {opacity:0.5;cursor:not-allowed;}
+#sos-wrapper .chat-msg {padding:10px 12px;border-radius:10px;font-size:12px;line-height:1.6;}
+#sos-wrapper .chat-msg.user {
+  background:rgba(29,184,122,0.08);
+  border:1px solid rgba(29,184,122,0.15);
+  color:var(--text);align-self:flex-end;
+  max-width:90%;margin-left:auto;
+}
+#sos-wrapper .chat-msg.assistant {
+  background:var(--dark);border:1px solid var(--border);
+  color:var(--text);
+}
+#sos-wrapper .chat-msg.assistant strong {color:var(--safe);}
+#sos-wrapper .chat-save-btn {
+  display:inline-block;margin-top:6px;
+  padding:3px 10px;border-radius:4px;
+  border:1px solid var(--border);background:transparent;
+  color:var(--muted);font-family:var(--font);font-size:10px;
+  cursor:pointer;transition:all 0.18s;
+}
+#sos-wrapper .chat-save-btn:hover {border-color:var(--safe);color:var(--safe);}
+@media(max-width:900px) {
+#sos-wrapper .dash-split {
+    grid-template-columns:1fr;
+    padding:16px 16px 60px;
+  }
+#sos-wrapper .dash-chat-panel {
+    position:static;
+    max-height:500px;
+  }
+
+
+}
+#sos-wrapper /* ── Claude Insights Panel ──────────────────────────────────── */
+.insights-widget {background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:24px;}
+#sos-wrapper .insights-title {font-size:13px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;display:flex;align-items:center;gap:8px;}
+#sos-wrapper .insights-subtitle {font-size:11px;color:var(--muted);opacity:0.7;margin-bottom:16px;}
+#sos-wrapper .insights-suggestions {display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;}
+#sos-wrapper .insights-suggestion {background:rgba(29,184,122,0.06);border:1px solid rgba(29,184,122,0.15);border-radius:20px;padding:5px 12px;font-size:11px;color:var(--safe);cursor:pointer;transition:all 0.18s;white-space:nowrap;}
+#sos-wrapper .insights-suggestion:hover {background:rgba(29,184,122,0.12);border-color:rgba(29,184,122,0.3);}
+#sos-wrapper .insights-input-row {display:flex;gap:8px;margin-bottom:12px;}
+#sos-wrapper .insights-input {flex:1;background:var(--dark);border:1.5px solid var(--border);border-radius:10px;padding:10px 14px;color:var(--text);font-family:var(--font);font-size:13px;outline:none;transition:border-color 0.2s;-webkit-text-fill-color:var(--text);}
+#sos-wrapper .insights-input:focus {border-color:rgba(29,184,122,0.4);}
+#sos-wrapper .insights-input::placeholder {color:var(--muted);opacity:0.5;font-style:italic;}
+#sos-wrapper .insights-send-btn {padding:10px 16px;border-radius:10px;border:none;background:var(--safe);color:#000;font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;transition:all 0.18s;white-space:nowrap;}
+#sos-wrapper .insights-send-btn:hover {background:var(--safe2);}
+#sos-wrapper .insights-send-btn:disabled {opacity:0.5;cursor:not-allowed;}
+#sos-wrapper .insights-chat {display:flex;flex-direction:column;gap:12px;max-height:400px;overflow-y:auto;padding-right:4px;}
+#sos-wrapper .insights-chat:empty {display:none;}
+#sos-wrapper .insights-msg {padding:12px 14px;border-radius:10px;font-size:13px;line-height:1.7;}
+#sos-wrapper .insights-msg.user {background:rgba(29,184,122,0.08);border:1px solid rgba(29,184,122,0.15);color:var(--text);align-self:flex-end;max-width:85%;}
+#sos-wrapper .insights-msg.assistant {background:var(--dark);border:1px solid var(--border);color:var(--text);align-self:flex-start;max-width:95%;}
+#sos-wrapper .insights-msg.assistant strong {color:var(--safe);}
+#sos-wrapper .insights-actions {display:flex;gap:8px;margin-top:8px;justify-content:flex-end;}
+#sos-wrapper .insights-save-btn {padding:5px 12px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:var(--font);font-size:11px;cursor:pointer;transition:all 0.18s;}
+#sos-wrapper .insights-save-btn:hover {border-color:var(--safe);color:var(--safe);}
+#sos-wrapper /* ── OTP Verification ───────────────────────────────────────── */
+.otp-section {display:none;margin-top:10px;animation:fadeIn 0.2s ease;}
+#sos-wrapper .otp-section.show {display:block;}
+#sos-wrapper .otp-input-row {display:flex;gap:8px;margin-top:6px;}
+#sos-wrapper .otp-input {
+  flex:1;background:var(--dark);border:1.5px solid rgba(29,184,122,0.4);
+  border-radius:10px;padding:10px 13px;color:var(--text);
+  font-family:var(--font);font-size:20px;font-weight:700;
+  text-align:center;outline:none;letter-spacing:0.2em;
+  -webkit-text-fill-color:var(--text);
+}
+#sos-wrapper .otp-input:focus {border-color:var(--safe);box-shadow:0 0 0 3px rgba(29,184,122,0.1);}
+#sos-wrapper .otp-hint {font-size:11px;color:var(--muted);margin-top:6px;line-height:1.5;}
+#sos-wrapper .otp-resend {font-size:11px;color:var(--safe);cursor:pointer;margin-top:6px;display:inline-block;}
+#sos-wrapper .otp-resend:hover {text-decoration:underline;}
+#sos-wrapper .otp-verified {display:none;align-items:center;gap:6px;font-size:12px;color:var(--safe);margin-top:6px;}
+#sos-wrapper .otp-verified.show {display:flex;}
+#sos-wrapper /* ── Document Analysis Widget ───────────────────────────────── */
+.analyze-widget {background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:24px;}
+#sos-wrapper .analyze-widget-title {font-size:13px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+#sos-wrapper .analyze-tabs {display:flex;gap:0;margin-bottom:16px;background:var(--dark);border-radius:10px;padding:3px;}
+#sos-wrapper .analyze-tab {flex:1;padding:7px;border:none;border-radius:8px;background:transparent;color:var(--muted);font-family:var(--font);font-size:12px;font-weight:600;cursor:pointer;transition:all 0.18s;}
+#sos-wrapper .analyze-tab.active {background:var(--safe);color:#000;}
+#sos-wrapper .analyze-drop-zone {border:2px dashed var(--border);border-radius:12px;padding:32px 20px;text-align:center;cursor:pointer;transition:all 0.2s;margin-bottom:12px;}
+#sos-wrapper .analyze-drop-zone:hover, #sos-wrapper .analyze-drop-zone.dragover {border-color:rgba(29,184,122,0.4);background:rgba(29,184,122,0.04);}
+#sos-wrapper .analyze-drop-icon {font-size:28px;margin-bottom:8px;}
+#sos-wrapper .analyze-drop-text {font-size:13px;color:var(--muted);}
+#sos-wrapper .analyze-drop-text strong {color:var(--safe);}
+#sos-wrapper .analyze-ta {width:100%;background:var(--dark);border:1.5px solid var(--border);border-radius:10px;padding:12px;color:var(--text);font-family:var(--font);font-size:13px;line-height:1.6;outline:none;resize:vertical;min-height:100px;transition:border-color 0.2s;-webkit-text-fill-color:var(--text);}
+#sos-wrapper .analyze-ta:focus {border-color:rgba(29,184,122,0.4);}
+#sos-wrapper .analyze-ta::placeholder {color:var(--muted);opacity:0.5;font-style:italic;}
+#sos-wrapper .analyze-btn {display:flex;align-items:center;gap:8px;padding:10px 20px;border-radius:10px;border:none;background:var(--safe);color:#000;font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;transition:all 0.18s;margin-top:12px;}
+#sos-wrapper .analyze-btn:hover {background:var(--safe2);}
+#sos-wrapper .analyze-btn:disabled {opacity:0.5;cursor:not-allowed;}
+#sos-wrapper /* Analysis result modal */
+.analysis-modal-backdrop {position:fixed;inset:0;z-index:500;background:rgba(0,0,0,0.75);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:20px;animation:fadeIn 0.2s ease;}
+#sos-wrapper .analysis-modal {background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;width:100%;max-width:640px;max-height:85vh;overflow-y:auto;animation:fadeUp 0.25s cubic-bezier(.22,.68,0,1.2);}
+#sos-wrapper .analysis-modal-title {font-size:15px;font-weight:700;color:var(--white);margin-bottom:4px;}
+#sos-wrapper .analysis-modal-sub {font-size:12px;color:var(--muted);margin-bottom:20px;}
+#sos-wrapper .analysis-field {margin-bottom:14px;}
+#sos-wrapper .analysis-field-label {font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;}
+#sos-wrapper .analysis-field-value {font-size:13px;color:var(--text);line-height:1.6;background:var(--dark);border-radius:8px;padding:10px 12px;border:1px solid var(--border);outline:none;transition:border-color 0.2s;}
+#sos-wrapper .analysis-field-value[contenteditable="true"]:hover {border-color:var(--border2);cursor:text;}
+#sos-wrapper .analysis-field-value[contenteditable="true"]:focus {border-color:rgba(29,184,122,0.4);box-shadow:0 0 0 3px rgba(29,184,122,0.06);}
+#sos-wrapper .analysis-field-value.highlight {border-color:rgba(245,166,35,0.3);color:var(--warn);}
+#sos-wrapper .analysis-field-value.good {border-color:rgba(29,184,122,0.3);color:var(--safe2);}
+#sos-wrapper .analysis-modal-actions {display:flex;gap:10px;margin-top:20px;justify-content:flex-end;}
+#sos-wrapper .analysis-cancel-btn {padding:9px 16px;border-radius:9px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:var(--font);font-size:13px;cursor:pointer;transition:all 0.18s;}
+#sos-wrapper .analysis-cancel-btn:hover {border-color:rgba(255,255,255,0.2);color:var(--text);}
+#sos-wrapper .analysis-save-btn {padding:9px 18px;border-radius:9px;border:none;background:var(--safe);color:#000;font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;transition:all 0.18s;display:flex;align-items:center;gap:6px;}
+#sos-wrapper .analysis-save-btn:hover {background:var(--safe2);}
+#sos-wrapper .analysis-relevance-badge {display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;}
+#sos-wrapper .relevance-high {background:rgba(230,62,47,0.15);color:#ff6b4a;}
+#sos-wrapper .relevance-medium {background:rgba(245,166,35,0.15);color:var(--warn);}
+#sos-wrapper .relevance-low {background:rgba(90,112,144,0.15);color:var(--muted);}
+#sos-wrapper /* ── Paywall ─────────────────────────────────────────────────── */
+.paywall-banner {
+  position:sticky;top:var(--nav-h);z-index:90;
+  display:none;
+  background:linear-gradient(135deg,rgba(29,184,122,0.12),rgba(59,130,246,0.08));
+  border-bottom:1px solid rgba(29,184,122,0.2);
+  padding:10px 20px;
+  align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
+}
+#sos-wrapper .paywall-banner.show {display:flex;}
+#sos-wrapper .paywall-banner-text {font-size:13px;color:var(--text);}
+#sos-wrapper .paywall-banner-text strong {color:var(--safe);}
+#sos-wrapper .paywall-banner-btn {
+  padding:7px 16px;border-radius:8px;border:none;
+  background:var(--safe);color:#000;
+  font-family:var(--font);font-size:12px;font-weight:700;
+  cursor:pointer;white-space:nowrap;transition:all 0.18s;
+  text-decoration:none;display:inline-block;
+}
+#sos-wrapper .paywall-banner-btn:hover {background:var(--safe2);}
+#sos-wrapper /* Locked card overlay */
+.locked {position:relative;overflow:hidden;}
+#sos-wrapper .locked.is-locked::after {
+  content:'';
+  position:absolute;inset:0;
+  background:linear-gradient(to bottom,rgba(8,10,12,0) 0%,rgba(8,10,12,0.85) 40%,rgba(8,10,12,0.97) 100%);
+  z-index:5;pointer-events:none;
+}
+#sos-wrapper .lock-overlay {
+  position:absolute;bottom:0;left:0;right:0;z-index:10;
+  display:flex;flex-direction:column;align-items:center;
+  justify-content:center;padding:20px;text-align:center;
+  gap:8px;
+}
+#sos-wrapper .lock-icon {font-size:24px;}
+#sos-wrapper .lock-text {font-size:13px;color:var(--text);font-weight:600;}
+#sos-wrapper .lock-sub {font-size:11px;color:var(--muted);}
+#sos-wrapper .lock-btn {
+  margin-top:4px;padding:8px 18px;border-radius:8px;border:none;
+  background:var(--safe);color:#000;
+  font-family:var(--font);font-size:12px;font-weight:700;
+  cursor:pointer;transition:all 0.18s;text-decoration:none;
+  display:inline-block;
+}
+#sos-wrapper .lock-btn:hover {background:var(--safe2);}
+#sos-wrapper /* Blur locked content */
+.locked-content {
+  filter:blur(4px);
+  pointer-events:none;
+  user-select:none;
+}
+#sos-wrapper /* ── Edit entry ──────────────────────────────────────────────── */
+.msg-card-actions {display:flex;align-items:center;justify-content:flex-end;margin-top:8px;}
+#sos-wrapper .edit-btn {display:flex;align-items:center;gap:5px;padding:5px 10px;border-radius:7px;
+  border:1px solid var(--border);background:transparent;color:var(--muted);
+  font-family:var(--font);font-size:11px;cursor:pointer;transition:all 0.18s;}
+#sos-wrapper .edit-btn:hover {border-color:var(--safe);color:var(--safe);}
+#sos-wrapper /* Edit modal */
+.edit-modal-backdrop {
+  position:fixed;inset:0;z-index:500;
+  background:rgba(0,0,0,0.7);backdrop-filter:blur(4px);
+  display:flex;align-items:center;justify-content:center;padding:20px;
+  animation:fadeIn 0.2s ease;
+}
+#sos-wrapper .edit-modal {
+  background:var(--card);border:1px solid var(--border);
+  border-radius:16px;padding:24px;width:100%;max-width:520px;
+  animation:fadeUp 0.25s cubic-bezier(.22,.68,0,1.2);
+}
+#sos-wrapper .edit-modal-title {font-size:14px;font-weight:700;color:var(--white);margin-bottom:4px;}
+#sos-wrapper .edit-modal-sub {font-size:12px;color:var(--muted);margin-bottom:16px;line-height:1.5;}
+#sos-wrapper .edit-original {
+  background:var(--dark);border:1px solid var(--border);border-radius:10px;
+  padding:12px;margin-bottom:14px;font-size:12px;color:var(--muted);line-height:1.6;
+  max-height:100px;overflow-y:auto;
+}
+#sos-wrapper .edit-original strong {color:var(--text);display:block;margin-bottom:4px;font-size:11px;letter-spacing:0.06em;text-transform:uppercase;}
+#sos-wrapper .edit-ta {
+  width:100%;background:var(--dark);border:1.5px solid var(--border);
+  border-radius:10px;padding:12px;color:var(--text);font-family:var(--font);
+  font-size:14px;line-height:1.6;outline:none;resize:vertical;min-height:100px;
+  transition:border-color 0.2s;-webkit-text-fill-color:var(--text);
+}
+#sos-wrapper .edit-ta:focus {border-color:rgba(29,184,122,0.45);}
+#sos-wrapper .edit-modal-actions {display:flex;gap:10px;margin-top:14px;justify-content:flex-end;}
+#sos-wrapper .edit-cancel-btn {padding:9px 16px;border-radius:9px;border:1px solid var(--border);
+  background:transparent;color:var(--muted);font-family:var(--font);font-size:13px;cursor:pointer;transition:all 0.18s;}
+#sos-wrapper .edit-cancel-btn:hover {border-color:rgba(255,255,255,0.2);color:var(--text);}
+#sos-wrapper .edit-save-btn {padding:9px 18px;border-radius:9px;border:none;background:var(--safe);
+  color:#000;font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;transition:all 0.18s;
+  display:flex;align-items:center;gap:6px;}
+#sos-wrapper .edit-save-btn:hover {background:var(--safe2);}
+#sos-wrapper .edit-save-btn:disabled {opacity:0.5;cursor:not-allowed;}
+#sos-wrapper .edit-note {font-size:11px;color:var(--muted);margin-top:10px;line-height:1.5;}
+#sos-wrapper .edit-note strong {color:var(--warn);}
+#sos-wrapper /* ── Light mode ─────────────────────────────────────────────── */
+#sos-wrapper[data-theme="light"] {
+  --black:#f8fafc;--dark:#ffffff;--card:#ffffff;
+  --border:#e2e8f0;--border2:#cbd5e1;
+  --muted:#64748b;--text:#0f172a;--white:#0f172a;
+}
+#sos-wrapper[data-theme="light"] {background:#f8fafc;color:#0f172a;}
+#sos-wrapper[data-theme="light"] #login-screen {background:#f8fafc;}
+#sos-wrapper[data-theme="light"] #login-screen::before {opacity:0.3;}
+#sos-wrapper[data-theme="light"] #dashboard-screen {background:#f8fafc;}
+#sos-wrapper[data-theme="light"] .login-left {background:rgba(241,245,249,0.8);}
+#sos-wrapper[data-theme="light"] .login-right {background:#f8fafc;}
+#sos-wrapper[data-theme="light"] .convo-card.card-you {background:rgba(29,184,122,0.06);border-color:rgba(29,184,122,0.2);}
+#sos-wrapper[data-theme="light"] .convo-card.card-ai {background:rgba(29,184,122,0.03);border-color:rgba(29,184,122,0.12);}
+#sos-wrapper[data-theme="light"] .convo-item {color:#0f172a;}
+#sos-wrapper[data-theme="light"] .persona-name {color:#0f172a;}
+#sos-wrapper[data-theme="light"] .persona {background:rgba(0,0,0,0.03);border-color:rgba(0,0,0,0.06);}
+#sos-wrapper[data-theme="light"] .pl-headline {color:#0f172a;}
+#sos-wrapper[data-theme="light"] .num-bridge-tagline {color:#64748b;}
+#sos-wrapper[data-theme="light"] .f-input {background:#ffffff;color:#0f172a;border-color:#e2e8f0;-webkit-text-fill-color:#0f172a;}
+#sos-wrapper[data-theme="light"] select.f-input {background:#ffffff;color:#0f172a;}
+#sos-wrapper[data-theme="light"] .f-input:-webkit-autofill {-webkit-box-shadow:0 0 0 1000px #fff inset !important;-webkit-text-fill-color:#0f172a !important;}
+#sos-wrapper[data-theme="light"] .login-card {background:transparent;}
+#sos-wrapper[data-theme="light"] .pricing-card {background:#ffffff;border-color:#e2e8f0;}
+#sos-wrapper[data-theme="light"] .pricing-tier, #sos-wrapper .pricing-price {color:#0f172a;}
+#sos-wrapper[data-theme="light"] .stat-card, #sos-wrapper .wide-card, #sos-wrapper .dash-chat-panel, #sos-wrapper .insights-widget, #sos-wrapper .analyze-widget {background:#ffffff;border-color:#e2e8f0;}
+#sos-wrapper[data-theme="light"] .analyze-ta, #sos-wrapper .dash-chat-input, #sos-wrapper .otp-input {background:#f8fafc;color:#0f172a;-webkit-text-fill-color:#0f172a;}
+#sos-wrapper[data-theme="light"] .wide-card-title, #sos-wrapper .stat-val, #sos-wrapper .section-title {color:#0f172a;}
+#sos-wrapper[data-theme="light"] .dash-nav {background:rgba(248,250,252,0.95);border-color:#e2e8f0;}
+#sos-wrapper[data-theme="light"] .analysis-field-value {background:#f8fafc;color:#0f172a;border-color:#e2e8f0;}
+#sos-wrapper[data-theme="light"] .pl-footer {border-color:#e2e8f0;}
+#sos-wrapper[data-theme="light"] #app-loading {background:#f8fafc;}
+
+
+
+/* Extra SOS-wrapper layout fixes */
+#sos-wrapper {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+#sos-wrapper .screen {
+  display: none;
+}
+#sos-wrapper .screen.active {
+  display: block;
+}
+#sos-wrapper #login-screen.active {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+}
+</style>
+
+<!-- SOS Body HTML -->
+<a href="#main-content" class="skip-link" style="position:absolute;left:-9999px;top:0;z-index:9999;padding:8px 16px;background:var(--safe);color:#000;font-weight:700;border-radius:0 0 8px 0;text-decoration:none;">Skip to main content</a>
+
+<div id="app-loading">
+  <div class="loading-logo">
+    <svg width="28" height="28" viewBox="0 0 42 42"><defs><radialGradient id="rb0" cx="38%" cy="30%" r="65%"><stop offset="0%" stop-color="#ff7878"/><stop offset="35%" stop-color="#e63e2f"/><stop offset="80%" stop-color="#c0281a"/><stop offset="100%" stop-color="#8b1a10"/></radialGradient><radialGradient id="rg0" cx="36%" cy="20%" r="58%"><stop offset="0%" stop-color="rgba(255,255,255,0.58)"/><stop offset="100%" stop-color="rgba(255,255,255,0)"/></radialGradient><radialGradient id="ri0" cx="50%" cy="40%" r="55%"><stop offset="0%" stop-color="#1a1a1a"/><stop offset="100%" stop-color="#0a0a0a"/></radialGradient></defs><circle cx="21" cy="21" r="14.5" fill="url(#ri0)"/><circle cx="21" cy="21" r="11.5" fill="url(#rb0)"/><ellipse cx="19" cy="17.5" rx="6" ry="4" fill="url(#rg0)"/></svg>
+    <svg width="28" height="28" viewBox="0 0 42 42"><defs><radialGradient id="gb0" cx="38%" cy="30%" r="65%"><stop offset="0%" stop-color="#6ee9b0"/><stop offset="35%" stop-color="#1db87a"/><stop offset="80%" stop-color="#0d7a50"/><stop offset="100%" stop-color="#064d32"/></radialGradient><radialGradient id="gg0" cx="36%" cy="20%" r="58%"><stop offset="0%" stop-color="rgba(255,255,255,0.55)"/><stop offset="100%" stop-color="rgba(255,255,255,0)"/></radialGradient><radialGradient id="gi0" cx="50%" cy="40%" r="55%"><stop offset="0%" stop-color="#1a1a1a"/><stop offset="100%" stop-color="#0a0a0a"/></radialGradient></defs><circle cx="21" cy="21" r="14.5" fill="url(#gi0)"/><circle cx="21" cy="21" r="11.5" fill="url(#gb0)"/><ellipse cx="19" cy="17.5" rx="6" ry="4" fill="url(#gg0)"/><path d="M16 21 L27 21 M23.5 17 L27 21 L23.5 25" fill="none" stroke="rgba(255,255,255,0.92)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <span class="loading-text">SOS<span>Logs</span></span>
+  </div>
+</div>
+
+<!-- LOGIN -->
+<div id="login-screen" class="screen active">
+
+<div style="display:flex;justify-content:center;padding:10px 0 0;position:relative;z-index:50;">
+  <button onclick="exitSOSMode()" style="padding:6px 14px;border-radius:8px;border:none;background:#22c55e;color:#000;font-size:13px;font-weight:700;cursor:pointer;">💪 FitLogs</button>
+  <button id="theme-toggle" onclick="sosToggleTheme()" aria-label="Toggle light/dark mode"
+    style="background:rgba(255,255,255,0.08);border:1px solid var(--border);border-radius:20px;
+    padding:6px 16px;cursor:pointer;color:var(--text);font-size:13px;font-family:var(--font);
+    font-weight:600;transition:all 0.2s;backdrop-filter:blur(8px);display:flex;align-items:center;gap:6px;">
+    <span id="theme-icon">☀️</span>
+    <span id="theme-label">Dark</span>
+  </button>
+</div>
+<div class="login-body">
+
+<!-- Left panel: brand + convo cards (fitlogs style) -->
+<div class="login-left">
+<div style="display:flex;flex-direction:column;height:100%;">
+  <div>
+    <!-- Brand -->
+    <div class="pl-brand" style="font-size:32px;margin-bottom:20px;">
+      <svg width="38" height="38" viewBox="0 0 42 42"><defs><radialGradient id="rb1" cx="38%" cy="30%" r="65%"><stop offset="0%" stop-color="#ff7878"/><stop offset="35%" stop-color="#e63e2f"/><stop offset="80%" stop-color="#c0281a"/><stop offset="100%" stop-color="#8b1a10"/></radialGradient><radialGradient id="rg1" cx="36%" cy="20%" r="58%"><stop offset="0%" stop-color="rgba(255,255,255,0.5)"/><stop offset="100%" stop-color="rgba(255,255,255,0)"/></radialGradient></defs><circle cx="21" cy="21" r="11.5" fill="url(#rb1)"/><ellipse cx="19" cy="17.5" rx="5" ry="3.5" fill="url(#rg1)"/></svg>
+      <svg width="38" height="38" viewBox="0 0 42 42"><defs><radialGradient id="gb1" cx="38%" cy="30%" r="65%"><stop offset="0%" stop-color="#6ee9b0"/><stop offset="35%" stop-color="#1db87a"/><stop offset="80%" stop-color="#0d7a50"/><stop offset="100%" stop-color="#064d32"/></radialGradient><radialGradient id="gg1" cx="36%" cy="20%" r="58%"><stop offset="0%" stop-color="rgba(255,255,255,0.5)"/><stop offset="100%" stop-color="rgba(255,255,255,0)"/></radialGradient></defs><circle cx="21" cy="21" r="11.5" fill="url(#gb1)"/><ellipse cx="19" cy="17.5" rx="5" ry="3.5" fill="url(#gg1)"/><path d="M16 21 L27 21 M23.5 17 L27 21 L23.5 25" fill="none" stroke="rgba(255,255,255,0.92)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span style="color:#c41e3a;">SOS</span><span class="ai">Logs</span>
+    </div>
+
+    <!-- Headline -->
+    <div class="pl-headline">Let your timestamped logs <em>speak for themselves,</em> one text at a time.</div>
+    <p class="pl-sub">Document incidents, protect your rights, and build a credible record — no app, no login, just text.</p>
+
+    <!-- Convo cards -->
+    <div class="convo-pair">
+
+      <!-- What you text in -->
+      <div class="convo-card card-you">
+        <div class="convo-card-label" style="font-size:14px;color:#c41e3a;letter-spacing:0.5px;">YOUR TEXT → 1-888-799-LOGS</div>
+        <div class="convo-item"><div class="convo-dot"></div><div><strong>Incidents</strong> — What happened, where, when, who witnessed it</div></div>
+        <div class="convo-item"><div class="convo-dot"></div><div><strong>ANALYZE:</strong> [paste email or document] — AI breaks it down with court relevance score</div></div>
+        <div class="convo-item"><div class="convo-dot"></div><div><strong>CONFIRM</strong> — Save the analysis to your permanent record</div></div>
+      </div>
+
+      <!-- Number bridge — single merged rounded card -->
+      <div style="background:rgba(13,42,30,0.95);border:1.5px solid rgba(29,184,122,0.4);border-radius:14px;padding:14px 18px 12px;display:flex;flex-direction:column;align-items:center;gap:8px;">
+        <div style="display:flex;align-items:center;justify-content:center;gap:20px;">
+          <div class="num-bridge-numbers" style="text-align:right;">
+            <span class="num" style="color:#c41e3a;-webkit-text-fill-color:#c41e3a;font-weight:800;">1 (888) 799-5647</span>
+            <span class="vanity" style="color:#1db87a;-webkit-text-fill-color:#1db87a;font-weight:800;">1-888-799-LOGS</span>
+          </div>
+          <div class="num-bridge-arrows">
+            <svg width="44" height="44" viewBox="0 0 48 48" fill="none">
+              <path d="M14 4 L14 44" stroke="#1db87a" stroke-width="3.5" stroke-linecap="round"/>
+              <path d="M7 36 L14 44 L21 36" stroke="#1db87a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M34 44 L34 4" stroke="#3dd68c" stroke-width="3.5" stroke-linecap="round"/>
+              <path d="M27 12 L34 4 L41 12" stroke="#3dd68c" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        </div>
+        <div class="num-bridge-tagline" style="padding:0;">No app to download. Just you and your record, by text.</div>
+      </div>
+
+      <!-- What SOSLogs texts back -->
+      <div class="convo-card card-ai">
+        <div class="convo-card-label" style="font-size:14px;letter-spacing:0.5px;">HOW <span style="color:#c41e3a;font-style:normal;">SOS</span><span style="color:#1db87a;font-style:normal;">Logs</span> HELPS</div>
+        <div class="persona">
+          <div class="persona-dot" style="background:#1db87a;"></div>
+          <div><div class="persona-name">Timestamped unerasable log saved</div></div>
+        </div>
+        <div class="persona">
+          <div class="persona-dot" style="background:#a855f7;"></div>
+          <div><div class="persona-name">Protects devil's advocate version to help address potential gaps in self-defense documentation</div></div>
+        </div>
+        <div class="persona">
+          <div class="persona-dot" style="background:#3b82f6;"></div>
+          <div><div class="persona-name">Speak or upload documents for AI analysis</div></div>
+        </div>
+        <div class="persona">
+          <div class="persona-dot" style="background:#f5a623;"></div>
+          <div><div class="persona-name">Document only analyzed but never stored</div></div>
+        </div>
+        <div class="persona">
+          <div class="persona-dot" style="background:#c41e3a;"></div>
+          <div><div class="persona-name">Print report when you need it</div></div>
+        </div>
+      </div>
+
+    </div><!-- end convo-pair -->
+  </div>
+
+  <!-- Footer -->
+  <div class="pl-footer">
+    © 2026 Athens Innovation and Development LLC ·
+    <a href="/about.html" style="color:var(--muted);text-decoration:none;">About</a> ·
+    <a href="/privacy.html" style="color:var(--muted);text-decoration:none;">Privacy</a> ·
+    <a href="/terms.html" style="color:var(--muted);text-decoration:none;">Terms</a> ·
+    <a href="mailto:admin@soslogs.org" style="color:var(--muted);text-decoration:none;">Contact</a>
+  </div>
+</div><!-- end left inner flex -->
+</div><!-- end login-left -->
+
+<!-- Auth column: left 20% -->
+<div style="display:flex;flex-direction:column;justify-content:center;padding:24px 20px;overflow-y:auto;border-right:1px solid var(--border);order:1;">
+<div class="login-wrap">
+
+  <!-- Auth tabs -->
+  <div style="display:flex;gap:0;margin-bottom:16px;background:var(--dark);border-radius:10px;padding:3px;">
+    <button id="tab-login" onclick="switchTab('login')" style="flex:1;padding:8px;border:none;border-radius:8px;background:var(--safe);color:#000;font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;transition:all 0.18s;">Sign In</button>
+    <button id="tab-signup" onclick="switchTab('signup')" style="flex:1;padding:8px;border:none;border-radius:8px;background:transparent;color:var(--muted);font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;transition:all 0.18s;">Create Account</button>
+  </div>
+
+  <div class="login-card">
+    <!-- Signup step - shown by default -->
+    <div id="step-signup" class="step">
+      <div style="font-size:14px;font-weight:700;color:var(--white);margin-bottom:4px;">Create your account</div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:12px;">Your phone number is your primary identity.</div>
+      <div class="grid-cc"><div><label class="f-label" for="su-cc">Country</label><select class="f-input" id="su-cc" onchange="resetOtp()" style="cursor:pointer;"><option value="+1">🇺🇸 +1 United States</option><!-- EXPAND: <option value="+91">🇮🇳 +91 India</option> --></select></div><div><label class="f-label" for="su-phone">Phone</label><input class="f-input" id="su-phone" type="tel" placeholder="Phone number" autocomplete="tel" oninput="resetOtp()"></div></div>
+      <div class="field-wrap"><label class="f-label" for="su-email">Email</label><input class="f-input" id="su-email" type="email" placeholder="Email address" autocomplete="email"></div>
+      <div class="field-wrap"><label class="f-label" for="su-pw">Password</label><input class="f-input" id="su-pw" type="password" placeholder="Min 8 characters" autocomplete="new-password"></div>
+      <div class="field-wrap"><label class="f-label" for="su-pw2">Confirm Password</label><input class="f-input" id="su-pw2" type="password" placeholder="Repeat password" autocomplete="new-password"></div>
+
+      <!-- OTP verification section -->
+      <div class="otp-section" id="otp-section">
+        <label class="f-label">Verification Code</label>
+        <div class="otp-input-row">
+          <label class="f-label" for="otp-input" style="display:none;">Verification Code</label><input class="otp-input" id="otp-input" aria-label="6-digit verification code" type="tel" maxlength="6" placeholder="000000" onkeydown="if(event.key==='Enter')verifyOtp()">
+        </div>
+        <div class="otp-hint">Enter the 6-digit code sent to your phone.</div>
+        <button class="btn-safe" onclick="verifyOtp()" id="otp-verify-btn" style="margin-top:8px;width:100%;" aria-label="Confirm verification code">
+          Confirm Code
+        </button>
+        <div style="text-align:center;margin-top:8px;">
+          <span class="otp-resend" onclick="sendOtp(true)">Did not receive a code? Resend</span>
+        </div>
+      </div>
+      <div class="otp-verified" id="otp-verified">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="#1db87a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Phone number verified
+      </div>
+
+      <button class="btn-safe" id="signup-btn" onclick="sendOtp()" style="margin-top:10px;">
+        Send Verification Code
+      </button>
+      <div class="err-box" id="signup-err" role="alert" aria-live="assertive"></div><div class="ok-box" id="signup-ok" role="status" aria-live="polite"></div>
+    </div>
+
+    <!-- Login step -->
+    <div id="step-login" class="step active">
+      <div style="font-size:14px;font-weight:700;color:var(--white);margin-bottom:4px;">Welcome back</div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:12px;">Enter your phone or email and password.</div>
+      <div class="field-wrap"><label class="f-label" for="login-id">Phone or Email</label><input class="f-input" id="login-id" type="text" placeholder="Email or 10-digit US phone number" autocomplete="off"></div>
+      <div class="field-wrap"><label class="f-label">Password</label>
+        <label class="f-label" for="login-pw" style="display:none;">Password</label><input class="f-input" id="login-pw" aria-label="Password" type="password" placeholder="Your password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
+      </div>
+      <div class="forgot-link"><a onclick="doForgotPw()" aria-label="Reset your password">Forgot password?</a></div>
+      <div class="err-box" id="login-err" role="alert" aria-live="assertive"></div><div class="ok-box" id="login-ok" role="status" aria-live="polite"></div>
+      <button class="btn-safe" onclick="doLogin()" id="login-btn" style="margin-top:6px;width:100%;">Sign In</button>
+    </div>
+  </div>
+
+
+
+
+
+</div><!-- end login-wrap -->
+</div><!-- end center column -->
+
+<!-- Right column: pricing -->
+<div class="login-right">
+<div class="pricing-inner">
+  <div class="pricing-title">Choose your plan</div>
+  <div class="pricing-cards">
+
+      <!-- Free -->
+      <div class="pricing-card">
+        <div class="pricing-card-accent" style="background:var(--muted);"></div>
+        <div class="pricing-tier">Free</div>
+        <div class="pricing-price">$0<span>/forever</span></div>
+        <div class="pricing-desc">Text incidents to 1-888-799-LOGS immediately. No account or login required.</div>
+        <ul class="pricing-features">
+          <li>Unlimited SMS logging via 1-888-799-LOGS</li>
+          <li>Timestamped records stored securely</li>
+          <li class="no">No dashboard or message history</li>
+          <li class="no">No map or analytics</li>
+          <li class="no">No AI assistance</li>
+        </ul>
+        <a href="#" onclick="document.getElementById('login-id').focus();window.scrollTo({top:0,behavior:'smooth'});return false;" class="pricing-cta free">Start Logging Free</a>
+      </div>
+
+      <!-- Base - $4.99 -->
+      <div class="pricing-card featured">
+        <div class="pricing-card-accent" style="background:var(--safe);"></div>
+        <div class="pricing-badge">Most Popular</div>
+        <div class="pricing-tier">Base</div>
+        <div class="pricing-price">$4.99<span>/month</span></div>
+        <div class="pricing-desc">Full access to your documented history and insights.</div>
+        <div style="background:rgba(29,184,122,0.08);border:1px solid rgba(29,184,122,0.2);border-radius:6px;padding:5px 10px;font-size:11px;color:var(--safe);margin-bottom:8px;text-align:center;">✨ 30-day free trial — no charge until day 31</div>
+        <ul class="pricing-features">
+          <li>Everything in Free</li>
+          <li>Personal dashboard with full message history</li>
+          <li>Incident map with geocoded location pins</li>
+          <li>People and places frequency analysis</li>
+          <li>Credibility spider chart</li>
+          <li>Keyword and date filtering</li>
+          <li>LE and personal log entry with voice input</li>
+          <li>Amend entries with full audit trail</li>
+        </ul>
+        <a href="https://buy.stripe.com/aFa8wOdDD5mb86L7w1ew806" target="_blank" class="pricing-cta pro">Start Free Trial — $4.99/mo after 30 days</a>
+      </div>
+
+
+
+
+
+
+
+
+  </div><!-- end pricing-cards -->
+</div><!-- end pricing-inner -->
+</div><!-- end login-right -->
+</div><!-- end login-body -->
+
+<!-- Footer - bottom center -->
+<footer style="position:relative;z-index:1;text-align:center;padding:20px 24px;border-top:1px solid var(--border);font-size:11px;color:var(--muted);line-height:2;">
+  <div>© 2026 Athens Innovation and Development LLC</div>
+  <div style="display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:4px;">
+    <a href="/about.html" style="color:var(--muted);text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='var(--safe)'" onmouseout="this.style.color='var(--muted)'">About</a>
+    <span>·</span>
+    <a href="/privacy.html" style="color:var(--muted);text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='var(--safe)'" onmouseout="this.style.color='var(--muted)'">Privacy Policy</a>
+    <span>·</span>
+    <a href="/terms.html" style="color:var(--muted);text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='var(--safe)'" onmouseout="this.style.color='var(--muted)'">Terms of Service</a>
+    <span>·</span>
+    <a href="mailto:admin@soslogs.org" style="color:var(--muted);text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='var(--safe)'" onmouseout="this.style.color='var(--muted)'">Contact</a>
+  </div>
+</footer>
+
+</div><!-- end login-screen -->
+
+<!-- DASHBOARD -->
+<div id="dashboard-screen" class="screen">
+  <nav class="dash-nav">
+    <div class="dash-nav-logo">
+      <svg width="20" height="20" viewBox="0 0 42 42"><defs><radialGradient id="rb2" cx="38%" cy="30%" r="65%"><stop offset="0%" stop-color="#ff7878"/><stop offset="35%" stop-color="#e63e2f"/><stop offset="80%" stop-color="#c0281a"/><stop offset="100%" stop-color="#8b1a10"/></radialGradient><radialGradient id="ri2" cx="50%" cy="40%" r="55%"><stop offset="0%" stop-color="#1a1a1a"/><stop offset="100%" stop-color="#0a0a0a"/></radialGradient><radialGradient id="rg2" cx="36%" cy="20%" r="58%"><stop offset="0%" stop-color="rgba(255,255,255,0.58)"/><stop offset="100%" stop-color="rgba(255,255,255,0)"/></radialGradient></defs><circle cx="21" cy="21" r="14.5" fill="url(#ri2)"/><circle cx="21" cy="21" r="11.5" fill="url(#rb2)"/><ellipse cx="19" cy="17.5" rx="6" ry="4" fill="url(#rg2)"/></svg>
+      SOS<span>Logs</span>
+    </div>
+    <div class="dash-nav-right">
+      <button onclick="exitSOSMode()" title="Back to FitLogs" style="padding:6px 14px;border-radius:8px;border:none;background:#22c55e;color:#000;font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px;white-space:nowrap;">💪 FitLogs</button>
+      <div class="phone-chip"><div class="udot"></div><span id="nav-phone">...</span></div>
+      <button class="nav-btn" onclick="window.sosOpenSettings()" aria-label="Account settings" style="background:transparent;border:1px solid var(--border);">⚙️</button>
+      <button class="nav-btn" onclick="window.sosDoLogout()">Sign Out</button>
+    </div>
+  </nav>
+
+  <!-- Paywall banner -->
+  <div class="paywall-banner" id="paywall-banner">
+    <div class="paywall-banner-text">
+      You are on the <strong>Free tier</strong> — create an account and start your <strong>30-day free trial</strong> to unlock your full dashboard, incident map, credibility profile and message log.
+    </div>
+    <a href="https://buy.stripe.com/aFa8wOdDD5mb86L7w1ew806" target="_blank" class="paywall-banner-btn">
+      Upgrade to Base — $4.99/mo
+    </a>
+  </div>
+
+  <div class="dash-split">
+
+    <!-- ── Left: Static Dashboard ── -->
+    <div class="dash-main">
+
+    <div class="section-hdr"><span class="section-title">Overview — Last 90 Days</span></div>
+
+    <!-- Stat cards -->
+    <div class="cards-row cols-4">
+      <div class="stat-card"><div class="stat-accent" style="background:var(--safe);"></div><div class="stat-icon">📋</div><div class="stat-label">Total Logs</div><div class="stat-value" id="stat-total">—</div><div class="stat-sub" id="stat-total-sub">Loading...</div></div>
+      <div class="stat-card"><div class="stat-accent" style="background:var(--blue);"></div><div class="stat-icon">📅</div><div class="stat-label">Active Days</div><div class="stat-value" id="stat-days">—</div><div class="stat-sub">Days with logs</div></div>
+      <div class="stat-card"><div class="stat-accent" style="background:var(--warn);"></div><div class="stat-icon">👤</div><div class="stat-label">People Mentioned</div><div class="stat-value" id="stat-people">—</div><div class="stat-sub" id="stat-people-sub">Unique names</div></div>
+      <div class="stat-card"><div class="stat-accent" style="background:var(--purple);"></div><div class="stat-icon">📍</div><div class="stat-label">Locations Logged</div><div class="stat-value" id="stat-places">—</div><div class="stat-sub" id="stat-places-sub">Unique places</div></div>
+    </div>
+
+    <!-- Recent + People + Places -->
+    <div class="cards-row cols-3">
+      <div class="wide-card" style="margin-bottom:0;"><div class="wide-card-title">Recent Activity</div><div id="recent-logs" class="log-list"><div class="empty">Loading...</div></div></div>
+      <div class="wide-card locked" id="people-card" style="margin-bottom:0;">
+        <div class="wide-card-title">People Mentioned <span style="font-size:10px;color:var(--muted);font-weight:400;">Last 90 days</span></div>
+        <div id="people-list" class="freq-list locked-content" aria-hidden="true"><div class="empty">Loading...</div></div>
+        <div class="lock-overlay" id="people-lock" style="display:none;">
+          <div class="lock-icon">👤</div>
+          <div class="lock-text">People Analysis Locked</div>
+          <div class="lock-sub">Upgrade to see who appears most in your logs</div>
+          <a href="https://buy.stripe.com/aFa8wOdDD5mb86L7w1ew806" target="_blank" class="lock-btn">Upgrade — $4.99/mo</a>
+        </div>
+      </div>
+      <div class="wide-card locked" id="places-card" style="margin-bottom:0;">
+        <div class="wide-card-title">Places Mentioned <span style="font-size:10px;color:var(--muted);font-weight:400;">Last 90 days</span></div>
+        <div id="places-list" class="freq-list locked-content" aria-hidden="true"><div class="empty">Loading...</div></div>
+        <div class="lock-overlay" id="places-lock" style="display:none;">
+          <div class="lock-icon">📍</div>
+          <div class="lock-text">Places Analysis Locked</div>
+          <div class="lock-sub">Upgrade to see location patterns in your logs</div>
+          <a href="https://buy.stripe.com/aFa8wOdDD5mb86L7w1ew806" target="_blank" class="lock-btn">Upgrade — $4.99/mo</a>
+        </div>
+      </div>
+    </div>
+    <div style="margin-bottom:24px;"></div>
+
+    <!-- Spider + Map -->
+    <div class="cards-row cols-2">
+      <div class="wide-card locked" id="spider-card" style="margin-bottom:0;">
+        <div class="wide-card-title">Credibility Profile <span style="font-size:10px;color:var(--muted);font-weight:400;">Law enforcement standards</span></div>
+        <div class="locked-content" aria-hidden="true">
+        <div class="integrity-row">
+          <div><div class="integrity-score" id="integrity-score">—</div><div class="integrity-label">Overall Score</div></div>
+          <div class="integrity-desc" id="integrity-desc">Analyzing your log entries...</div>
+        </div>
+        <canvas id="spider-canvas" width="300" height="260" style="display:block;margin:0 auto;" role="img" aria-label="Credibility spider chart showing scores across seven dimensions: Specificity, Consistency, Documentation, Corroboration, Timeline, Patterns, and Objectivity"></canvas>
+        </div><!-- end locked-content -->
+        <div class="lock-overlay" id="spider-lock" style="display:none;">
+          <div class="lock-icon">🕸️</div>
+          <div class="lock-text">Credibility Profile Locked</div>
+          <div class="lock-sub">Upgrade to see your credibility score</div>
+          <a href="https://buy.stripe.com/aFa8wOdDD5mb86L7w1ew806" target="_blank" class="lock-btn">Upgrade — $4.99/mo</a>
+        </div>
+      </div>
+      <div class="wide-card locked" id="map-card" style="margin-bottom:0;">
+        <div class="wide-card-title">Incident Locations <span style="font-size:10px;color:var(--muted);font-weight:400;">City level from SMS origin</span></div>
+        <div id="mini-map" class="locked-content" aria-hidden="true"></div>
+        <div class="lock-overlay" id="map-lock" style="display:none;">
+          <div class="lock-icon">🗺️</div>
+          <div class="lock-text">Incident Map Locked</div>
+          <div class="lock-sub">Upgrade to see your location pins</div>
+          <a href="https://buy.stripe.com/aFa8wOdDD5mb86L7w1ew806" target="_blank" class="lock-btn">Upgrade — $4.99/mo</a>
+        </div>
+        <div class="map-legend">
+          <div style="display:flex;align-items:center;gap:5px;"><div class="map-legend-dot" style="background:var(--danger);"></div>Street level</div>
+          <div style="display:flex;align-items:center;gap:5px;"><div class="map-legend-dot" style="background:var(--warn);"></div>City level</div>
+        </div>
+      </div>
+    </div>
+    <div style="margin-bottom:24px;"></div>
+
+    <!-- ── Document Analysis Widget ── -->
+    <div class="analyze-widget">
+      <div class="analyze-widget-title">
+        🔍 Analyze a Document
+        <span style="font-size:10px;font-weight:400;color:var(--muted);letter-spacing:0;">Claude AI — confirm before saving</span>
+      </div>
+      <div class="analyze-tabs">
+        <button class="analyze-tab active" id="analyze-tab-text" onclick="switchAnalyzeTab('text')">Paste Text</button>
+        <button class="analyze-tab" id="analyze-tab-file" onclick="switchAnalyzeTab('file')">Upload PDF / Image</button>
+      </div>
+
+      <!-- Text input -->
+      <div id="analyze-text-panel">
+        <textarea class="analyze-ta" id="analyze-ta" placeholder="Paste email, document text, or describe an incident for analysis...&#10;&#10;Example: On May 1 2026 I sent an email to John Doe requesting documentation of prior coverage. John has not responded as of May 10 2026."></textarea>
+        <button class="analyze-btn" id="analyze-btn" onclick="runAnalysis('text')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          Analyze with Claude
+        </button>
+      </div>
+
+      <!-- File upload -->
+      <div id="analyze-file-panel" style="display:none;">
+        <div class="analyze-drop-zone" id="analyze-drop-zone" onclick="document.getElementById('analyze-file-input').click()" ondragover="handleDragOver(event)" ondrop="handleDrop(event)">
+          <div class="analyze-drop-icon">📄</div>
+          <div class="analyze-drop-text"><strong>Click to upload</strong> or drag and drop</div>
+          <div class="analyze-drop-text" style="font-size:11px;margin-top:4px;">PDF, JPG, PNG up to 10MB</div>
+        </div>
+        <input type="file" id="analyze-file-input" accept=".pdf,.jpg,.jpeg,.png" style="display:none;" onchange="handleFileSelect(event)">
+        <div id="analyze-file-name" style="font-size:12px;color:var(--muted);margin-bottom:8px;"></div>
+        <button class="analyze-btn" id="analyze-file-btn" onclick="runAnalysis('file')" style="display:none;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          Analyze with Claude
+        </button>
+      </div>
+    </div>
+
+    <!-- Analysis result modal -->
+    <div class="analysis-modal-backdrop" id="analysis-modal" style="display:none;">
+      <div class="analysis-modal">
+        <div class="analysis-modal-title">📋 Review Analysis Before Saving</div>
+        <div class="analysis-modal-sub">Claude analyzed your document. Review each field and confirm to save to your SOSLogs record.</div>
+
+        <div style="font-size:11px;color:var(--muted);margin-bottom:12px;padding:8px 10px;background:rgba(255,255,255,0.03);border-radius:6px;">
+          ✏️ All fields are editable — click any field to make corrections before saving.
+        </div>
+
+        <div class="analysis-field">
+          <div class="analysis-field-label">Date</div>
+          <div class="analysis-field-value" id="af-date" contenteditable="true" spellcheck="false"></div>
+        </div>
+        <div class="analysis-field">
+          <div class="analysis-field-label">Thread / Document</div>
+          <div class="analysis-field-value" id="af-thread" contenteditable="true" spellcheck="false"></div>
+        </div>
+        <div class="analysis-field">
+          <div class="analysis-field-label">Your Action</div>
+          <div class="analysis-field-value good" id="af-your-action" contenteditable="true" spellcheck="false"></div>
+        </div>
+        <div class="analysis-field">
+          <div class="analysis-field-label">Their Request or Response</div>
+          <div class="analysis-field-value" id="af-their-action" contenteditable="true" spellcheck="false"></div>
+        </div>
+        <div class="analysis-field">
+          <div class="analysis-field-label">Response Status</div>
+          <div class="analysis-field-value" id="af-status" contenteditable="true" spellcheck="false"></div>
+        </div>
+        <div class="analysis-field">
+          <div class="analysis-field-label">Judge's Observation</div>
+          <div class="analysis-field-value good" id="af-judge" contenteditable="true" spellcheck="false"></div>
+        </div>
+        <div class="analysis-field">
+          <div class="analysis-field-label">Court Relevance</div>
+          <div class="analysis-field-value" id="af-relevance" contenteditable="true" spellcheck="false"></div>
+        </div>
+        <div class="analysis-field">
+          <div class="analysis-field-label">Devil's Advocate</div>
+          <div class="analysis-field-value highlight" id="af-devil" contenteditable="true" spellcheck="false"></div>
+        </div>
+        <div class="analysis-field">
+          <div class="analysis-field-label">Key Facts</div>
+          <div class="analysis-field-value" id="af-facts" contenteditable="true" spellcheck="false"></div>
+        </div>
+
+        <div class="analysis-modal-actions">
+          <button class="analysis-cancel-btn" onclick="closeAnalysisModal()">Discard</button>
+          <button class="analysis-save-btn" id="analysis-save-btn" onclick="saveAnalysis()">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="#000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Confirm and Save
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Log entry widget ── -->
+    <div class="log-widget">
+      <div class="log-widget-title">📝 Add a New Log Entry</div>
+      <div class="log-boxes">
+
+        <!-- Law Enforcement box -->
+        <div class="log-box">
+          <div class="log-box-label">
+            <div class="log-box-label-dot" style="background:#3b82f6;"></div>
+            Law Enforcement Log
+          </div>
+          <textarea class="log-ta" id="le-ta" placeholder="Describe the incident — include date, time, location, and names of anyone involved..." rows="4" oninput="updateCharCount('le-ta','le-count')"></textarea>
+          <div class="log-actions-row">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div class="log-action-btns">
+                <button class="log-action-btn" id="le-mic-btn" onclick="toggleVoice('le-ta','le-mic-btn')" title="Voice input">🎤</button>
+                <label class="log-action-btn" title="Attach photo or video" id="le-attach-label">
+                  📎
+                  <input type="file" id="le-file-input" style="position:absolute;inset:0;opacity:0;cursor:pointer;" accept="image/*,.pdf,.doc,.docx,.txt" onchange="handleMediaSelect(event,'le')">
+                </label>
+              </div>
+              <span class="log-char-count" id="le-count">0 / 500</span>
+            </div>
+            <div>
+              <span class="log-success" id="le-success">✅ Saved!</span>
+              <button class="log-send-btn" data-type="le" onclick="submitLog('le')">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="#000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Log It
+              </button>
+            </div>
+          </div>
+        <div class="media-upload-area" id="le-media-area">
+          <div class="media-preview" id="le-media-preview"></div>
+          <div class="media-status" id="le-media-status"></div>
+        </div>
+        </div>
+
+        <!-- HR / Workplace box -->
+        <div class="log-box">
+          <div class="log-box-label">
+            <div class="log-box-label-dot" style="background:var(--warn);"></div>
+            Personal Log
+          </div>
+          <textarea class="log-ta" id="hr-ta" placeholder="Describe the incident in your own words — include who was present, what was said, and any relevant details..." rows="4" oninput="updateCharCount('hr-ta','hr-count')"></textarea>
+          <div class="log-actions-row">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div class="log-action-btns">
+                <button class="log-action-btn" id="hr-mic-btn" onclick="toggleVoice('hr-ta','hr-mic-btn')" title="Voice input">🎤</button>
+                <label class="log-action-btn" title="Attach photo or video" id="hr-attach-label">
+                  📎
+                  <input type="file" id="hr-file-input" style="position:absolute;inset:0;opacity:0;cursor:pointer;" accept="image/*,.pdf,.doc,.docx,.txt" onchange="handleMediaSelect(event,'hr')">
+                </label>
+              </div>
+              <span class="log-char-count" id="hr-count">0 / 500</span>
+            </div>
+            <div>
+              <span class="log-success" id="hr-success">✅ Saved!</span>
+              <button class="log-send-btn" data-type="hr" onclick="submitLog('hr')">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="#000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Log It
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Messages -->
+    <div class="wide-card locked" id="messages-card">
+      <div class="wide-card-title">
+        Message Log
+        <button class="show-msgs-btn" id="show-msgs-btn" onclick="toggleMessages()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          Show Messages
+        </button>
+      </div>
+      <div class="msg-panel" id="msg-panel">
+        <div class="filter-bar">
+          <input class="filter-input" id="filter-keyword" type="text" placeholder="Search keyword e.g. Robert, Arlington..." oninput="applyFilters()">
+          <input class="filter-input" id="filter-date-from" type="date" onchange="applyFilters()" style="max-width:150px;">
+          <input class="filter-input" id="filter-date-to" type="date" onchange="applyFilters()" style="max-width:150px;">
+          <button class="filter-btn" onclick="clearFilters()">Clear</button>
+        </div>
+        <div class="msg-count" id="msg-count"></div>
+        <div id="msg-list"></div>
+      </div>
+    </div>
+    </div><!-- end dash-main -->
+
+    <!-- ── Right: Claude Chat Panel ── -->
+    <div class="dash-chat-panel" id="insights-widget">
+      <div class="dash-chat-header">
+        <div class="dash-chat-header-title">
+          ✨ Ask About Your Data
+          <span style="font-size:10px;font-weight:400;color:var(--muted);">Claude AI</span>
+        </div>
+      </div>
+      <div class="dash-chat-suggestions">
+        <span class="dash-chat-suggestion" onclick="askInsight('Summarize my last 30 days')">📋 30-day summary</span>
+        <span class="dash-chat-suggestion" onclick="askInsight('Who appears most in my logs?')">👤 People</span>
+        <span class="dash-chat-suggestion" onclick="askInsight('What locations appear most?')">📍 Places</span>
+        <span class="dash-chat-suggestion" onclick="askInsight('What patterns do you see?')">🔍 Patterns</span>
+        <span class="dash-chat-suggestion" onclick="askInsight('How strong is my documentation?')">⚖️ Credibility</span>
+        <span class="dash-chat-suggestion" onclick="askInsight('Create a timeline of key events')">📅 Timeline</span>
+      </div>
+      <div class="dash-chat-body" id="insights-chat"></div>
+      <div class="dash-chat-footer">
+        <div class="dash-chat-input-row">
+          <input class="dash-chat-input" id="insights-input" type="text"
+            placeholder="Ask about your logs..."
+            onkeydown="if(event.key==='Enter')sendInsight()">
+          <button class="dash-chat-send" id="insights-send-btn" onclick="sendInsight()">Ask</button>
+        </div>
+      </div>
+    </div><!-- end dash-chat-panel -->
+
+  </div><!-- end dash-split -->
+</div>
+
+
+
+<!-- SOS Firebase + App JS (type:module) -->
+<script>
+// ── Theme Toggle (global scope — must be outside module) ──────
+function sosToggleTheme(){
+  const sosEl = document.getElementById('sos-wrapper');
+  const current = sosEl ? (sosEl.getAttribute('data-theme') || 'dark') : 'dark';
+  const next = current === 'light' ? 'dark' : 'light';
+  document.getElementById('sos-wrapper')?.setAttribute('data-theme', next);
+  localStorage.setItem('soslogs-theme', next);
+  updateThemeButtons(next);
+}
+function updateThemeButtons(theme){
+  const isLight = theme === 'light';
+  const icon = isLight ? '☀️' : '🌙';
+  const label = isLight ? 'Dark' : 'Light';
+  ['theme-icon','dash-theme-icon'].forEach(id => { const el = document.getElementById(id); if(el) el.textContent = icon; });
+  ['theme-label','dash-theme-label'].forEach(id => { const el = document.getElementById(id); if(el) el.textContent = label; });
+}
+// Apply saved theme on load (light is default)
+(function(){
+  const saved = localStorage.getItem('soslogs-theme') || 'light';
+  document.documentElement.setAttribute('data-theme', saved);
+  document.addEventListener('DOMContentLoaded', () => updateThemeButtons(saved));
+})();
+</script>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword,
+         signOut, onAuthStateChanged, sendPasswordResetEmail, updateProfile }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, collection, collectionGroup, doc, setDoc, getDoc, getDocs,
+         addDoc, query, where, orderBy, serverTimestamp }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const fbApp = initializeApp({
+  apiKey:            "AIzaSyCOS5vQrEXqCsfPFgTgrBip_c9g7tD_nG0",
+  authDomain:        "soslog-v1.firebaseapp.com",
+  projectId:         "soslog-v1",
+  storageBucket:     "soslog-v1.firebasestorage.app",
+  messagingSenderId: "873518719449",
+  appId:             "1:873518719449:web:6a2202cd4241a6b252b9c8"
+});
+const auth = getAuth(fbApp);
+const storage = getStorage(fbApp);
+const db   = getFirestore(fbApp);
+
+const encEmail = e => e.replace(/\./g,'_dot_').replace(/@/g,'_at_');
+const decEmail = e => e.replace(/_dot_/g,'.').replace(/_at_/g,'@');
+const emailsCol   = p => collection(db,'users',p,'emails');
+const recordsCol  = (p,e) => collection(db,'users',p,'emails',e,'records');
+const flatRecords = p => collection(db,'users',p,'records');
+// flatRecords: direct path users/{phone}/records for seeded/SMS logs
+const normPhone  = (cc,ph) => '+'+cc.replace(/\D/g,'')+ph.replace(/\D/g,'');
+
+let currentPhone = null;
+let allRecords   = [];
+let msgsVisible  = false;
+let resolvedLocationCount = 0; // updated after map geocoding completes
+
+const STOP_WORDS = new Set([
+  'The','This','That','Then','When','With','From','Have','Been','They','Also','Were','Your','Their',
+  'After','Before','During','About','Which','Would','Could','Should','Reply','Stop','Help','Message',
+  'Record','Saved','Incident','Meeting','March','April','January','February','October','November',
+  'December','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday','Direct','Please',
+  'Texas','United','States','Note','Also','However','Currently','Today','Yesterday',
+  // Street suffixes
+  'Ave','Blvd','Dr','St','Rd','Ln','Way','Ct','Pl','Hwy','Pkwy','Loop','Fwy',
+  'Street','Avenue','Boulevard','Drive','Road','Lane','Court','Place','Highway','Parkway',
+  // Common words that get capitalized mid-sentence
+  'Log','Logs','Entry','Entries','Notes','Report','Reports','Case','File',
+  // Test/generic words
+  'Testing','Test','Sample','Example','Demo','Update','New','Old','Original',
+  // US States and major cities that are not people
+  'Arlington','Dallas','Houston','Austin','Texas','California','Florida','NewYork',
+  'Fort','Worth','Tarrant','County','City','Street','Block','District','Area',
+  // Action words often capitalized
+  'Incident','Location','Address','Subject','Witness','Officer','Department',
+  'Intersection','Corner','Near','Vicinity','Area','Zone','Sector',
+  // Directional prefixes
+  'North','South','East','West','Northeast','Northwest','Southeast','Southwest',
+]);
+
+// AUTH STATE
+onAuthStateChanged(auth, async user => {
+  document.getElementById('app-loading').classList.add('hide');
+  if(user){
+    await user.reload();
+    currentPhone = await resolvePhone(user);
+    await showDashboard(user);
+  } else {
+    sosShowScreen('login-screen');
+  }
+});
+
+// Resolve phone from Firestore (handles accounts where displayName is a name not a phone)
+async function resolvePhone(user){
+  console.log('resolvePhone: starting for uid', user.uid, 'email', user.email, 'displayName', user.displayName);
+
+  // 1. displayName set at signup stores the phone number
+  if(user.displayName && /^\+?\d{7,}$/.test(user.displayName.replace(/[\s\-()]/g,''))){
+    console.log('resolvePhone: found via displayName:', user.displayName);
+    return user.displayName;
+  }
+
+  // 2. Query collectionGroup on 'profile' — path: users/{phone}/profile
+  //    The actual data is in the 'data' document inside profile collection
+  try{
+    const profileQ = query(collectionGroup(db,'profile'), where('uid','==',user.uid));
+    const snap = await getDocs(profileQ);
+    if(!snap.empty){
+      // Each doc is the 'data' document — its parent is 'profile' collection
+      // parent.parent is the user document — its id is the phone number
+      for(const d of snap.docs){
+        const phone = d.data().phone || d.ref.parent.parent?.id;
+        if(phone && /^\+?\d{7,}$/.test(phone.replace(/\s/g,''))){
+          console.log('resolvePhone: found via profile collectionGroup:', phone);
+          return phone;
+        }
+      }
+    }
+  } catch(e){ console.warn('resolvePhone profile collectionGroup failed:',e); }
+
+  // 3. Query collectionGroup on 'emails' — path: users/{phone}/emails/{emailKey}
+  //    parent = emails collection, parent.parent = user doc (phone as id)
+  try{
+    const emailQ = query(collectionGroup(db,'emails'), where('email','==',user.email));
+    const snap = await getDocs(emailQ);
+    if(!snap.empty){
+      const phone = snap.docs[0].ref.parent.parent?.id;
+      if(phone && /^\+?\d{7,}$/.test(phone.replace(/\s/g,''))){
+        console.log('resolvePhone: found via emails collectionGroup:', phone);
+        return phone;
+      }
+    }
+  } catch(e){ console.warn('resolvePhone emails collectionGroup failed:',e); }
+
+  // 4. Scan all users docs for email match (fallback for any account)
+  try{
+    const usersSnap = await getDocs(collection(db,'users'));
+    for(const userDoc of usersSnap.docs){
+      const phone = userDoc.id;
+      if(!/^\+?\d{7,}$/.test(phone.replace(/\s/g,''))) continue;
+      try{
+        const emailsSnap = await getDocs(collection(db,'users',phone,'emails'));
+        const match = emailsSnap.docs.find(d=>d.data().email===user.email);
+        if(match){
+          console.log('resolvePhone: found via full scan:', phone);
+          return phone;
+        }
+      } catch(_){}
+    }
+  } catch(e){ console.warn('resolvePhone full scan failed:',e); }
+
+  // Final fallback: scan all users and match by email in emails subcollection
+  // This handles seeded accounts where uid doesn't match real Firebase Auth uid
+  try{
+    const usersSnap = await getDocs(collection(db,'users'));
+    for(const userDoc of usersSnap.docs){
+      const phone = userDoc.id;
+      if(!/^\+?\d{7,}$/.test(phone.replace(/\s/g,''))) continue;
+      try{
+        const emailsSnap = await getDocs(collection(db,'users',phone,'emails'));
+        const match = emailsSnap.docs.find(d=>d.data().email===user.email);
+        if(match){
+          console.log('resolvePhone: found via email scan:', phone);
+          return phone;
+        }
+      } catch(_){}
+    }
+  } catch(e){ console.warn('resolvePhone email scan failed:',e); }
+
+  console.warn('resolvePhone: all strategies failed, falling back to displayName/email');
+  return user.displayName || user.email;
+}
+
+// LOGIN
+window.doLogin = async function(){
+  const id=document.getElementById('login-id').value.trim();
+  const pw=document.getElementById('login-pw').value;
+  const btn=document.getElementById('login-btn');
+  clearMsg('login-err'); clearMsg('login-ok');
+  if(!id||!pw){ showErr('login-err','Please enter your phone/email and password.'); return; }
+  btn.innerHTML='<div class="spinner spinner-g" style="width:14px;height:14px;border-width:1.5px;display:inline-block;margin-right:6px;"></div> Signing in...'; btn.disabled=true;
+
+  const resetBtn = () => {
+    btn.innerHTML = 'Sign In';
+    btn.disabled = false;
+  };
+
+  try{
+    let loginEmail = id;
+
+    // If input looks like a phone number, look up the email from Firestore
+    if(!id.includes('@')){
+      // Normalize phone — handle +19167900975, 19167900975, 9167900975, (916) 790-0975
+      let digits = id.replace(/\D/g,'');
+      if(digits.length === 11 && digits.startsWith('1')) digits = digits.slice(1);
+      if(digits.length !== 10){ showErr('login-err','Please enter a valid 10-digit US phone number.'); resetBtn(); return; }
+      const phone = '+1' + digits;
+      console.log('Looking up phone:', phone);
+      try{
+        const emailsSnap = await getDocs(collection(db,'users',phone,'emails'));
+        console.log('Emails found:', emailsSnap.size);
+        if(!emailsSnap.empty){
+          // Try primary first, fall back to first doc
+          const primary = emailsSnap.docs.find(d => d.data().primary);
+          const anyDoc = emailsSnap.docs[0];
+          const emailDoc = primary || anyDoc;
+          loginEmail = emailDoc.data().email || emailDoc.data().Email || '';
+          console.log('Found email:', loginEmail);
+          if(!loginEmail){ showErr('login-err','Account found but no email on file. Please contact support.'); resetBtn(); return; }
+        } else {
+          showErr('login-err','No account found for that phone number. Please try your email address.');
+          resetBtn(); return;
+        }
+      } catch(e){
+        console.error('Phone lookup error:', e);
+        showErr('login-err','Could not look up account. Please use your email address.');
+        resetBtn(); return;
+      }
+    }
+
+    await signInWithEmailAndPassword(auth, loginEmail, pw);
+    resetBtn();
+  }
+  catch(e){
+    resetBtn();
+    showErr('login-err', fErr(e.code));
+  }
+};
+
+// SIGNUP
+window.doSignup = async function(){
+  const cc=document.getElementById('su-cc').value.trim()||'+1';
+  const phone=document.getElementById('su-phone').value.trim();
+  const country=cc==='+91'?'India':'United States';
+  const email=document.getElementById('su-email').value.trim();
+  const pw=document.getElementById('su-pw').value;
+  const pw2=document.getElementById('su-pw2').value;
+  const btn=document.getElementById('signup-btn');
+  clearMsg('signup-err'); clearMsg('signup-ok');
+  if(!phone||!email||!country){ showErr('signup-err','Please fill in all fields.'); return; }
+  if(pw.length<8){ showErr('signup-err','Password must be at least 8 characters.'); return; }
+  if(pw!==pw2){ showErr('signup-err','Passwords do not match.'); return; }
+
+  // Require phone verification before account creation
+  if(!phoneVerified){
+    showErr('signup-err','Please verify your phone number first.');
+    return;
+  }
+  const selectedCC = document.getElementById('su-cc').value;
+  const fullPhone=normPhone(selectedCC,phone);
+  // Store country for profile
+  const countryName = selectedCC === '+1' ? 'United States' : selectedCC === '+91' ? 'India' : 'United States';
+  btn.disabled=true; btn.innerHTML='<div class="spinner spinner-g"></div> Creating...';
+  try{
+    const cred=await createUserWithEmailAndPassword(auth,email,pw);
+    await updateProfile(cred.user,{displayName:fullPhone});
+    // Write complete profile with plan:'free' BEFORE auth state change fires
+    // This ensures paywall check finds the profile on first login
+    await setDoc(doc(db,'users',fullPhone,'profile','data'),{
+      uid:      cred.user.uid,
+      phone:    fullPhone,
+      country:  countryName,
+      plan:     'free',  // Always start as free
+      status:   'active',
+      joinedAt: serverTimestamp(),
+      joinedLocal: new Date().toISOString()
+    }, {merge:false}); // merge:false ensures plan is always set on new signup
+    await setDoc(doc(emailsCol(fullPhone),encEmail(email)),{email,addedAt:serverTimestamp(),primary:true});
+    showOk('signup-ok','Account created! Signing you in...');
+  } catch(e){ btn.disabled=false; btn.innerHTML='Create Account &amp; Secure My Log'; showErr('signup-err',fErr(e.code)); }
+};
+
+window.doForgotPw = async function(){
+  let id = document.getElementById('login-id').value.trim();
+  clearMsg('login-err');
+  if(!id){ showErr('login-err','Enter your email or phone number first.'); return; }
+
+  // If phone entered, look up email first
+  if(!id.includes('@')){
+    let digits = id.replace(/\D/g,'');
+    if(digits.length === 11 && digits.startsWith('1')) digits = digits.slice(1);
+    const phone = '+1' + digits;
+    try{
+      const emailsSnap = await getDocs(collection(db,'users',phone,'emails'));
+      if(!emailsSnap.empty){
+        const primary = emailsSnap.docs.find(d => d.data().primary);
+        id = primary ? primary.data().email : emailsSnap.docs[0].data().email;
+      } else {
+        showErr('login-err','No account found for that phone number.');
+        return;
+      }
+    } catch(e){
+      showErr('login-err','Please enter your email address to reset password.');
+      return;
+    }
+  }
+
+  try{ await sendPasswordResetEmail(auth,id); showOk('login-ok','Password reset email sent.'); }
+  catch(e){ showErr('login-err',fErr(e.code)); }
+};
+
+window.sosDoLogout = async () => { await signOut(auth); window.history.replaceState({},'','/'); };
+
+// DASHBOARD
+async function showDashboard(user){
+  // Hide dash body until paywall check complete — prevents flash of content
+  const dashBody = document.querySelector('.dash-split');
+  if(dashBody) dashBody.style.visibility = 'hidden';
+
+  sosShowScreen('dashboard-screen');
+  document.getElementById('nav-phone').textContent = fmtPhone(currentPhone);
+  const phoneDigits = currentPhone.replace(/\D/g,'');
+  const slug = phoneDigits || 'dashboard';
+  window.history.replaceState({},'','/'+slug);
+
+  // Check plan FIRST before rendering anything
+  await checkPlanAndApplyPaywall(currentPhone);
+
+  // Now load and render data
+  allRecords = await loadAllRecords();
+  renderStats(allRecords);
+  renderRecentLogs(allRecords);
+
+  // Only render locked features if user has paid plan
+  if(userPlan === 'base'){
+    renderPeople(allRecords);
+    renderPlaces(allRecords);
+    renderSpider(allRecords);
+    loadMiniMap(allRecords);
+  }
+
+  // Reveal dashboard now that everything is ready
+  if(dashBody) dashBody.style.visibility = 'visible';
+}
+
+async function loadAllRecords(){
+  const records=[];
+  if(!currentPhone){ console.warn('loadAllRecords: no currentPhone'); return records; }
+  console.log('Loading records for phone:', currentPhone);
+
+  try{
+    // Strategy 1: flat records at users/{phone}/records (seeded data + SMS logs)
+    try{
+      const flatSnap=await getDocs(query(flatRecords(currentPhone),orderBy('timestamp','desc')));
+      flatSnap.forEach(d=>records.push({...d.data(),_email:'',_id:d.id,_source:'flat'}));
+      console.log('Flat records found:', flatSnap.size);
+    } catch(e){ console.warn('flat records error:',e); }
+
+    // Strategy 2: nested emails/{email}/records
+    try{
+      const emailSnap=await getDocs(emailsCol(currentPhone));
+      const emailIds=[];
+      emailSnap.forEach(d=>emailIds.push({id:d.id,email:d.data().email||decEmail(d.id)}));
+      console.log('Email subcollections found:', emailIds.length);
+
+      for(const e of emailIds){
+        try{
+          const snap=await getDocs(query(recordsCol(currentPhone,e.id),orderBy('timestamp','desc')));
+          snap.forEach(d=>records.push({...d.data(),_email:e.email,_id:d.id,_source:'email'}));
+          console.log('Records in',e.id,':', snap.size);
+        } catch(err){ console.warn('email records error:',err); }
+      }
+
+      // Also try unlinked bucket
+      try{
+        const snap=await getDocs(query(recordsCol(currentPhone,'unlinked'),orderBy('timestamp','desc')));
+        snap.forEach(d=>records.push({...d.data(),_email:'',_id:d.id,_source:'unlinked'}));
+      } catch(_){}
+    } catch(e){ console.warn('email subcollection error:',e); }
+
+    // Deduplicate by messageSid or _id
+    const seen=new Set();
+    const unique=records.filter(r=>{
+      const key=r.messageSid||r._id;
+      if(seen.has(key)) return false;
+      seen.add(key); return true;
+    });
+
+    unique.sort((a,b)=>getTs(b)-getTs(a));
+    console.log('Total unique records:', unique.length);
+    return unique;
+
+  } catch(e){ console.error('loadAllRecords fatal:',e); }
+  return records;
+}
+
+function getTs(r){
+  if(r.timestamp?.toDate) return r.timestamp.toDate().getTime();
+  if(r.timestampLocal) return new Date(r.timestampLocal).getTime();
+  return 0;
+}
+
+function last90(records){
+  const cutoff=Date.now()-90*24*60*60*1000;
+  return records.filter(r=>getTs(r)>cutoff);
+}
+
+// STATS
+function renderStats(records){
+  const r90=last90(records);
+  document.getElementById('stat-total').textContent=r90.length;
+  document.getElementById('stat-total-sub').textContent=records.length+' total all time';
+  const days=new Set(r90.map(r=>new Date(getTs(r)).toDateString())).size;
+  document.getElementById('stat-days').textContent=days;
+  const people=extractPeople(r90);
+  document.getElementById('stat-people').textContent=people.length;
+  document.getElementById('stat-people-sub').textContent=people[0]?.name?'Most mentioned: '+people[0].name:'Detecting from logs...';
+  const places=extractPlaces(r90);
+  // Count unique locations — any record with an address reference counts as 1
+  const uniqueLocSet = new Set(
+    r90
+      .map(r => {
+        // Use extractedAddress first (web entries), then formatted (geocoded), then city (SMS)
+        const raw = r.location?.extractedAddress || r.location?.formatted || r.location?.city || '';
+        if(!raw || raw.length < 3) return null;
+        const normalized = raw.toLowerCase()
+          .replace(/\s+and\s+/g,' & ')
+          .replace(/^(intersection of|corner of|near|at|on)\s+/i,'')
+          .replace(/\s{2,}/g,' ')
+          .trim();
+        const excluded = ['intersection','us','united states','','unknown'];
+        return excluded.includes(normalized) ? null : normalized;
+      })
+      .filter(Boolean)
+  );
+  document.getElementById('stat-places').textContent = uniqueLocSet.size || 0;
+  document.getElementById('stat-places-sub').textContent = places[0]?.name ? 'Most mentioned: '+places[0].name : 'Detecting from logs...';
+}
+
+// RECENT LOGS
+function renderRecentLogs(records){
+  const el=document.getElementById('recent-logs');
+  const recent=last90(records).slice(0,8);
+  if(!recent.length){ el.innerHTML='<div class="empty">No logs in last 90 days.</div>'; return; }
+  el.innerHTML=recent.map(r=>{
+    const ts=new Date(getTs(r));
+    const dateStr=ts.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+    const timeStr=ts.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true});
+    const dotColor=r.location?.precision==='address'?'var(--danger)':'var(--warn)';
+    return '<div class="log-item" onclick="openMessages()"><div class="log-dot" style="background:'+dotColor+';"></div><div style="flex:1;min-width:0;"><div class="log-date">'+dateStr+' '+timeStr+'</div><div class="log-body">'+esc((r.body||r.message||'').slice(0,100))+'</div></div></div>';
+  }).join('');
+}
+
+// PEOPLE
+function extractPeople(records){
+  const counts={};
+  const allText = records.map(r=>{
+    const body = r.body||r.message||'';
+    // Skip base64 encoded file content - use analysisData fields instead
+    if(body.includes('FILE_BASE64:')){
+      const a = r.analysisData||{};
+      return [a.your_action||'',a.her_request_or_response||'',
+              a.judges_observation||'',(a.key_facts||[]).join(' ')].join(' ');
+    }
+    // Also skip the ANALYZED DOCUMENT prefix line
+    const cleaned = body.replace(/^ANALYZED DOCUMENT[\s\S]*?Original Text:[\s\S]*?--- SOSLogs Analysis ---/,'');
+    return cleaned.replace(/[\u2018\u2019]/g,"'").replace(/[\u201C\u201D]/g,'"');
+  }).join(' ');
+
+  const SKIP_PHRASES = new Set([
+    'Law Enforcement','Direct Report','Personal Device','Toll Free',
+    'United States','New York','Fort Worth','San Antonio','Los Angeles',
+    'Public Safety','Safety Documentation','Personal Safety',
+    'Border St','Abrams St','Lemmon Ave','Haskell Ave',
+  ]);
+
+  // Strategy 1: word-by-word scan for First Last name pairs
+  const words = allText.split(/\s+/);
+  for(let i=0;i<words.length-1;i++){
+    const w1=words[i].replace(/[^A-Za-z]/g,'');
+    const w2=words[i+1].replace(/[^A-Za-z]/g,'');
+    if(!w1||!w2) continue;
+    if(!/^[A-Z][a-z]{1,}$/.test(w1)) continue;
+    if(!/^[A-Z][a-z]{1,}$/.test(w2)) continue;
+    if(STOP_WORDS.has(w1)||STOP_WORDS.has(w2)) continue;
+    const fn=w1+' '+w2;
+    if(SKIP_PHRASES.has(fn)) continue;
+    counts[fn]=(counts[fn]||0)+1;
+  }
+
+  // Strategy 2: single capitalized words appearing 2+ times
+  const capWords=allText.match(/[A-Z][a-z]{2,}/g)||[];
+  const capCounts={};
+  capWords.forEach(w=>{capCounts[w]=(capCounts[w]||0)+1;});
+  Object.entries(capCounts).forEach(([w,c])=>{
+    if(c>=2&&!STOP_WORDS.has(w)){
+      const captured=Object.keys(counts).some(k=>k.includes(w));
+      if(!captured) counts[w]=c;
+    }
+  });
+
+  return Object.entries(counts).map(([name,count])=>({name,count})).sort((a,b)=>b.count-a.count).slice(0,8);
+}
+
+
+// PLACES
+// Normalize a location string:
+// "Lemmon Ave and N Haskell Ave" -> "Lemmon Ave & N Haskell Ave"
+// "1100 Abrams St, Arlington, TX" -> "1100 Abrams St, Arlington, TX"
+// Treats "and"-joined and comma-joined parts as ONE location
+function normalizeLocation(loc){
+  if(!loc) return '';
+  return loc.trim()
+    .replace(/\s+and\s+/gi, ' & ')   // "X and Y" -> "X & Y" (one location)
+    .replace(/\s{2,}/g, ' ')
+    .replace(/^(intersection of|corner of|near|at|on)\s+/i, '') // strip prefixes
+    .trim();
+}
+
+function extractPlaces(records){
+  const counts={};
+
+  // Only use explicitly stored location data — never guess from free text
+  // This prevents sentences being misidentified as addresses
+  records.forEach(r=>{
+    // 1. Geocoded extractedAddress (most reliable — set during save)
+    if(r.location?.extractedAddress && r.location.extractedAddress.length > 4){
+      const k = normalizeLocation(r.location.extractedAddress);
+      if(k && k.length > 4) counts[k] = (counts[k]||0) + 1;
+      return;
+    }
+    // 2. Formatted address from geocoder
+    if(r.location?.formatted && r.location.formatted.length > 4 &&
+       r.location.formatted !== 'United States' && r.location.formatted !== 'US'){
+      const k = normalizeLocation(r.location.formatted);
+      if(k && k.length > 4) counts[k] = (counts[k]||0) + 1;
+      return;
+    }
+    // 3. City from Twilio (SMS only)
+    if(r.source === 'sms' && r.location?.city && r.location.city.length > 2){
+      counts[r.location.city] = (counts[r.location.city]||0) + 1;
+    }
+  });
+
+  return Object.entries(counts)
+    .filter(([k]) => k.length > 3 && k.toLowerCase() !== 'intersection' && k.toLowerCase() !== 'us')
+    .map(([name,count]) => ({name,count}))
+    .sort((a,b) => b.count - a.count)
+    .slice(0,8);
+}
+
+
+function renderFreqList(elId,items,color){
+  const el=document.getElementById(elId);
+  if(!items.length){ el.innerHTML='<div class="empty">None found</div>'; return; }
+  const max=items[0].count;
+  el.innerHTML=items.map(item=>'<div class="freq-item"><div class="freq-name">'+esc(item.name)+'</div><div class="freq-bar-wrap"><div class="freq-bar" style="width:'+Math.round(item.count/max*100)+'%;background:'+color+';"></div></div><div class="freq-count">'+item.count+'</div></div>').join('');
+}
+function renderPeople(r){
+  const r90 = last90(r);
+  const places = extractPlaces(r90);
+  const placeNames = new Set(places.map(p=>p.name.toLowerCase()));
+  // Filter out anything that's already a place or in stop words
+  const rawPeople = extractPeople(r90);
+  console.log('extractPeople raw:', JSON.stringify(rawPeople));
+  console.log('allText:', r90.map(r=>r.body||'').join(' ').slice(0,300));
+  const people = rawPeople.filter(p=>{
+    if(placeNames.has(p.name.toLowerCase())) return false;
+    if(STOP_WORDS.has(p.name)) return false;
+    if(!p.name.includes(' ') && p.count < 2) return false;
+    return true;
+  });
+  console.log('people after filter:', JSON.stringify(people));
+  renderFreqList('people-list', people, 'var(--warn)');
+  document.getElementById('stat-people').textContent = people.length;
+  document.getElementById('stat-people-sub').textContent = people[0]?.name ? 'Most mentioned: '+people[0].name : 'Detecting from logs...';
+}
+function renderPlaces(r){ renderFreqList('places-list',extractPlaces(last90(r)),'var(--purple)'); }
+
+// SPIDER
+function scoreCredibility(records){
+  const r90=last90(records);
+  if(!r90.length) return {scores:{},overall:0,desc:''};
+  const allText=r90.map(r=>r.body||r.message||'').join(' ');
+  const avgLen=allText.length/Math.max(r90.length,1);
+  const dateMatches=(allText.match(/\b(january|february|march|april|may|june|july|august|september|october|november|december|\d{1,2}\/\d{1,2}|\d{1,2}:\d{2}|am|pm)\b/gi)||[]).length;
+  const specificity=Math.min(100,Math.round(dateMatches/r90.length*20));
+  const keyTermCounts={};
+  r90.forEach(r=>{ const words=(r.body||'').match(/\b[A-Z][a-z]{2,}\b/g)||[]; words.forEach(w=>{keyTermCounts[w]=(keyTermCounts[w]||0)+1;}); });
+  const repeatedTerms=Object.values(keyTermCounts).filter(c=>c>2).length;
+  const consistency=Math.min(100,Math.round(repeatedTerms*8));
+  const density=Math.min(100,Math.round(avgLen/3));
+  const people=extractPeople(r90);
+  const corroboration=Math.min(100,people.length*14);
+  const days=new Set(r90.map(r=>new Date(getTs(r)).toDateString())).size;
+  const timeline=Math.min(100,Math.round(days/90*400));
+  const patternScore=Math.min(100,repeatedTerms*6+people.length*5);
+  const emotionalWords=(allText.match(/\b(hate|angry|furious|unfair|terrible|horrible|worst|awful|racist|discrimination)\b/gi)||[]).length;
+  const factualWords=(allText.match(/\b(meeting|email|date|time|sent|received|confirmed|documented|recorded|witnessed)\b/gi)||[]).length;
+  const objectivity=Math.min(100,Math.max(0,50+factualWords*3-emotionalWords*5));
+  const scores={Specificity:specificity,Consistency:consistency,'Doc Density':density,Corroboration:corroboration,Timeline:timeline,Patterns:patternScore,Objectivity:objectivity};
+  const overall=Math.round(Object.values(scores).reduce((a,b)=>a+b,0)/Object.keys(scores).length);
+  const desc=overall>=80?'Strong credibility profile. Your documentation shows high specificity, consistency, and factual objectivity — characteristics that hold up under scrutiny.':overall>=60?'Good credibility profile. Continue documenting with specific dates, times, and witness names to strengthen your record.':'Building credibility profile. Include more specific details — dates, times, locations, and names — in each log entry.';
+  return {scores,overall,desc};
+}
+
+function renderSpider(records){
+  const {scores,overall,desc}=scoreCredibility(records);
+  document.getElementById('integrity-score').textContent=overall||'—';
+  document.getElementById('integrity-desc').textContent=desc||'Add more logs to generate your profile.';
+  const canvas=document.getElementById('spider-canvas');
+  const ctx=canvas.getContext('2d');
+  const keys=Object.keys(scores);
+  const vals=Object.values(scores);
+  const n=keys.length;
+  if(!n) return;
+  const W=300,H=260,cx=W/2,cy=H/2,R=90;
+  ctx.clearRect(0,0,W,H);
+  [20,40,60,80,100].forEach(pct=>{
+    ctx.beginPath();
+    for(let i=0;i<n;i++){ const angle=(i/n)*Math.PI*2-Math.PI/2; const r=R*(pct/100); const x=cx+r*Math.cos(angle),y=cy+r*Math.sin(angle); i===0?ctx.moveTo(x,y):ctx.lineTo(x,y); }
+    ctx.closePath(); ctx.strokeStyle='rgba(255,255,255,0.06)'; ctx.lineWidth=1; ctx.stroke();
+  });
+  keys.forEach((_,i)=>{ const angle=(i/n)*Math.PI*2-Math.PI/2; ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(cx+R*Math.cos(angle),cy+R*Math.sin(angle)); ctx.strokeStyle='rgba(255,255,255,0.08)'; ctx.lineWidth=1; ctx.stroke(); });
+  ctx.beginPath();
+  vals.forEach((v,i)=>{ const angle=(i/n)*Math.PI*2-Math.PI/2; const r=R*(v/100); const x=cx+r*Math.cos(angle),y=cy+r*Math.sin(angle); i===0?ctx.moveTo(x,y):ctx.lineTo(x,y); });
+  ctx.closePath(); ctx.fillStyle='rgba(29,184,122,0.15)'; ctx.strokeStyle='rgba(29,184,122,0.8)'; ctx.lineWidth=2; ctx.fill(); ctx.stroke();
+  vals.forEach((v,i)=>{ const angle=(i/n)*Math.PI*2-Math.PI/2; const r=R*(v/100); const x=cx+r*Math.cos(angle),y=cy+r*Math.sin(angle); ctx.beginPath(); ctx.arc(x,y,4,0,Math.PI*2); ctx.fillStyle='#1db87a'; ctx.fill(); });
+  ctx.fillStyle='rgba(204,216,232,0.8)'; ctx.font='11px -apple-system,sans-serif'; ctx.textAlign='center';
+  keys.forEach((k,i)=>{ const angle=(i/n)*Math.PI*2-Math.PI/2; const r=R+22; const x=cx+r*Math.cos(angle),y=cy+r*Math.sin(angle)+4; ctx.fillText(k,x,y); });
+}
+
+// MINI MAP
+const MAPS_API_KEY = 'AIzaSyC8GDl5em6tzE4Kf2nomqLGycWMIAlPf_4';
+
+function loadMiniMap(records){
+  if(typeof google!=='undefined' && google.maps){ initMiniMap(records); return; }
+  window.miniMapReady = () => initMiniMap(records);
+  const s = document.createElement('script');
+  s.src = 'https://maps.googleapis.com/maps/api/js?key=' + MAPS_API_KEY + '&callback=miniMapReady&loading=async&v=beta&libraries=marker';
+  s.async = true;
+  s.defer = true;
+  document.head.appendChild(s);
+}
+async function initMiniMap(records){
+  const mapEl = document.getElementById('mini-map');
+
+  // Step 1: Geocode all records missing lat/lng BEFORE creating map
+  // For records missing coords, try to extract address from body text too
+  const needsGeo = records.filter(r=>{
+    const hasCoords = r.location?.lat && r.location?.lng;
+    if(hasCoords) return false;
+    // Only geocode if we have a stored extractedAddress or formatted address
+    // Never try to geocode from free text body — too many false positives
+    const hasStoredAddress = r.location?.extractedAddress ||
+      (r.location?.formatted && r.location.formatted.length > 4 &&
+       r.location.formatted !== 'United States');
+    return !!hasStoredAddress;
+  });
+  console.log('Records needing geocoding:', needsGeo.length);
+
+  for(const r of needsGeo){
+    // Only use stored extractedAddress or formatted — never extract from body text
+    const addr = r.location?.extractedAddress || r.location?.formatted;
+    if(!addr || addr.length < 5) continue;
+    try{
+      const geocoder = new google.maps.Geocoder();
+      await new Promise((resolve) => {
+        geocoder.geocode({ address: addr }, (results, status) => {
+          if(status === 'OK' && results.length){
+            const loc = results[0].geometry.location;
+            r.location.lat       = loc.lat();
+            r.location.lng       = loc.lng();
+            r.location.formatted = results[0].formatted_address;
+            r.location.precision = 'address';
+            console.log('Geocoded:', addr, '->', loc.lat(), loc.lng(), results[0].formatted_address);
+          } else {
+            console.warn('Geocoder returned:', status, 'for address:', addr);
+          }
+          resolve();
+        });
+      });
+    } catch(e){ console.warn('miniMap geocode error:', e); }
+  }
+
+  // Step 2: Build resolved records array including just-geocoded ones
+  // We collect all records that now have lat/lng (including ones we just geocoded)
+  const resolvedRecords = [];
+  const seen = new Set();
+
+  for(const r of records){
+    if(!r.location?.lat || !r.location?.lng) continue;
+    const key = Number(r.location.lat).toFixed(4) + ',' + Number(r.location.lng).toFixed(4);
+    if(seen.has(key)) continue;
+    seen.add(key);
+    resolvedRecords.push(r);
+  }
+
+  console.log('Map pins to show:', resolvedRecords.length, 'out of', records.length, 'records');
+  const geoRecords = resolvedRecords;
+
+  // Update locations logged stat with actual geocoded count
+  resolvedLocationCount = geoRecords.length;
+  const statEl = document.getElementById('stat-places');
+  if(statEl) statEl.textContent = resolvedLocationCount;
+
+  // Step 4: Create map - NO styles when using mapId, NO deprecated params
+  const gmap = new google.maps.Map(mapEl, {
+    center: geoRecords.length
+      ? {lat: geoRecords[0].location.lat, lng: geoRecords[0].location.lng}
+      : {lat:32.7767, lng:-96.7970},
+    zoom: 12,
+    mapId: 'DEMO_MAP_ID',  // Use DEMO_MAP_ID for dark theme without cloud config
+    disableDefaultUI: true,
+    zoomControl: true,
+  });
+
+  if(!geoRecords.length){
+    // Show styled hint overlay
+    const hint = document.createElement('div');
+    hint.style.cssText = [
+      'position:absolute','bottom:16px','left:50%','transform:translateX(-50%)',
+      'background:rgba(22,28,33,0.9)','border:1px solid rgba(255,255,255,0.08)',
+      'border-radius:10px','padding:10px 16px','font-size:12px','color:#5a7090',
+      'text-align:center','pointer-events:none','white-space:nowrap','z-index:10'
+    ].join(';');
+    hint.textContent = 'Include an address in your log — pins appear here';
+    mapEl.style.position = 'relative';
+    mapEl.appendChild(hint);
+    return;
+  }
+
+  // Step 5: Add markers using legacy Marker (more reliable, not deprecated yet)
+  const bounds = new google.maps.LatLngBounds();
+
+  geoRecords.forEach(r=>{
+    const pos = {lat: r.location.lat, lng: r.location.lng};
+    bounds.extend(pos);
+    const isStreet = r.location?.precision === 'address';
+    const color = isStreet ? '#e63e2f' : '#f5a623';
+    const ring  = isStreet ? '#ff7878' : '#f7c060';
+
+    const marker = new google.maps.Marker({
+      position: pos,
+      map: gmap,
+      icon: {
+        path: google.maps.SymbolPath.CIRCLE,
+        scale: isStreet ? 12 : 9,
+        fillColor: color,
+        fillOpacity: 1,
+        strokeColor: ring,
+        strokeWeight: 2,
+      },
+      title: r.location.formatted || r.location.extractedAddress || 'Incident',
+    });
+
+    // Pulse ring
+    new google.maps.Marker({
+      position: pos, map: gmap, clickable: false,
+      icon: {
+        path: google.maps.SymbolPath.CIRCLE,
+        scale: isStreet ? 20 : 16,
+        fillColor: color, fillOpacity: 0.12,
+        strokeColor: color, strokeWeight: 1, strokeOpacity: 0.3,
+      }
+    });
+
+    const iw = new google.maps.InfoWindow({
+      content: '<div style="background:#161c21;color:#d8e4ee;font-family:-apple-system,sans-serif;' +
+        'padding:10px 12px;border-radius:8px;max-width:220px;font-size:12px;line-height:1.5;">' +
+        '<div style="font-size:10px;color:' + color + ';margin-bottom:4px;">' +
+        (isStreet ? '📍 Street level' : '📍 City level') + '</div>' +
+        '<div>' + (r.location.formatted || r.location.extractedAddress || '') + '</div>' +
+        '</div>'
+    });
+    marker.addListener('click', ()=>iw.open(gmap, marker));
+  });
+
+  // Step 6: Fit bounds
+  if(geoRecords.length === 1){
+    gmap.setCenter(bounds.getCenter());
+    gmap.setZoom(14);
+  } else {
+    gmap.fitBounds(bounds, 50);
+  }
+}
+
+// MESSAGES
+window.toggleMessages = function(){
+  msgsVisible=!msgsVisible;
+  const panel=document.getElementById('msg-panel');
+  const btn=document.getElementById('show-msgs-btn');
+  panel.classList.toggle('open',msgsVisible);
+  btn.innerHTML=msgsVisible
+    ?'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="1" y1="1" x2="23" y2="23"/><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/></svg> Hide Messages'
+    :'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg> Show Messages';
+  if(msgsVisible) renderMessages(allRecords);
+};
+window.openMessages = function(){ if(!msgsVisible) toggleMessages(); document.getElementById('msg-panel').scrollIntoView({behavior:'smooth'}); };
+window.applyFilters = function(){ renderMessages(allRecords); };
+window.clearFilters = function(){ document.getElementById('filter-keyword').value=''; document.getElementById('filter-date-from').value=''; document.getElementById('filter-date-to').value=''; renderMessages(allRecords); };
+
+// Cache for rendered messages (used by amend button)
+let renderedMessages = [];
+
+function renderMessages(records){
+  const keyword=document.getElementById('filter-keyword').value.trim().toLowerCase();
+  const dateFrom=document.getElementById('filter-date-from').value;
+  const dateTo=document.getElementById('filter-date-to').value;
+  let filtered=[...records];
+  if(keyword) filtered=filtered.filter(r=>(r.body||r.message||'').toLowerCase().includes(keyword));
+  if(dateFrom) filtered=filtered.filter(r=>getTs(r)>=new Date(dateFrom).getTime());
+  if(dateTo) filtered=filtered.filter(r=>getTs(r)<=new Date(dateTo).getTime()+86400000);
+  document.getElementById('msg-count').textContent=filtered.length+' message'+(filtered.length!==1?'s':'')+' found';
+  if(!filtered.length){ document.getElementById('msg-list').innerHTML='<div class="empty">No messages match your filters.</div>'; return; }
+  renderedMessages = filtered; // cache for amend lookup
+  let msgIndex = -1;
+  document.getElementById('msg-list').innerHTML=filtered.map(r=>{
+    msgIndex++;
+    const ts=new Date(getTs(r));
+    const timeStr=ts.toLocaleString('en-US',{month:'short',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit',hour12:true});
+    let body=esc(r.body||r.message||'');
+    if(keyword){ const re=new RegExp('('+keyword.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi'); body=body.replace(re,'<mark>$1</mark>'); }
+    const category = r.category === 'law_enforcement' ? '🔵 LE' : r.category === 'personal' ? '🟡 HR' : '';
+    const isAmended = r.amendedFrom ? '<span style="font-size:10px;color:var(--warn);margin-left:4px;">amended</span>' : '';
+    return '<div class="msg-card">' +
+      '<div class="msg-meta">' +
+        '<span class="msg-time">'+timeStr+'</span>' +
+        '<span class="msg-badge">'+(r.source==='web'?'WEB':'SMS')+'</span>' +
+        (category?'<span style="font-size:10px;color:var(--muted);">'+category+'</span>':'') +
+        (r.location?.formatted?'<span class="msg-loc">📍 '+esc(r.location.formatted)+'</span>':'') +
+        isAmended +
+      '</div>' +
+      '<div class="msg-body">'+body+'</div>' +
+      '<div class="msg-card-actions">' +
+        '<button class="edit-btn" onclick="openEditModalByIndex('+msgIndex+')">' +
+          '✏️ Amend' +
+        '</button>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+// UTILS
+function sosShowScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>{
+    s.classList.remove('active');
+    s.style.display='none';
+  });
+  const el=document.getElementById(id);
+  el.classList.add('active');
+  // login-screen uses flex, dashboard uses block
+  el.style.display = id==='login-screen' ? 'flex' : 'block';
+}
+window.stepShow = id => { document.querySelectorAll('.step').forEach(s=>s.classList.remove('active')); document.getElementById(id).classList.add('active'); };
+window.switchTab = function(tab){
+  const isSignup = tab === 'signup';
+  const isLogin  = tab === 'login';
+  document.getElementById('step-signup').classList.toggle('active', isSignup);
+  document.getElementById('step-login').classList.toggle('active', isLogin);
+  const tabSignup = document.getElementById('tab-signup');
+  const tabLogin  = document.getElementById('tab-login');
+  tabLogin.style.background  = isLogin  ? 'var(--safe)' : 'transparent';
+  tabLogin.style.color       = isLogin  ? '#000' : 'var(--muted)';
+  tabSignup.style.background = isSignup ? 'var(--safe)' : 'transparent';
+  tabSignup.style.color      = isSignup ? '#000' : 'var(--muted)';
+};
+function showErr(id,msg){ const e=document.getElementById(id); e.textContent=msg; e.classList.add('show'); }
+function showOk(id,msg){ const e=document.getElementById(id); e.textContent=msg; e.classList.add('show'); }
+function clearMsg(id){ const e=document.getElementById(id); e.textContent=''; e.classList.remove('show'); }
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function fmtPhone(p){ if(!p) return ''; const d=p.replace(/\D/g,''); if(d.length===11&&d[0]==='1') return '+1 ('+d.slice(1,4)+') '+d.slice(4,7)+'-'+d.slice(7); return p; }
+function fErr(code){ return({'auth/user-not-found':'No account found.','auth/wrong-password':'Incorrect password.','auth/invalid-credential':'Invalid phone/email or password.','auth/email-already-in-use':'An account with that email already exists.','auth/weak-password':'Password must be at least 8 characters.','auth/invalid-email':'Please enter a valid email address.','auth/too-many-requests':'Too many attempts. Try again later.'}[code]||'Something went wrong.'); }
+
+// ── Log entry widget ─────────────────────────────────────────────
+let activeRecognition = null;
+
+// Expose to window scope since called from onclick HTML attributes
+window.submitLog = async function(type){ return submitLogFn(type); };
+window.toggleVoice = function(taId, btnId){ return toggleVoiceFn(taId, btnId); };
+window.updateCharCount = function(taId, countId){ return updateCharCountFn(taId, countId); };
+window.handleAttach = function(event, type){ return handleAttachFn(event, type); };
+
+function updateCharCountFn(taId, countId){
+  const ta = document.getElementById(taId);
+  const count = document.getElementById(countId);
+  const len = ta.value.length;
+  count.textContent = len + ' / 500';
+  count.style.color = len > 450 ? 'var(--warn)' : 'var(--muted)';
+  if(len > 500) ta.value = ta.value.slice(0, 500);
+}
+
+function toggleVoiceFn(taId, btnId){
+  const btn = document.getElementById(btnId);
+  if(activeRecognition){
+    activeRecognition.stop();
+    activeRecognition = null;
+    btn.classList.remove('recording');
+    btn.textContent = '🎤';
+    return;
+  }
+  if(!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)){
+    alert('Voice input is not supported in this browser. Please use Chrome.');
+    return;
+  }
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const recognition = new SR();
+  recognition.continuous = true;
+  recognition.interimResults = true;
+  recognition.lang = 'en-US';
+  const ta = document.getElementById(taId);
+  let finalTranscript = ta.value;
+  recognition.onresult = e => {
+    let interim = '';
+    for(let i = e.resultIndex; i < e.results.length; i++){
+      if(e.results[i].isFinal) finalTranscript += e.results[i][0].transcript + ' ';
+      else interim += e.results[i][0].transcript;
+    }
+    ta.value = finalTranscript + interim;
+    updateCharCount(taId, taId === 'le-ta' ? 'le-count' : 'hr-count');
+  };
+  recognition.onend = () => {
+    btn.classList.remove('recording');
+    btn.textContent = '🎤';
+    activeRecognition = null;
+  };
+  recognition.start();
+  activeRecognition = recognition;
+  btn.classList.add('recording');
+  btn.textContent = '⏹';
+}
+
+function handleAttachFn(event, type){
+  const files = event.target.files;
+  if(!files.length) return;
+  const names = Array.from(files).map(f => f.name).join(', ');
+  const taId = type === 'le' ? 'le-ta' : 'hr-ta';
+  const ta = document.getElementById(taId);
+  ta.value += (ta.value ? '\n' : '') + '[Attached: ' + names + ']';
+  updateCharCountFn(taId, type + '-count');
+}
+
+async function submitLogFn(type){
+  const taId      = type === 'le' ? 'le-ta' : 'hr-ta';
+  const countId   = type + '-count';
+  const successId = type + '-success';
+  const ta        = document.getElementById(taId);
+  const body      = ta.value.trim();
+  const btn       = type === 'le'
+    ? document.querySelector('.log-send-btn[data-type="le"]')
+    : document.querySelector('.log-send-btn[data-type="hr"]');
+
+  if(!body){ ta.focus(); return; }
+  if(!currentPhone){ alert('Please log in to save entries.'); return; }
+
+  // Show loading state on button
+  const origHTML = btn.innerHTML;
+  btn.innerHTML  = '<div class="spinner spinner-g" style="width:12px;height:12px;border-width:1.5px;"></div>';
+  btn.disabled   = true;
+
+  try{
+    // Use already-imported Firestore functions (addDoc imported at top of module)
+    // Extract and geocode address from message body
+    let locationData = { city:'', state:'', country:'US', lat:null, lng:null, formatted:'', precision:'unknown', extractedAddress:null };
+    try{
+      // Strategy 1: explicit keywords followed by address
+      let addrMatch = body.match(/(?:near|at|on|corner of|intersection of)(?:\s+the)?(?:\s+intersection\s+of)?\s+([\w\s.N\-]+?(?:Ave|Avenue|Blvd|Boulevard|St|Street|Rd|Road|Dr|Drive|Lane|Way|Court|Place|Highway|Parkway)[\w\s.N\-,]*?)(?:\.|,\s*[A-Z]{2}|$)/i);
+
+      // Strategy 2: numbered street address anywhere in text
+      if(!addrMatch) addrMatch = body.match(/(\d+\s+[\w\s]+?(?:Ave|Avenue|Blvd|Boulevard|St|Street|Rd|Road|Dr|Drive|Lane|Way|Court|Place|Highway|Parkway)[\w\s,]*?)(?:\.|$)/i);
+
+      // Strategy 3: named intersection "X Ave and Y Ave" or "X Ave & Y Ave"
+      if(!addrMatch) addrMatch = body.match(/([A-Z][\w\s]+?(?:Ave|Avenue|Blvd|Boulevard|St|Street|Rd|Road|Dr|Drive|Lane|Way)\s+(?:and|&)\s+[A-Z][\w\s]+?(?:Ave|Avenue|Blvd|Boulevard|St|Street|Rd|Road|Dr|Drive|Lane|Way))/i);
+
+      if(addrMatch){
+        const extracted = (addrMatch[1]||addrMatch[0]).trim()
+          .replace(/\.$/, '')
+          .replace(/\s+and\s+/gi,' & ')
+          .replace(/^(near|at|on|the|intersection of|corner of)\s+/gi,'')
+          .trim();
+        locationData.extractedAddress = extracted;
+        // Geocode via Google Maps Geocoding API
+        await new Promise((resolve) => {
+          const geocoder = new google.maps.Geocoder();
+          geocoder.geocode({ address: extracted }, (results, status) => {
+            if(status === 'OK' && results.length){
+              const loc = results[0].geometry.location;
+              const comp = results[0].address_components;
+              const city = comp.find(c=>c.types.includes('locality'))?.long_name || '';
+              const state = comp.find(c=>c.types.includes('administrative_area_level_1'))?.short_name || '';
+              locationData = {
+                lat: loc.lat(), lng: loc.lng(),
+                city, state, country: 'US',
+                formatted: results[0].formatted_address,
+                precision: 'address',
+                extractedAddress: extracted,
+              };
+              console.log('submitLog geocoded:', extracted, '->', loc.lat(), loc.lng());
+            } else {
+              console.warn('submitLog geocoder status:', status, 'for:', extracted);
+            }
+            resolve();
+          });
+        });
+      }
+    } catch(geoErr){ console.warn('Geocoding error:', geoErr); }
+
+    // Get fresh phone from Auth at write time - don't rely on closure variable
+    const authUser = auth.currentUser;
+    await authUser.reload();
+    const writePhone = authUser.displayName && /^\+?\d{7,}$/.test(authUser.displayName.replace(/[\s\-()]/g,''))
+      ? authUser.displayName
+      : currentPhone;
+    console.log('submitLog: writing to users/' + writePhone + '/records');
+
+    const flatRef = collection(db, 'users', writePhone, 'records');
+    await addDoc(flatRef, {
+      body,
+      source:    'web',
+      category:  type === 'le' ? 'law_enforcement' : 'personal',
+      timestamp: serverTimestamp(),
+      timestampLocal: new Date().toISOString(),
+      from:      currentPhone,
+      location:  locationData,
+      hasMedia:  false,
+      mediaUrls: [],
+    });
+
+    // Clear textarea
+    ta.value = '';
+    updateCharCountFn(taId, countId);
+
+    // Show success confirmation
+    const success = document.getElementById(successId);
+    success.classList.add('show');
+    setTimeout(() => success.classList.remove('show'), 3000);
+
+    // Restore button
+    btn.innerHTML = origHTML;
+    btn.disabled  = false;
+
+    // Reload all records and refresh every dashboard section
+    allRecords = await loadAllRecords();
+    renderStats(allRecords);
+    renderRecentLogs(allRecords);
+    renderPeople(allRecords);
+    renderPlaces(allRecords);
+    renderSpider(allRecords);
+
+    // Refresh map pins with new record
+    if(typeof google !== 'undefined' && google.maps){
+      initMiniMap(allRecords);
+    }
+
+    // Scroll recent activity into view so user sees the update
+    const recentEl = document.getElementById('recent-logs');
+    if(recentEl){
+      recentEl.closest('.wide-card').scrollIntoView({ behavior:'smooth', block:'center' });
+    }
+
+  } catch(e){
+    console.error('submitLog error:', e);
+    btn.innerHTML = origHTML;
+    btn.disabled  = false;
+    alert('Could not save. Please try again. Error: ' + e.message);
+  }
+}
+
+// ── Edit / Amend entry ────────────────────────────────────────
+let editingRecordId = null;
+let editingOriginalText = '';
+
+window.openEditModalByIndex = function(index){
+  const r = renderedMessages[index];
+  if(!r){ console.error('Record not found at index', index); return; }
+  openEditModal(r._id, r.body || r.message || '');
+};
+
+window.openEditModal = function(recordId, originalText){
+  editingRecordId = recordId;
+  editingOriginalText = originalText;
+  document.getElementById('edit-original-text').textContent = originalText;
+  document.getElementById('edit-new-text').value = originalText;
+  document.getElementById('edit-modal').style.display = 'flex';
+  setTimeout(() => document.getElementById('edit-new-text').focus(), 100);
+};
+
+window.closeEditModal = function(event){
+  if(event && event.target !== document.getElementById('edit-modal')) return;
+  document.getElementById('edit-modal').style.display = 'none';
+  editingRecordId = null;
+  editingOriginalText = '';
+};
+
+window.saveEditEntry = async function(){
+  const newText = document.getElementById('edit-new-text').value.trim();
+  const btn = document.getElementById('edit-save-btn');
+  if(!newText){ document.getElementById('edit-new-text').focus(); return; }
+  if(newText === editingOriginalText){
+    alert('No changes detected. Please modify the entry before saving.');
+    return;
+  }
+  if(!currentPhone){ alert('Please log in to save entries.'); return; }
+
+  btn.innerHTML = '<div class="spinner spinner-g" style="width:12px;height:12px;border-width:1.5px;"></div> Saving...';
+  btn.disabled = true;
+
+  try{
+    // Geocode new text for location
+    let locationData = { city:'', state:'', country:'US', lat:null, lng:null, formatted:'', precision:'unknown', extractedAddress:null };
+
+    const addrPatterns = [
+      /(?:near|at|on|corner of|intersection of)(?:\s+the)?(?:\s+intersection\s+of)?\s+([\w\s.N\-]+?(?:Ave|Avenue|Blvd|Boulevard|St|Street|Rd|Road|Dr|Drive|Lane|Way|Court|Place|Highway|Parkway)[\w\s.N\-,]*?)(?:\.|,\s*[A-Z]{2}|$)/i,
+      /(\d+\s+[\w\s]+?(?:Ave|Avenue|Blvd|Boulevard|St|Street|Rd|Road|Dr|Drive|Lane|Way)[\w\s,]*?)(?:\.|$)/i,
+      /([A-Z][\w\s]+?(?:Ave|Avenue|Blvd|St|Street|Rd|Road|Drive|Lane|Way)\s+(?:and|&)\s+[A-Z][\w\s]+?(?:Ave|Avenue|Blvd|St|Street|Rd|Road|Drive|Lane|Way))/i,
+    ];
+
+    for(const pat of addrPatterns){
+      const m = newText.match(pat);
+      if(m){
+        const extracted = (m[1]||m[0]).trim()
+          .replace(/^(near|at|on|the|intersection of|corner of)\s+/gi,'')
+          .replace(/\s+and\s+/gi,' & ')
+          .trim();
+        if(extracted.length > 5){
+          locationData.extractedAddress = extracted;
+          // Geocode using Maps API
+          await new Promise(resolve => {
+            const geocoder = new google.maps.Geocoder();
+            geocoder.geocode({ address: extracted }, (results, status) => {
+              if(status === 'OK' && results.length){
+                const loc = results[0].geometry.location;
+                const comp = results[0].address_components;
+                locationData = {
+                  lat: loc.lat(), lng: loc.lng(),
+                  city: comp.find(c=>c.types.includes('locality'))?.long_name || '',
+                  state: comp.find(c=>c.types.includes('administrative_area_level_1'))?.short_name || '',
+                  country: 'US',
+                  formatted: results[0].formatted_address,
+                  precision: 'address',
+                  extractedAddress: extracted,
+                };
+              }
+              resolve();
+            });
+          });
+          break;
+        }
+      }
+    }
+
+    // Get fresh phone
+    const authUser = auth.currentUser;
+    const writePhone = authUser.displayName && /^\+?\d{7,}$/.test(authUser.displayName.replace(/[\s\-()]/g,''))
+      ? authUser.displayName : currentPhone;
+
+    // Create NEW record — never modify original
+    await addDoc(collection(db, 'users', writePhone, 'records'), {
+      body:          newText,
+      source:        'web',
+      category:      'amendment',
+      amendedFrom:   editingRecordId,  // reference to original
+      timestamp:     serverTimestamp(),
+      timestampLocal: new Date().toISOString(),
+      from:          writePhone,
+      location:      locationData,
+      hasMedia:      false,
+      mediaUrls:     [],
+    });
+
+    // Close modal
+    document.getElementById('edit-modal').style.display = 'none';
+    editingRecordId = null;
+
+    // Refresh everything
+    allRecords = await loadAllRecords();
+    renderStats(allRecords);
+    renderRecentLogs(allRecords);
+    renderPeople(allRecords);
+    renderPlaces(allRecords);
+    renderSpider(allRecords);
+    const mapEl = document.getElementById('mini-map');
+    if(typeof google !== 'undefined' && google.maps && mapEl) initMiniMap(allRecords);
+    if(msgsVisible) renderMessages(allRecords);
+
+    // Show success in message log area
+    const countEl = document.getElementById('msg-count');
+    if(countEl) countEl.textContent = '✅ Amendment saved as new entry';
+    setTimeout(() => { if(msgsVisible) renderMessages(allRecords); }, 2000);
+
+  } catch(e){
+    console.error('saveEditEntry error:', e);
+    alert('Could not save amendment. Please try again.');
+    btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="#000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Save as New Entry';
+    btn.disabled = false;
+  }
+};
+
+// ── Paywall ───────────────────────────────────────────────────
+let userPlan = 'free'; // default until Firestore confirms
+
+async function checkPlanAndApplyPaywall(phone){
+  try{
+    // Query directly by phone number — more reliable than uid match
+    const profileRef = doc(db, 'users', phone, 'profile', 'data');
+    const profileSnap = await getDoc(profileRef);
+    if(profileSnap.exists()){
+      userPlan = profileSnap.data().plan || 'free';
+      console.log('Plan loaded from Firestore:', userPlan, 'for phone:', phone);
+    } else {
+      console.warn('No profile found for phone:', phone, '- defaulting to free/locked');
+      userPlan = 'free'; // No profile = locked
+    }
+  } catch(e){ 
+    console.warn('checkPlan error:',e);
+    userPlan = 'free'; // Default to locked on any error
+  }
+
+  const isLocked = userPlan !== 'base'; // free = locked, base = unlocked
+  console.log('User plan:', userPlan, 'Locked:', isLocked);
+
+  // Show/hide paywall banner
+  document.getElementById('paywall-banner').classList.toggle('show', isLocked);
+
+  // Add/remove is-locked class for gradient overlay
+  document.querySelectorAll('.locked').forEach(el=>{
+    el.classList.toggle('is-locked', isLocked);
+  });
+
+  // Show/hide lock overlays
+  ['map-lock','spider-lock','people-lock','places-lock'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el) el.style.display = isLocked ? 'flex' : 'none';
+  });
+
+  // Apply/remove blur on locked content
+  document.querySelectorAll('.locked-content').forEach(el=>{
+    el.style.filter = isLocked ? 'blur(4px)' : 'none';
+    el.style.pointerEvents = isLocked ? 'none' : '';
+  });
+
+  // Lock/unlock message log show button
+  const showMsgsBtn = document.getElementById('show-msgs-btn');
+  if(showMsgsBtn){
+    if(isLocked){
+      showMsgsBtn.onclick = () => window.open('https://buy.stripe.com/aFa8wOdDD5mb86L7w1ew806','_blank');
+      showMsgsBtn.innerHTML = '🔒 Upgrade to View Messages';
+      showMsgsBtn.style.borderColor = 'var(--warn)';
+      showMsgsBtn.style.color = 'var(--warn)';
+    } else {
+      showMsgsBtn.onclick = toggleMessages;
+      showMsgsBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg> Show Messages';
+      showMsgsBtn.style.borderColor = '';
+      showMsgsBtn.style.color = '';
+    }
+  }
+
+  // Lock amend buttons in message cards
+  if(isLocked){
+    document.querySelectorAll('.edit-btn').forEach(btn=>{
+      btn.style.display = 'none';
+    });
+  }
+
+  return !isLocked;
+}
+
+// ── Document Analysis Widget ─────────────────────────────────
+let currentAnalysis = null;
+let currentAnalysisText = '';
+let selectedFile = null;
+const RAILWAY_URL = 'https://web-production-516b3.up.railway.app';
+
+window.switchAnalyzeTab = function(tab){
+  const isText = tab === 'text';
+  document.getElementById('analyze-text-panel').style.display = isText ? 'block' : 'none';
+  document.getElementById('analyze-file-panel').style.display = isText ? 'none' : 'block';
+  document.getElementById('analyze-tab-text').classList.toggle('active', isText);
+  document.getElementById('analyze-tab-file').classList.toggle('active', !isText);
+};
+
+window.handleDragOver = function(e){
+  e.preventDefault();
+  document.getElementById('analyze-drop-zone').classList.add('dragover');
+};
+
+window.handleDrop = function(e){
+  e.preventDefault();
+  document.getElementById('analyze-drop-zone').classList.remove('dragover');
+  const file = e.dataTransfer.files[0];
+  if(file) processFile(file);
+};
+
+window.handleFileSelect = function(e){
+  const file = e.target.files[0];
+  if(file) processFile(file);
+};
+
+function processFile(file){
+  selectedFile = file;
+  document.getElementById('analyze-file-name').textContent = '📎 ' + file.name + ' (' + (file.size/1024).toFixed(0) + ' KB)';
+  document.getElementById('analyze-file-btn').style.display = 'flex';
+}
+
+window.runAnalysis = async function(type){
+  const btn = document.getElementById(type === 'text' ? 'analyze-btn' : 'analyze-file-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spinner spinner-g" style="width:12px;height:12px;border-width:1.5px;"></div> Analyzing...';
+
+  try{
+    let textToAnalyze = '';
+
+    if(type === 'text'){
+      textToAnalyze = document.getElementById('analyze-ta').value.trim();
+      if(!textToAnalyze){ alert('Please enter some text to analyze.'); return; }
+    } else {
+      if(!selectedFile){ alert('Please select a file first.'); return; }
+      // Convert file to base64 for API
+      textToAnalyze = await extractTextFromFile(selectedFile);
+      if(!textToAnalyze){ alert('Could not extract text from file. Please try pasting the text directly.'); return; }
+    }
+
+    currentAnalysisText = textToAnalyze;
+
+    // Call Railway analyze endpoint
+    const response = await fetch(RAILWAY_URL + '/analyze', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text: textToAnalyze, phone: currentPhone })
+    });
+
+    if(!response.ok) throw new Error('Analysis failed: ' + response.status);
+
+    const data = await response.json();
+    currentAnalysis = data.analysis;
+    showAnalysisModal(data.analysis);
+
+  } catch(e){
+    console.error('Analysis error:', e);
+    alert('Analysis failed. Please try again or check your connection.');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg> Analyze with Claude';
+  }
+};
+
+async function extractTextFromFile(file){
+  // For PDF/image files, read as base64 and send to Claude via Railway
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      // Return base64 with a marker so Railway knows to handle as file
+      resolve('FILE_BASE64:' + file.type + ':' + e.target.result.split(',')[1]);
+    };
+    reader.onerror = () => resolve(null);
+    reader.readAsDataURL(file);
+  });
+}
+
+function showAnalysisModal(analysis){
+  document.getElementById('af-date').textContent         = analysis.date || '';
+  document.getElementById('af-thread').textContent       = analysis.thread || '';
+  document.getElementById('af-your-action').textContent  = analysis.your_action || '';
+  document.getElementById('af-their-action').textContent = analysis.her_request_or_response || '';
+  document.getElementById('af-status').textContent       = analysis.response_status || '';
+  document.getElementById('af-judge').textContent        = analysis.judges_observation || '';
+  document.getElementById('af-devil').textContent        = analysis.devils_advocate || '';
+
+  // Court relevance with badge
+  const rel = analysis.court_relevance || '';
+  const relLevel = rel.toLowerCase().startsWith('high') ? 'high' : rel.toLowerCase().startsWith('medium') ? 'medium' : 'low';
+  document.getElementById('af-relevance').innerHTML =
+    `<span class="analysis-relevance-badge relevance-${relLevel}">${rel}</span>`;
+
+  // Key facts as list
+  const facts = analysis.key_facts || [];
+  document.getElementById('af-facts').innerHTML = facts.map(f => `• ${f}`).join('<br>');
+
+  document.getElementById('analysis-modal').style.display = 'flex';
+}
+
+window.closeAnalysisModal = function(){
+  document.getElementById('analysis-modal').style.display = 'none';
+  currentAnalysis = null;
+  currentAnalysisText = '';
+};
+
+window.saveAnalysis = async function(){
+  const btn = document.getElementById('analysis-save-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spinner spinner-g" style="width:12px;height:12px;border-width:1.5px;"></div> Saving...';
+
+  // Read edited values from contenteditable fields before saving
+  const editedAnalysis = {
+    ...currentAnalysis,
+    date:                    document.getElementById('af-date')?.innerText        || currentAnalysis.date,
+    thread:                  document.getElementById('af-thread')?.innerText      || currentAnalysis.thread,
+    your_action:             document.getElementById('af-your-action')?.innerText || currentAnalysis.your_action,
+    her_request_or_response: document.getElementById('af-their-action')?.innerText|| currentAnalysis.her_request_or_response,
+    response_status:         document.getElementById('af-status')?.innerText      || currentAnalysis.response_status,
+    judges_observation:      document.getElementById('af-judge')?.innerText       || currentAnalysis.judges_observation,
+    court_relevance:         document.getElementById('af-relevance')?.innerText   || currentAnalysis.court_relevance,
+    devils_advocate:         document.getElementById('af-devil')?.innerText       || currentAnalysis.devils_advocate,
+    key_facts:               (document.getElementById('af-facts')?.innerText||'').split('\n').filter(f=>f.trim().replace(/^•\s*/,'')),
+  };
+
+  try{
+    const response = await fetch(RAILWAY_URL + '/analyze/confirm', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        phone:    currentPhone,
+        analysis: editedAnalysis,
+        text:     currentAnalysisText,
+        email:    auth.currentUser?.email || ''
+      })
+    });
+
+    if(!response.ok) throw new Error('Save failed: ' + response.status);
+
+    document.getElementById('analysis-modal').style.display = 'none';
+    currentAnalysis = null;
+
+    // Clear input
+    document.getElementById('analyze-ta').value = '';
+    selectedFile = null;
+    document.getElementById('analyze-file-name').textContent = '';
+    document.getElementById('analyze-file-btn').style.display = 'none';
+
+    // Refresh dashboard
+    allRecords = await loadAllRecords();
+    renderStats(allRecords);
+    renderRecentLogs(allRecords);
+    renderPeople(allRecords);
+    renderPlaces(allRecords);
+    renderSpider(allRecords);
+    const mapEl = document.getElementById('mini-map');
+    if(typeof google !== 'undefined' && google.maps && mapEl) initMiniMap(allRecords);
+    if(msgsVisible) renderMessages(allRecords);
+
+    // Show success
+    const countEl = document.getElementById('msg-count');
+    if(countEl) countEl.textContent = '✅ Analysis saved to your SOSLogs record';
+    setTimeout(() => { if(msgsVisible) renderMessages(allRecords); }, 2000);
+
+  } catch(e){
+    console.error('Save error:', e);
+    alert('Could not save. Please try again.');
+    btn.disabled = false;
+    btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="#000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Confirm and Save';
+  }
+};
+
+// ── Settings Modal — Phone Number Update ─────────────────────
+let settingsNewPhone = '';
+
+window.sosOpenSettings = function(){
+  document.getElementById('settings-current-phone').textContent = fmtPhone(currentPhone);
+  document.getElementById('settings-backdrop').classList.add('active');
+  // Reset to step 1
+  ['settings-step1','settings-step2','settings-step3'].forEach(id => {
+    document.getElementById(id).classList.remove('active');
+  });
+  document.getElementById('settings-step1').classList.add('active');
+  document.getElementById('settings-new-phone').value = '';
+  document.getElementById('settings-otp').value = '';
+  clearMsg('settings-err1'); clearMsg('settings-err2');
+};
+
+window.sosCloseSettings = function(){
+  document.getElementById('settings-backdrop').classList.remove('active');
+};
+
+window.sendSettingsOtp = async function(){
+  const digits = document.getElementById('settings-new-phone').value.replace(/\D/g,'');
+  clearMsg('settings-err1');
+  if(digits.length !== 10){ showErr('settings-err1','Please enter a valid 10-digit US number.'); return; }
+  settingsNewPhone = '+1' + digits;
+  if(settingsNewPhone === currentPhone){ showErr('settings-err1','That is already your current number.'); return; }
+
+  const btn = document.getElementById('settings-send-btn');
+  btn.textContent = 'Sending...'; btn.disabled = true;
+  try{
+    const res = await fetch(RAILWAY_URL_BASE + '/verify/send', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({phone: settingsNewPhone})
+    });
+    const data = await res.json();
+    if(data.status === 'pending'){
+      document.getElementById('settings-step1').classList.remove('active');
+      document.getElementById('settings-step2').classList.add('active');
+    } else {
+      showErr('settings-err1', data.error || 'Could not send code. Try again.');
+    }
+  } catch(e){
+    showErr('settings-err1','Connection error. Please try again.');
+  } finally {
+    btn.textContent = 'Send Verification Code'; btn.disabled = false;
+  }
+};
+
+window.verifySettingsOtp = async function(){
+  const code = document.getElementById('settings-otp').value.trim();
+  clearMsg('settings-err2');
+  if(code.length !== 6){ showErr('settings-err2','Please enter the 6-digit code.'); return; }
+
+  const btn = document.getElementById('settings-verify-btn');
+  btn.textContent = 'Verifying...'; btn.disabled = true;
+
+  try{
+    // Step 1: Verify OTP
+    const verifyRes = await fetch(RAILWAY_URL_BASE + '/verify/check', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({phone: settingsNewPhone, code})
+    });
+    const verifyData = await verifyRes.json();
+    if(verifyData.status !== 'approved'){
+      showErr('settings-err2', 'Invalid code. Please try again.');
+      btn.textContent = 'Confirm & Update Number'; btn.disabled = false;
+      return;
+    }
+
+    // Step 2: Migrate records on backend
+    btn.textContent = 'Migrating records...';
+    const migrateRes = await fetch(RAILWAY_URL_BASE + '/account/update-phone', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        old_phone: currentPhone,
+        new_phone: settingsNewPhone,
+        email: auth.currentUser?.email || ''
+      })
+    });
+    const migrateData = await migrateRes.json();
+    if(migrateData.status === 'ok'){
+      document.getElementById('settings-step2').classList.remove('active');
+      document.getElementById('settings-step3').classList.add('active');
+    } else {
+      showErr('settings-err2', migrateData.error || 'Migration failed. Contact support.');
+      btn.textContent = 'Confirm & Update Number'; btn.disabled = false;
+    }
+  } catch(e){
+    showErr('settings-err2','Connection error. Please try again.');
+    btn.textContent = 'Confirm & Update Number'; btn.disabled = false;
+  }
+};
+
+// ── Media Upload with Claude Moderation ──────────────────────
+const mediaState = { le: null, hr: null }; // {file, url, approved}
+
+const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
+const ALLOWED_TYPES = ['image/jpeg','image/png','image/gif','image/webp','application/pdf'];
+
+window.handleMediaSelect = async function(event, box){
+  const file = event.target.files[0];
+  if(!file) return;
+
+  const area   = document.getElementById(`${box}-media-area`);
+  const status = document.getElementById(`${box}-media-status`);
+  const preview = document.getElementById(`${box}-media-preview`);
+
+  // Reset
+  mediaState[box] = null;
+  area.classList.remove('has-file');
+  preview.innerHTML = '';
+  status.className = 'media-status';
+
+  // Validate size
+  if(file.size > MAX_FILE_SIZE){
+    area.style.display = 'block';
+    status.textContent = 'File too large. Maximum size is 50MB.';
+    status.className = 'media-status error';
+    return;
+  }
+
+  // Show area
+  area.style.display = 'block';
+  status.textContent = '🔍 Screening content with AI...';
+
+  // Build preview element
+  let previewEl;
+  if(file.type.startsWith('image/')){
+    previewEl = document.createElement('img');
+    previewEl.src = URL.createObjectURL(file);
+  } else {
+    previewEl = document.createElement('span');
+    previewEl.textContent = '📄';
+    previewEl.style.fontSize = '32px';
+  }
+
+  const nameSpan = document.createElement('span');
+  nameSpan.textContent = file.name;
+
+  const removeBtn = document.createElement('button');
+  removeBtn.className = 'media-remove-btn';
+  removeBtn.textContent = '×';
+  removeBtn.onclick = () => clearMedia(box);
+
+  preview.appendChild(previewEl);
+  preview.appendChild(nameSpan);
+  preview.appendChild(removeBtn);
+
+  // Claude moderation for images
+  if(file.type.startsWith('image/')){
+    try{
+      const base64 = await fileToBase64(file);
+      const res = await fetch(RAILWAY_URL + '/moderate-media', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({
+          media_type: file.type,
+          base64_data: base64,
+          phone: currentPhone
+        })
+      });
+      const data = await res.json();
+      if(data.approved){
+        status.innerHTML = '<span class="media-moderation-badge approved">✓ Content approved</span>';
+        status.className = 'media-status ok';
+        area.classList.add('has-file');
+        mediaState[box] = { file, approved: true };
+      } else {
+        status.innerHTML = `<span class="media-moderation-badge rejected">✗ Content rejected</span> ${data.reason || 'Inappropriate content detected.'}`;
+        status.className = 'media-status error';
+        preview.innerHTML = '';
+        event.target.value = '';
+      }
+    } catch(e){
+      status.textContent = 'Moderation check failed. Please try again.';
+      status.className = 'media-status error';
+    }
+  } else {
+    // Non-image files (video, PDF) — skip Claude moderation, just validate
+    status.innerHTML = '<span class="media-moderation-badge approved">✓ Ready to upload</span>';
+    status.className = 'media-status ok';
+    area.classList.add('has-file');
+    mediaState[box] = { file, approved: true };
+  }
+};
+
+window.clearMedia = function(box){
+  mediaState[box] = null;
+  const area = document.getElementById(`${box}-media-area`);
+  area.style.display = 'none';
+  area.classList.remove('has-file');
+  document.getElementById(`${box}-media-preview`).innerHTML = '';
+  document.getElementById(`${box}-media-status`).textContent = '';
+  document.getElementById(`${box}-file-input`).value = '';
+};
+
+async function uploadMediaToStorage(file, phone, box){
+  const ext = file.name.split('.').pop();
+  const path = `users/${phone}/${box}/${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
+  const fileRef = storageRef(storage, path);
+  const snapshot = await uploadBytes(fileRef, file);
+  const url = await getDownloadURL(snapshot.ref);
+  return { url, path, fileName: file.name, fileType: file.type, fileSize: file.size };
+}
+
+function fileToBase64(file){
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result.split(',')[1]);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+// ── Phone OTP Verification ───────────────────────────────────
+let phoneVerified = false;
+// DEV Railway URL
+const RAILWAY_URL_BASE = 'https://web-production-516b3.up.railway.app';
+
+window.resetOtp = function(){
+  phoneVerified = false;
+  document.getElementById('otp-section').classList.remove('show');
+  document.getElementById('otp-verified').classList.remove('show');
+  document.getElementById('otp-input').value = '';
+  document.getElementById('signup-btn').textContent = 'Send Verification Code';
+};
+
+window.sendOtp = async function(resend=false){
+  const cc    = document.getElementById('su-cc').value.trim();
+  const phone = document.getElementById('su-phone').value.trim();
+  const btn   = document.getElementById('signup-btn');
+  clearMsg('signup-err');
+
+  if(!phone){ showErr('signup-err','Please enter your phone number first.'); return; }
+
+  const selectedCC = document.getElementById('su-cc').value;
+  const digitsOnly = phone.replace(/\D/g,'');
+  const fullPhone = selectedCC + digitsOnly;
+
+  // Validate length based on country
+  const expectedLengths = { '+1': 10, '+91': 10 };
+  const expected = expectedLengths[selectedCC] || 10;
+  if(digitsOnly.length !== expected){
+    showErr('signup-err', `Please enter a valid ${expected}-digit phone number.`);
+    return;
+  }
+
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spinner spinner-g"></div> Sending...';
+
+  try{
+    const res = await fetch(RAILWAY_URL_BASE + '/verify/send', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ phone: fullPhone })
+    });
+    const data = await res.json();
+    if(res.ok){
+      document.getElementById('otp-section').classList.add('show');
+      document.getElementById('otp-input').focus();
+      showOk('signup-ok', resend ? 'New code sent!' : 'Verification code sent to your phone.');
+      btn.innerHTML = 'Send Verification Code';
+      btn.disabled = false;
+      // Change button to create account after OTP shown
+      btn.onclick = null;
+      btn.onclick = () => sendOtp(true);
+      btn.textContent = 'Resend Code';
+    } else {
+      showErr('signup-err', data.error || 'Could not send code. Please try again.');
+      btn.innerHTML = 'Send Verification Code';
+      btn.disabled = false;
+    }
+  } catch(e){
+    showErr('signup-err', 'Connection error. Please try again.');
+    btn.innerHTML = 'Send Verification Code';
+    btn.disabled = false;
+  }
+};
+
+window.verifyOtp = async function(){
+  const phone = document.getElementById('su-phone').value.trim();
+  const code  = document.getElementById('otp-input').value.trim();
+  const btn   = document.getElementById('otp-verify-btn');
+  clearMsg('signup-err');
+
+  if(!code || code.length !== 6){
+    showErr('signup-err', 'Please enter the 6-digit verification code.');
+    return;
+  }
+
+  const selectedCC = document.getElementById('su-cc').value;
+  const fullPhone = selectedCC + phone.replace(/\D/g,'');
+  btn.innerHTML = '<div class="spinner spinner-g" style="width:14px;height:14px;border-width:1.5px;display:inline-block;margin-right:6px;"></div> Verifying...';
+  btn.disabled = true;
+
+  try{
+    const res = await fetch(RAILWAY_URL_BASE + '/verify/check', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ phone: fullPhone, code })
+    });
+    const data = await res.json();
+
+    if(res.ok && data.status === 'approved'){
+      phoneVerified = true;
+      document.getElementById('otp-section').classList.remove('show');
+      document.getElementById('otp-verified').classList.add('show');
+      clearMsg('signup-ok');
+
+      // Now show Create Account button
+      const signupBtn = document.getElementById('signup-btn');
+      signupBtn.textContent = 'Create Account & Secure My Log';
+      signupBtn.onclick = doSignup;
+      signupBtn.style.display = 'flex';
+
+    } else {
+      showErr('signup-err', data.error || 'Invalid code. Please try again.');
+    }
+  } catch(e){
+    showErr('signup-err', 'Connection error. Please try again.');
+  } finally {
+    btn.innerHTML = 'Confirm Code';
+    btn.disabled = false;
+  }
+};
+
+// ── Claude Insights Panel ────────────────────────────────────
+let insightsHistory = [];
+
+window.askInsight = function(question){
+  document.getElementById('insights-input').value = question;
+  sendInsight();
+};
+
+window.sendInsight = async function(){
+  const input = document.getElementById('insights-input');
+  const btn   = document.getElementById('insights-send-btn');
+  const chat  = document.getElementById('insights-chat');
+  const question = input.value.trim();
+  if(!question) return;
+
+  // Add user message
+  const userMsg = document.createElement('div');
+  userMsg.className = 'chat-msg user';
+  userMsg.textContent = question;
+  chat.appendChild(userMsg);
+  input.value = '';
+  btn.disabled = true;
+  btn.textContent = 'Thinking...';
+  chat.scrollTop = chat.scrollHeight;
+
+  // Build context from user's records
+  const recordSummary = buildRecordContext(allRecords);
+
+  // Add to history
+  insightsHistory.push({ role: 'user', content: question });
+
+  try{
+    const response = await fetch(RAILWAY_URL + '/insights', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        phone:    currentPhone,
+        records:  recordSummary,
+        messages: insightsHistory
+      })
+    });
+
+    const data = await response.json();
+    const reply = data.reply || 'I could not generate a response. Please try again.';
+
+    // Add assistant message
+    insightsHistory.push({ role: 'assistant', content: reply });
+
+    const assistantMsg = document.createElement('div');
+    assistantMsg.className = 'chat-msg assistant';
+    assistantMsg.innerHTML = reply.replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>');
+
+    // Add save button
+    const actions = document.createElement('div');
+    actions.className = 'chat-actions';
+    const saveBtn = document.createElement('button');
+    saveBtn.className = 'chat-save-btn';
+    saveBtn.textContent = '📄 Save as PDF';
+    saveBtn.onclick = () => saveInsightAsPDF(question, reply, saveBtn);
+    actions.appendChild(saveBtn);
+    assistantMsg.appendChild(actions);
+
+    chat.appendChild(assistantMsg);
+    chat.scrollTop = chat.scrollHeight;
+
+  } catch(e){
+    console.error('Insights error:', e);
+    const errMsg = document.createElement('div');
+    errMsg.className = 'chat-msg assistant';
+    errMsg.textContent = 'Could not connect to Claude. Please check your connection and try again.';
+    chat.appendChild(errMsg);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Ask Claude';
+    chat.scrollTop = chat.scrollHeight;
+  }
+};
+
+function buildRecordContext(records){
+  if(!records || records.length === 0) return 'No records found.';
+  const recent = records.slice(0,50); // limit context
+  const summary = recent.map(r => {
+    const date = r.timestampLocal ? r.timestampLocal.slice(0,10) : 'Unknown date';
+    const loc  = r.location?.formatted || '';
+    const body = (r.body||'').slice(0,300);
+    return `[${date}]${loc ? ' @ '+loc : ''}: ${body}`;
+  }).join('\n');
+  return `Total records: ${records.length}\n\nRecent entries:\n${summary}`;
+}
+
+function saveInsightAsPDF(question, answer, btn){
+  btn.textContent = '⏳ Preparing...';
+  btn.disabled = true;
+
+  // Populate print area
+  const now = new Date();
+  document.getElementById('pdf-meta').textContent =
+    'Generated: ' + now.toLocaleDateString('en-US', {weekday:'long',year:'numeric',month:'long',day:'numeric'}) +
+    ' at ' + now.toLocaleTimeString('en-US') +
+    ' | Account: ' + (auth.currentUser?.email || currentPhone);
+  document.getElementById('pdf-question').textContent = 'Q: ' + question;
+  document.getElementById('pdf-response').textContent = answer.replace(/\*\*(.*?)\*\*/g, '$1');
+  document.getElementById('pdf-date').textContent = now.toISOString().slice(0,10);
+
+  // Show print area and trigger print
+  document.getElementById('pdf-print-area').style.display = 'block';
+  setTimeout(() => {
+    window.print();
+    document.getElementById('pdf-print-area').style.display = 'none';
+    btn.textContent = '📄 Save as PDF';
+    btn.disabled = false;
+  }, 300);
+}
+
+const DARK_MAP=[{elementType:'geometry',stylers:[{color:'#0a0c0e'}]},{elementType:'labels.text.stroke',stylers:[{color:'#0a0c0e'}]},{elementType:'labels.text.fill',stylers:[{color:'#6b8099'}]},{featureType:'administrative',elementType:'geometry',stylers:[{color:'#1b242c'}]},{featureType:'road',elementType:'geometry',stylers:[{color:'#161c21'}]},{featureType:'road.highway',elementType:'geometry',stylers:[{color:'#1b242c'}]},{featureType:'water',elementType:'geometry',stylers:[{color:'#080a0c'}]},{featureType:'poi',stylers:[{visibility:'off'}]},{featureType:'transit',stylers:[{visibility:'off'}]}];
+</script>
+
+<!-- Edit entry modal - placed at body level so always accessible -->
+<div class="edit-modal-backdrop" id="edit-modal" style="display:none;" onclick="if(event.target===this)closeEditModal()">
+  <div class="edit-modal">
+    <div class="edit-modal-title">✏️ Amend Log Entry</div>
+    <div class="edit-modal-sub">Your original entry is preserved unchanged. A new timestamped entry will be created with your changes.</div>
+    <div class="edit-original">
+      <strong>Original entry</strong>
+      <span id="edit-original-text"></span>
+    </div>
+    <textarea class="edit-ta" id="edit-new-text" placeholder="Enter your updated log entry..."></textarea>
+    <div class="edit-note"><strong>Note:</strong> The original entry remains unchanged. This creates a new entry marked as an amendment.</div>
+    <div class="edit-modal-actions">
+      <button class="edit-cancel-btn" onclick="closeEditModal()">Cancel</button>
+      <button class="edit-save-btn" id="edit-save-btn" onclick="saveEditEntry()">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="#000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Save as New Entry
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Hidden PDF print area -->
+<div id="pdf-print-area" style="display:none;">
+  <div class="pdf-header">
+    <div class="pdf-logo">SOSLogs</div>
+    <div class="pdf-meta" id="pdf-meta"></div>
+  </div>
+  <div class="pdf-title">AI Insight Report</div>
+  <div class="pdf-question" id="pdf-question"></div>
+  <div class="pdf-response" id="pdf-response"></div>
+  <div class="pdf-verify">Generated by SOSLogs — soslogs.org | Athens Innovation and Development LLC</div>
+  <div class="pdf-footer">
+    <span>SOSLogs — Personal Safety Documentation Platform</span>
+    <span id="pdf-date"></span>
+  </div>
+</div>
+
+
+<!-- ── Settings Modal ── -->
+<div class="settings-backdrop" id="settings-backdrop" onclick="if(event.target===this)sosCloseSettings()">
+  <div class="settings-modal">
+    <button class="settings-close" onclick="sosCloseSettings()">×</button>
+    <div class="settings-title">Account Settings</div>
+    <div class="settings-sub">Update your phone number with OTP verification</div>
+    <div class="settings-current">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.5 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.44 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.4a16 16 0 0 0 5.69 5.69l.78-.78a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      Current: <strong id="settings-current-phone">...</strong>
+    </div>
+    <div class="settings-step active" id="settings-step1">
+      <div class="field-wrap">
+        <label class="f-label" for="settings-new-phone">New Phone Number</label>
+        <div style="display:flex;gap:8px;">
+          <div class="f-input" style="width:70px;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:13px;">+1 🇺🇸</div>
+          <input class="f-input" id="settings-new-phone" type="tel" placeholder="10-digit US number" style="flex:1;" maxlength="10" onkeydown="if(event.key==='Enter')sendSettingsOtp()">
+        </div>
+      </div>
+      <div class="err-box" id="settings-err1" role="alert"></div>
+      <button class="btn-safe" onclick="sendSettingsOtp()" id="settings-send-btn" style="width:100%;margin-top:8px;">Send Verification Code</button>
+    </div>
+    <div class="settings-step" id="settings-step2">
+      <div class="field-wrap">
+        <label class="f-label" for="settings-otp">Verification Code</label>
+        <input class="f-input" id="settings-otp" type="tel" maxlength="6" placeholder="000000" onkeydown="if(event.key==='Enter')verifySettingsOtp()">
+      </div>
+      <div class="otp-hint">Enter the 6-digit code sent to your new number.</div>
+      <div class="err-box" id="settings-err2" role="alert"></div>
+      <button class="btn-safe" onclick="verifySettingsOtp()" id="settings-verify-btn" style="width:100%;margin-top:8px;">Confirm & Update Number</button>
+      <div style="text-align:center;margin-top:8px;">
+        <span class="otp-resend" onclick="sendSettingsOtp()">Did not receive a code? Resend</span>
+      </div>
+    </div>
+    <div class="settings-step" id="settings-step3">
+      <div style="text-align:center;padding:20px 0;">
+        <div style="font-size:40px;margin-bottom:12px;">✅</div>
+        <div style="font-size:15px;font-weight:700;color:var(--safe);margin-bottom:8px;">Phone number updated!</div>
+        <div style="font-size:13px;color:var(--muted);margin-bottom:20px;">Your records have been migrated. Please sign in again.</div>
+        <button class="btn-safe" onclick="sosDoLogout()" style="width:100%;">Sign Out & Sign Back In</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+</div><!-- end #sos-wrapper -->
+
+<!-- Toggle functions -->
+<script>
+function enterSOSMode() {
+  document.getElementById('sos-wrapper').style.display = 'block';
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('dashboard-screen').style.display = 'none';
+  // Trigger SOS init if not already done
+  if (window._sosInitialized) return;
+  window._sosInitialized = true;
+}
+
+function exitSOSMode() {
+  document.getElementById('sos-wrapper').style.display = 'none';
+  // Restore whichever FitLogs screen was showing
+  const wasLoggedIn = window._fitlogsLoggedIn;
+  if (wasLoggedIn) {
+    const el = document.getElementById('dashboard-screen');
+    if (el) { el.style.display = 'block'; }
+  } else {
+    const el = document.getElementById('login-screen');
+    if (el) { el.style.display = 'flex'; }
+  }
+}
+</script>
 
 </body>
 </html>
