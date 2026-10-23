@@ -379,7 +379,7 @@ mark{background:rgba(34,197,94,0.2);color:var(--green2);border-radius:2px;paddin
 
 <div id="login-screen" class="screen active">
 
-<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 16px 0;position:relative;z-index:50;"><button onclick="enterSOSMode()" title="Private Journal" style="width:28px;height:28px;border-radius:50%;background:#e63e2f;border:none;cursor:pointer;box-shadow:0 0 0 3px rgba(230,62,47,0.25);display:flex;align-items:center;justify-content:center;padding:0;"><span style="color:#fff;font-size:11px;font-weight:800;letter-spacing:-0.5px;">SOS</span></button>
+<div style="display:flex;justify-content:center;padding:10px 0 0;position:relative;z-index:50;">
   <button id="theme-toggle" onclick="toggleTheme()" aria-label="Toggle light/dark mode"
     style="background:rgba(255,255,255,0.08);border:1px solid var(--border);border-radius:20px;
     padding:6px 16px;cursor:pointer;color:var(--text);font-size:13px;font-family:var(--font);
@@ -405,7 +405,7 @@ mark{background:rgba(34,197,94,0.2);color:var(--green2);border-radius:2px;paddin
     <div class="convo-pair">
       <!-- What you text -->
       <div class="convo-card card-you">
-        <div class="convo-card-label" style="color:var(--green);">WHAT YOU TEXT → 1-888-596-LOGS</div>
+        <div class="convo-card-label" style="color:var(--green);">WHAT YOU TEXT → 1-888-799-LOGS</div>
         <div class="convo-item"><div class="convo-dot"></div><div><strong>Food</strong> — "Had grilled chicken salad and water for lunch"</div></div>
         <div class="convo-item"><div class="convo-dot"></div><div><strong>Movement</strong> — "Walked 8,500 steps, 30 min jog"</div></div>
         <div class="convo-item"><div class="convo-dot"></div><div><strong>Sleep</strong> — "Slept 7.5 hrs, felt rested"</div></div>
@@ -417,8 +417,8 @@ mark{background:rgba(34,197,94,0.2);color:var(--green2);border-radius:2px;paddin
       <div style="background:rgba(8,20,8,0.95);border:1.5px solid rgba(34,197,94,0.4);border-radius:14px;padding:14px 18px 12px;display:flex;flex-direction:column;align-items:center;gap:8px;">
         <div style="display:flex;align-items:center;justify-content:center;gap:20px;">
           <div class="num-bridge-numbers" style="text-align:right;">
-            <span class="num" style="color:#fff;-webkit-text-fill-color:#fff;">1 (888) 596-5467</span>
-            <span class="vanity" style="color:#22c55e;-webkit-text-fill-color:#22c55e;">1-888-596-LOGS</span>
+            <span class="num" style="color:#fff;-webkit-text-fill-color:#fff;">1 (888) 799-5647</span>
+            <span class="vanity" style="color:#22c55e;-webkit-text-fill-color:#22c55e;">1-888-799-LOGS</span>
           </div>
           <div class="num-bridge-arrows">
             <svg width="44" height="44" viewBox="0 0 48 48" fill="none">
@@ -612,7 +612,9 @@ mark{background:rgba(34,197,94,0.2);color:var(--green2);border-radius:2px;paddin
     </div>
     <div class="dash-nav-right">
       <button id="sos-toggle-btn" onclick="enterSOSMode()" title="Private Journal" aria-label="Switch to Private Journal"
-        style="width:28px;height:28px;border-radius:50%;background:#e63e2f;border:none;cursor:pointer;box-shadow:0 0 0 3px rgba(230,62,47,0.25);transition:all 0.2s;flex-shrink:0;display:flex;align-items:center;justify-content:center;padding:0;"><span style="color:#fff;font-size:11px;font-weight:800;letter-spacing:-0.5px;">SOS</span></button>
+        style="width:28px;height:28px;border-radius:50%;background:transparent;border:none;cursor:pointer;transition:all 0.2s;flex-shrink:0;display:flex;align-items:center;justify-content:center;padding:0;">
+        <svg width="28" height="28" viewBox="0 0 42 42" style="display:block;"><defs><radialGradient id="sos-rb" cx="38%" cy="30%" r="65%"><stop offset="0%" stop-color="#ff7878"/><stop offset="35%" stop-color="#e63e2f"/><stop offset="80%" stop-color="#c0281a"/><stop offset="100%" stop-color="#8b1a10"/></radialGradient><radialGradient id="sos-ri" cx="50%" cy="40%" r="55%"><stop offset="0%" stop-color="#1a1a1a"/><stop offset="100%" stop-color="#0a0a0a"/></radialGradient><radialGradient id="sos-rg" cx="36%" cy="20%" r="58%"><stop offset="0%" stop-color="rgba(255,255,255,0.58)"/><stop offset="100%" stop-color="rgba(255,255,255,0)"/></radialGradient></defs><circle cx="21" cy="21" r="14.5" fill="url(#sos-ri)"/><circle cx="21" cy="21" r="11.5" fill="url(#sos-rb)"/><ellipse cx="19" cy="17.5" rx="6" ry="4" fill="url(#sos-rg)"/></svg>
+      </button>
       <button id="dash-theme-toggle" onclick="toggleTheme()" aria-label="Toggle light/dark mode"
         style="background:rgba(34,197,94,0.06);border:1px solid var(--border);border-radius:16px;padding:5px 12px;cursor:pointer;color:var(--text);font-size:12px;font-family:var(--font);font-weight:600;display:flex;align-items:center;gap:5px;">
         <span id="dash-theme-icon">☀️</span><span id="dash-theme-label">Dark</span>
@@ -1059,7 +1061,7 @@ function classify(body){
 function renderRecentLogs(logs){
   const el=document.getElementById('recent-logs');
   const recent=last30(logs).slice(0,8);
-  if(!recent.length){ el.innerHTML='<div class="empty">No logs in last 30 days. Text 1-888-596-LOGS to start!</div>'; return; }
+  if(!recent.length){ el.innerHTML='<div class="empty">No logs in last 30 days. Text 1-888-799-LOGS to start!</div>'; return; }
   el.innerHTML=recent.map(r=>{
     const ts=new Date(getTs(r));
     const dateStr=ts.toLocaleDateString('en-US',{month:'short',day:'numeric'});
@@ -1073,7 +1075,7 @@ function renderRecentLogs(logs){
 function renderFoodList(logs){
   const r30=last30(logs).filter(r=>(r.type||classify(r.body||''))==='food');
   const el=document.getElementById('food-list');
-  if(!r30.length){ el.innerHTML='<div class="empty">No food logs yet. Text what you ate to 1-888-596-LOGS!</div>'; return; }
+  if(!r30.length){ el.innerHTML='<div class="empty">No food logs yet. Text what you ate to 1-888-799-LOGS!</div>'; return; }
   el.innerHTML=r30.slice(0,6).map(r=>{
     const ts=new Date(getTs(r));
     return '<div class="freq-item"><div class="freq-name" style="min-width:60px;font-size:11px;color:var(--muted);">'+ts.toLocaleDateString('en-US',{month:'short',day:'numeric'})+'</div><div style="flex:1;font-size:12px;color:var(--text);">'+esc((r.body||'').slice(0,80))+'</div></div>';
@@ -1083,7 +1085,7 @@ function renderFoodList(logs){
 function renderActivityList(logs){
   const r30=last30(logs).filter(r=>['workout','movement'].includes(r.type||classify(r.body||'')));
   const el=document.getElementById('activity-list');
-  if(!r30.length){ el.innerHTML='<div class="empty">No activity logs yet. Text your workouts to 1-888-596-LOGS!</div>'; return; }
+  if(!r30.length){ el.innerHTML='<div class="empty">No activity logs yet. Text your workouts to 1-888-799-LOGS!</div>'; return; }
   el.innerHTML=r30.slice(0,6).map(r=>{
     const ts=new Date(getTs(r));
     return '<div class="freq-item"><div class="freq-name" style="min-width:60px;font-size:11px;color:var(--muted);">'+ts.toLocaleDateString('en-US',{month:'short',day:'numeric'})+'</div><div style="flex:1;font-size:12px;color:var(--text);">'+esc((r.body||'').slice(0,80))+'</div></div>';
@@ -1093,7 +1095,7 @@ function renderActivityList(logs){
 function renderSleepList(logs){
   const r30=last30(logs).filter(r=>(r.type||classify(r.body||''))==='sleep');
   const el=document.getElementById('sleep-list');
-  if(!r30.length){ el.innerHTML='<div class="empty">No sleep logs yet. Text your sleep to 1-888-596-LOGS!</div>'; return; }
+  if(!r30.length){ el.innerHTML='<div class="empty">No sleep logs yet. Text your sleep to 1-888-799-LOGS!</div>'; return; }
   el.innerHTML=r30.slice(0,6).map(r=>{
     const ts=new Date(getTs(r));
     return '<div class="freq-item"><div class="freq-name" style="min-width:60px;font-size:11px;color:var(--muted);">'+ts.toLocaleDateString('en-US',{month:'short',day:'numeric'})+'</div><div style="flex:1;font-size:12px;color:var(--text);">'+esc((r.body||'').slice(0,80))+'</div></div>';
@@ -2790,6 +2792,9 @@ import { getFirestore, collection, collectionGroup, doc, setDoc, getDoc, getDocs
          addDoc, query, where, orderBy, serverTimestamp }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
+// Wrap entire SOS app in lazy init — called by enterSOSMode()
+async function _sosInit() {
+
 const fbApp = initializeApp({
   apiKey:            "AIzaSyCOS5vQrEXqCsfPFgTgrBip_c9g7tD_nG0",
   authDomain:        "soslog-v1.firebaseapp.com",
@@ -2840,7 +2845,7 @@ const STOP_WORDS = new Set([
 
 // AUTH STATE
 onAuthStateChanged(auth, async user => {
-  document.getElementById('app-loading').classList.add('hide');
+  document.querySelector('#sos-wrapper #app-loading')?.classList.add('hide');
   if(user){
     await user.reload();
     currentPhone = await resolvePhone(user);
@@ -3593,13 +3598,18 @@ function renderMessages(records){
 
 // UTILS
 function sosShowScreen(id){
-  document.querySelectorAll('.screen').forEach(s=>{
+  // Only operate on screens INSIDE #sos-wrapper to avoid touching FitLogs screens
+  const wrapper = document.getElementById('sos-wrapper');
+  if(!wrapper) return;
+  wrapper.querySelectorAll('.screen').forEach(s=>{
     s.classList.remove('active');
     s.style.display='none';
   });
-  const el=document.getElementById(id);
+  // Make sure the wrapper itself is visible
+  wrapper.style.display = 'block';
+  const el = wrapper.querySelector('#' + id);
+  if(!el) return;
   el.classList.add('active');
-  // login-screen uses flex, dashboard uses block
   el.style.display = id==='login-screen' ? 'flex' : 'block';
 }
 window.stepShow = id => { document.querySelectorAll('.step').forEach(s=>s.classList.remove('active')); document.getElementById(id).classList.add('active'); };
@@ -4642,6 +4652,11 @@ function saveInsightAsPDF(question, answer, btn){
 }
 
 const DARK_MAP=[{elementType:'geometry',stylers:[{color:'#0a0c0e'}]},{elementType:'labels.text.stroke',stylers:[{color:'#0a0c0e'}]},{elementType:'labels.text.fill',stylers:[{color:'#6b8099'}]},{featureType:'administrative',elementType:'geometry',stylers:[{color:'#1b242c'}]},{featureType:'road',elementType:'geometry',stylers:[{color:'#161c21'}]},{featureType:'road.highway',elementType:'geometry',stylers:[{color:'#1b242c'}]},{featureType:'water',elementType:'geometry',stylers:[{color:'#080a0c'}]},{featureType:'poi',stylers:[{visibility:'off'}]},{featureType:'transit',stylers:[{visibility:'off'}]}];
+
+}
+
+// Expose for enterSOSMode to call once
+window._sosInitFn = _sosInit;
 </script>
 
 <!-- Edit entry modal - placed at body level so always accessible -->
@@ -4735,9 +4750,12 @@ function enterSOSMode() {
   document.getElementById('sos-wrapper').style.display = 'block';
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('dashboard-screen').style.display = 'none';
-  // Trigger SOS init if not already done
+  // Run SOS Firebase init once
   if (window._sosInitialized) return;
   window._sosInitialized = true;
+  if (window._sosInitFn) {
+    window._sosInitFn().catch(console.error);
+  }
 }
 
 function exitSOSMode() {
