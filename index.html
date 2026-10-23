@@ -1422,7 +1422,7 @@ window.verifySettingsOtp=async function(){
 };
 
 // UTILS
-function showScreen(id){ document.querySelectorAll('.screen').forEach(s=>{ s.classList.remove('active'); s.style.display='none'; }); const el=document.getElementById(id); el.classList.add('active'); el.style.display=id==='login-screen'?'flex':'block'; }
+function showScreen(id){ document.querySelectorAll('.screen').forEach(s=>{ if(!s.closest('#sos-wrapper')){ s.classList.remove('active'); s.style.display='none'; } }); const candidates=document.querySelectorAll('#'+id); let el=null; candidates.forEach(c=>{ if(!c.closest('#sos-wrapper')) el=c; }); if(!el) el=document.getElementById(id); el.classList.add('active'); el.style.display=id==='login-screen'?'flex':'block'; }
 window.switchTab=function(tab){ const isSignup=tab==='signup',isLogin=tab==='login'; document.getElementById('step-signup').classList.toggle('active',isSignup); document.getElementById('step-login').classList.toggle('active',isLogin); const tS=document.getElementById('tab-signup'),tL=document.getElementById('tab-login'); tL.style.background=isLogin?'var(--green)':'transparent'; tL.style.color=isLogin?'#000':'var(--muted)'; tS.style.background=isSignup?'var(--green)':'transparent'; tS.style.color=isSignup?'#000':'var(--muted)'; };
 function showErr(id,msg){ const e=document.getElementById(id); e.textContent=msg; e.classList.add('show'); }
 function showOk(id,msg){ const e=document.getElementById(id); e.textContent=msg; e.classList.add('show'); }
@@ -4707,14 +4707,15 @@ function enterSOSMode() {
 
 function exitSOSMode() {
   document.getElementById('sos-wrapper').style.display = 'none';
-  // Restore whichever FitLogs screen was showing
-  const wasLoggedIn = window._fitlogsLoggedIn;
-  if (wasLoggedIn) {
-    const el = document.getElementById('dashboard-screen');
-    if (el) { el.style.display = 'block'; }
+  // Use FitLogs' own showScreen so active class and display are restored correctly
+  const target = window._fitlogsLoggedIn ? 'dashboard-screen' : 'login-screen';
+  if (typeof showScreen === 'function') {
+    showScreen(target);
   } else {
-    const el = document.getElementById('login-screen');
-    if (el) { el.style.display = 'flex'; }
+    // fallback: manually restore first (FitLogs) instance of the screen
+    document.querySelectorAll('.screen').forEach(s => { s.classList.remove('active'); s.style.display = 'none'; });
+    const el = document.querySelector('#sos-wrapper ~ #' + target) || document.getElementById(target);
+    if (el) { el.classList.add('active'); el.style.display = target === 'login-screen' ? 'flex' : 'block'; }
   }
 }
 </script>
