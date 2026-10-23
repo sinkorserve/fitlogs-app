@@ -1430,9 +1430,10 @@ function clearMsg(id){ const e=document.getElementById(id); e.textContent=''; e.
 function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 function fmtPhone(p){ if(!p) return ''; const d=p.replace(/\D/g,''); if(d.length===11&&d[0]==='1') return '+1 ('+d.slice(1,4)+') '+d.slice(4,7)+'-'+d.slice(7); return p; }
 function fErr(code){ return({'auth/user-not-found':'No account found.','auth/wrong-password':'Incorrect password.','auth/invalid-credential':'Invalid credentials.','auth/email-already-in-use':'An account with that email already exists.','auth/weak-password':'Password must be at least 8 characters.','auth/invalid-email':'Please enter a valid email address.','auth/too-many-requests':'Too many attempts. Try again later.'}[code]||'Something went wrong.'); }
-// Expose Firebase instances for SOS module to reuse
+// Expose Firebase instances and dashboard function for SOS module to reuse
 window._fitlogsAuth = auth;
 window._fitlogsDb = db;
+window._fitlogsShowDashboard = showDashboard;
 </script>
 
 <!-- Edit modal -->
@@ -4707,15 +4708,15 @@ function enterSOSMode() {
 
 function exitSOSMode() {
   document.getElementById('sos-wrapper').style.display = 'none';
-  // Use FitLogs' own showScreen so active class and display are restored correctly
-  const target = window._fitlogsLoggedIn ? 'dashboard-screen' : 'login-screen';
-  if (typeof showScreen === 'function') {
-    showScreen(target);
+  if (window._fitlogsLoggedIn && window._fitlogsAuth && window._fitlogsAuth.currentUser) {
+    // Re-invoke FitLogs showDashboard so widgets reload properly
+    if (typeof window._fitlogsShowDashboard === 'function') {
+      window._fitlogsShowDashboard(window._fitlogsAuth.currentUser);
+    } else {
+      showScreen('dashboard-screen');
+    }
   } else {
-    // fallback: manually restore first (FitLogs) instance of the screen
-    document.querySelectorAll('.screen').forEach(s => { s.classList.remove('active'); s.style.display = 'none'; });
-    const el = document.querySelector('#sos-wrapper ~ #' + target) || document.getElementById(target);
-    if (el) { el.classList.add('active'); el.style.display = target === 'login-screen' ? 'flex' : 'block'; }
+    showScreen('login-screen');
   }
 }
 </script>
