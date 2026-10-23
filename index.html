@@ -1502,7 +1502,7 @@ window._fitlogsDb = db;
 <!-- ═══════════════════════════════════════════════════════════
      SOS PRIVATE JOURNAL — Hidden overlay, toggled by red dot
      ═══════════════════════════════════════════════════════════ -->
-<div id="sos-wrapper" style="display:none;position:fixed;inset:0;z-index:9000;overflow-y:auto;background:#080a0c;">
+<div id="sos-wrapper" data-theme="dark" style="display:none;position:fixed;inset:0;z-index:9000;overflow-y:auto;background:#080a0c;">
 
 <!-- SOS-scoped CSS -->
 <style id="sos-styles">
@@ -1517,6 +1517,16 @@ window._fitlogsDb = db;
 }
 #sos-wrapper * {box-sizing:border-box;margin:0;padding:0;}
 #sos-wrapper { height: 100%; overflow-y: auto; }
+/* Override FitLogs light-mode rules that bleed into sos-wrapper via shared class names */
+#sos-wrapper .stat-card,#sos-wrapper .wide-card,#sos-wrapper .log-box,#sos-wrapper .log-widget,
+#sos-wrapper .dash-chat-panel,#sos-wrapper .login-card,#sos-wrapper .msg-card,
+#sos-wrapper .chat-msg.assistant,#sos-wrapper .edit-modal,#sos-wrapper .settings-modal,
+#sos-wrapper .pricing-card,#sos-wrapper .convo-card {background:var(--card) !important;border-color:var(--border) !important;color:var(--text) !important;}
+#sos-wrapper .log-ta,#sos-wrapper .edit-ta,#sos-wrapper .f-input,#sos-wrapper .dash-chat-input,
+#sos-wrapper .filter-input,#sos-wrapper .otp-input {background:var(--dark) !important;color:var(--text) !important;-webkit-text-fill-color:var(--text) !important;}
+#sos-wrapper .dash-nav {background:rgba(8,10,12,0.95) !important;}
+#sos-wrapper #dashboard-screen {background:var(--black) !important;}
+#sos-wrapper #login-screen {background:var(--black) !important;}
 #sos-wrapper #app-loading {position:fixed;inset:0;z-index:999;background:var(--black);display:flex;align-items:center;justify-content:center;}
 #sos-wrapper #app-loading.hide {display:none;}
 #sos-wrapper .loading-logo {display:flex;align-items:center;gap:10px;animation:blink 1.4s ease infinite;}
