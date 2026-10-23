@@ -2793,7 +2793,9 @@ import { getFirestore, collection, collectionGroup, doc, setDoc, getDoc, getDocs
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 // Wrap entire SOS app in lazy init — called by enterSOSMode()
-async function _sosInit() {
+
+// Run SOS app init — triggered by enterSOSMode() dispatching 'sos:open'
+async function runSOSApp() {
 
 const fbApp = initializeApp({
   apiKey:            "AIzaSyCOS5vQrEXqCsfPFgTgrBip_c9g7tD_nG0",
@@ -3598,15 +3600,21 @@ function renderMessages(records){
 
 // UTILS
 function sosShowScreen(id){
-  // Only operate on screens INSIDE #sos-wrapper to avoid touching FitLogs screens
   const wrapper = document.getElementById('sos-wrapper');
   if(!wrapper) return;
+  // Ensure wrapper is visible
+  wrapper.style.display = 'block';
+  // Hide FitLogs screens
+  ['login-screen','dashboard-screen'].forEach(sid=>{
+    const s = document.getElementById(sid);
+    if(s && !wrapper.contains(s)) s.style.display='none';
+  });
+  // Hide all SOS screens
   wrapper.querySelectorAll('.screen').forEach(s=>{
     s.classList.remove('active');
     s.style.display='none';
   });
-  // Make sure the wrapper itself is visible
-  wrapper.style.display = 'block';
+  // Show target screen
   const el = wrapper.querySelector('#' + id);
   if(!el) return;
   el.classList.add('active');
@@ -4653,10 +4661,15 @@ function saveInsightAsPDF(question, answer, btn){
 
 const DARK_MAP=[{elementType:'geometry',stylers:[{color:'#0a0c0e'}]},{elementType:'labels.text.stroke',stylers:[{color:'#0a0c0e'}]},{elementType:'labels.text.fill',stylers:[{color:'#6b8099'}]},{featureType:'administrative',elementType:'geometry',stylers:[{color:'#1b242c'}]},{featureType:'road',elementType:'geometry',stylers:[{color:'#161c21'}]},{featureType:'road.highway',elementType:'geometry',stylers:[{color:'#1b242c'}]},{featureType:'water',elementType:'geometry',stylers:[{color:'#080a0c'}]},{featureType:'poi',stylers:[{visibility:'off'}]},{featureType:'transit',stylers:[{visibility:'off'}]}];
 
+
 }
 
-// Expose for enterSOSMode to call once
-window._sosInitFn = _sosInit;
+let _sosStarted = false;
+window.addEventListener('sos:open', () => {
+  if (_sosStarted) return;
+  _sosStarted = true;
+  runSOSApp().catch(console.error);
+});
 </script>
 
 <!-- Edit entry modal - placed at body level so always accessible -->
@@ -4750,12 +4763,8 @@ function enterSOSMode() {
   document.getElementById('sos-wrapper').style.display = 'block';
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('dashboard-screen').style.display = 'none';
-  // Run SOS Firebase init once
-  if (window._sosInitialized) return;
-  window._sosInitialized = true;
-  if (window._sosInitFn) {
-    window._sosInitFn().catch(console.error);
-  }
+  // Dispatch event to trigger SOS Firebase init (runs once)
+  window.dispatchEvent(new Event('sos:open'));
 }
 
 function exitSOSMode() {
