@@ -837,7 +837,7 @@ const RAILWAY_URL = 'https://fitlogs-webhook-production.up.railway.app';
 
 const encEmail = e => e.replace(/\./g,'_dot_').replace(/@/g,'_at_');
 const emailsCol  = p => collection(db,'users',p,'emails');
-const logsCol    = p => collection(db,'users',p,'logs');
+const logsCol    = p => collection(db,'users',p,'fitness');
 const normPhone  = (cc,ph) => '+'+cc.replace(/\D/g,'')+ph.replace(/\D/g,'');
 
 let currentPhone = null;
@@ -978,7 +978,7 @@ window.doLogout = async () => {
 async function showDashboard(user){
   const dashBody = document.querySelector('.dash-split');
   if(dashBody) dashBody.style.visibility='hidden';
-  showScreen('dashboard-screen'); window._fitlogsLoggedIn = true; window._fitlogsUserEmail = user.email || ''; window._fitlogsCurrentPhone = currentPhone;
+  showScreen('dashboard-screen'); window._fitlogsLoggedIn = true; window._fitlogsUserEmail = user.email || ''; window._fitlogsCurrentPhone = currentPhone; window.dispatchEvent(new Event('fitlogs:ready'));
   document.getElementById('nav-phone').textContent = fmtPhone(currentPhone);
   await checkPlanAndApplyPaywall(currentPhone);
   allLogs = await loadAllLogs();
@@ -1434,6 +1434,13 @@ function fErr(code){ return({'auth/user-not-found':'No account found.','auth/wro
 window._fitlogsAuth = auth;
 window._fitlogsDb = db;
 window._fitlogsShowDashboard = showDashboard;
+// Helper to flip SMS routing mode in Firestore (called from regular script)
+window._fitlogsSetMode = async (mode) => {
+  if (!currentPhone) return;
+  try {
+    await setDoc(doc(db,'users',currentPhone,'settings','prefs'), {mode}, {merge:true});
+  } catch(e) { console.warn('setMode error', e); }
+};
 </script>
 
 <!-- Edit modal -->
@@ -2822,7 +2829,8 @@ const decEmail = e => e.replace(/_dot_/g,'.').replace(/_at_/g,'@');
 const emailsCol   = p => collection(db,'sos',p,'emails');
 const recordsCol  = (p,e) => collection(db,'sos',p,'emails',e,'records');
 const flatRecords = p => collection(db,'sos',p,'records');
-// flatRecords: direct path users/{phone}/records for seeded/SMS logs
+// SMS-routed SOS logs live at users/{phone}/sos/ (written by webhook when mode=sos)
+const smsSOSCol   = p => collection(db,'users',p,'sos');
 const normPhone  = (cc,ph) => '+'+cc.replace(/\D/g,'')+ph.replace(/\D/g,'');
 
 let currentPhone = null;
@@ -3042,7 +3050,14 @@ async function loadAllRecords(){
   console.log('Loading records for phone:', currentPhone);
 
   try{
-    // Strategy 1: flat records at users/{phone}/records (seeded data + SMS logs)
+    // Strategy 1a: SMS-routed SOS logs at users/{phone}/sos/ (written by webhook when mode=sos)
+    try{
+      const smsSnap=await getDocs(query(smsSOSCol(currentPhone),orderBy('timestamp','desc')));
+      smsSnap.forEach(d=>records.push({...d.data(),_email:'',_id:d.id,_source:'sms-sos'}));
+      console.log('SMS SOS records found:', smsSnap.size);
+    } catch(e){ console.warn('sms sos records error:',e); }
+
+    // Strategy 1b: flat records at sos/{phone}/records (seeded data / app-entered logs)
     try{
       const flatSnap=await getDocs(query(flatRecords(currentPhone),orderBy('timestamp','desc')));
       flatSnap.forEach(d=>records.push({...d.data(),_email:'',_id:d.id,_source:'flat'}));
@@ -4702,14 +4717,17 @@ function enterSOSMode() {
   document.getElementById('sos-wrapper').style.display = 'block';
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('dashboard-screen').style.display = 'none';
+  // Flip SMS routing mode so inbound texts go to sos/ collection
+  if (typeof window._fitlogsSetMode === 'function') window._fitlogsSetMode('sos');
   // Dispatch event to trigger SOS Firebase init (runs once)
   window.dispatchEvent(new Event('sos:open'));
 }
 
 function exitSOSMode() {
   document.getElementById('sos-wrapper').style.display = 'none';
+  // Flip SMS routing mode back to fitness/
+  if (typeof window._fitlogsSetMode === 'function') window._fitlogsSetMode('fitness');
   if (window._fitlogsLoggedIn && window._fitlogsAuth && window._fitlogsAuth.currentUser) {
-    // Re-invoke FitLogs showDashboard so widgets reload properly
     if (typeof window._fitlogsShowDashboard === 'function') {
       window._fitlogsShowDashboard(window._fitlogsAuth.currentUser);
     } else {
@@ -4718,6 +4736,125 @@ function exitSOSMode() {
   } else {
     showScreen('login-screen');
   }
+}
+</script>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     /texts — immutable SMS audit log page
+     Accessible at fitlogs.ai/texts (Vercel rewrite sends it here)
+     Only visible when pathname === '/texts' and user is authenticated
+     ════════════════════════════════════════════════════════════════════════ -->
+<div id="texts-wrapper" style="display:none;position:fixed;inset:0;z-index:8500;overflow-y:auto;background:#080a0c;">
+<style>
+#texts-wrapper { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; color: #e2e8f0; }
+#texts-wrapper * { box-sizing: border-box; margin: 0; padding: 0; }
+#texts-wrapper .tx-nav { position: sticky; top: 0; z-index: 10; background: rgba(8,10,12,0.95); border-bottom: 1px solid #1e2a36; padding: 14px 20px; display: flex; align-items: center; gap: 12px; }
+#texts-wrapper .tx-nav-logo { font-size: 16px; font-weight: 800; color: #e2e8f0; }
+#texts-wrapper .tx-nav-logo span { color: #1db87a; }
+#texts-wrapper .tx-nav-badge { font-size: 10px; background: #1e2a36; color: #64748b; padding: 2px 7px; border-radius: 99px; letter-spacing: 0.08em; text-transform: uppercase; }
+#texts-wrapper .tx-back { margin-left: auto; background: none; border: 1px solid #1e2a36; color: #94a3b8; font-size: 12px; padding: 6px 14px; border-radius: 8px; cursor: pointer; }
+#texts-wrapper .tx-back:hover { border-color: #1db87a; color: #1db87a; }
+#texts-wrapper .tx-body { max-width: 680px; margin: 0 auto; padding: 24px 16px; }
+#texts-wrapper .tx-header { margin-bottom: 20px; }
+#texts-wrapper .tx-title { font-size: 20px; font-weight: 700; color: #e2e8f0; margin-bottom: 4px; }
+#texts-wrapper .tx-subtitle { font-size: 12px; color: #64748b; }
+#texts-wrapper .tx-loading { text-align: center; color: #64748b; padding: 48px 0; font-size: 13px; }
+#texts-wrapper .tx-empty { text-align: center; color: #64748b; padding: 64px 0; font-size: 13px; }
+#texts-wrapper .tx-item { background: #0e1419; border: 1px solid #1e2a36; border-radius: 12px; padding: 14px 16px; margin-bottom: 10px; }
+#texts-wrapper .tx-item-meta { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+#texts-wrapper .tx-dot { width: 6px; height: 6px; border-radius: 50%; background: #1db87a; flex-shrink: 0; }
+#texts-wrapper .tx-dot.sos { background: #ef4444; }
+#texts-wrapper .tx-dot.fitness { background: #1db87a; }
+#texts-wrapper .tx-time { font-size: 11px; color: #64748b; }
+#texts-wrapper .tx-mode-tag { font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; padding: 2px 7px; border-radius: 99px; }
+#texts-wrapper .tx-mode-tag.sos { background: rgba(239,68,68,0.12); color: #ef4444; }
+#texts-wrapper .tx-mode-tag.fitness { background: rgba(29,184,122,0.12); color: #1db87a; }
+#texts-wrapper .tx-mode-tag.unknown { background: #1e2a36; color: #64748b; }
+#texts-wrapper .tx-body-text { font-size: 14px; color: #e2e8f0; line-height: 1.6; }
+#texts-wrapper .tx-sid { font-size: 10px; color: #334155; margin-top: 6px; font-family: monospace; }
+</style>
+
+<nav class="tx-nav">
+  <div class="tx-nav-logo">💪 Fit<span>Logs</span></div>
+  <span class="tx-nav-badge">Text Log</span>
+  <button class="tx-back" onclick="exitTextsMode()">← Back to Dashboard</button>
+</nav>
+<div class="tx-body">
+  <div class="tx-header">
+    <div class="tx-title">All Text Messages</div>
+    <div class="tx-subtitle">Immutable log of every inbound SMS. Green = fitness · Red = journal (SOS mode was active).</div>
+  </div>
+  <div id="tx-list"><div class="tx-loading">Loading messages…</div></div>
+</div>
+</div><!-- end #texts-wrapper -->
+
+<script type="module">
+import { collection, getDocs, query, orderBy }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+async function loadTexts() {
+  const auth = window._fitlogsAuth;
+  const db   = window._fitlogsDb;
+  if (!auth || !db) return;
+
+  const phone = window._fitlogsCurrentPhone;
+  if (!phone) {
+    document.getElementById('tx-list').innerHTML = '<div class="tx-empty">Sign in to FitLogs to view your text log.</div>';
+    return;
+  }
+
+  try {
+    const snap = await getDocs(query(collection(db,'users',phone,'texts'), orderBy('timestamp','desc')));
+    const list = document.getElementById('tx-list');
+    if (snap.empty) {
+      list.innerHTML = '<div class="tx-empty">No text messages yet. Text the FitLogs number to get started.</div>';
+      return;
+    }
+    list.innerHTML = '';
+    snap.forEach(d => {
+      const r = d.data();
+      const mode = r.mode || 'fitness';
+      const ts   = r.timestampLocal ? new Date(r.timestampLocal).toLocaleString() : '';
+      const el   = document.createElement('div');
+      el.className = 'tx-item';
+      el.innerHTML = `
+        <div class="tx-item-meta">
+          <div class="tx-dot ${mode}"></div>
+          <span class="tx-time">${ts}</span>
+          <span class="tx-mode-tag ${mode}">${mode === 'sos' ? 'Journal' : mode === 'fitness' ? 'Fitness' : mode}</span>
+        </div>
+        <div class="tx-body-text">${r.body || ''}</div>
+        <div class="tx-sid">${d.id}</div>
+      `;
+      list.appendChild(el);
+    });
+  } catch(e) {
+    document.getElementById('tx-list').innerHTML = '<div class="tx-empty">Could not load messages.</div>';
+    console.error('tx load error', e);
+  }
+}
+
+window.addEventListener('texts:open', loadTexts);
+</script>
+
+<script>
+function enterTextsMode() {
+  document.getElementById('texts-wrapper').style.display = 'block';
+  window.dispatchEvent(new Event('texts:open'));
+}
+function exitTextsMode() {
+  document.getElementById('texts-wrapper').style.display = 'none';
+  if (window._fitlogsLoggedIn && window._fitlogsAuth && window._fitlogsAuth.currentUser) {
+    if (typeof window._fitlogsShowDashboard === 'function') {
+      window._fitlogsShowDashboard(window._fitlogsAuth.currentUser);
+    } else { showScreen('dashboard-screen'); }
+  } else { showScreen('login-screen'); }
+}
+
+// Auto-open /texts route
+if (window.location.pathname === '/texts') {
+  // Wait for FitLogs auth to settle then open
+  window.addEventListener('fitlogs:ready', enterTextsMode, { once: true });
 }
 </script>
 
