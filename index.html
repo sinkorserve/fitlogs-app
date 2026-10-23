@@ -2177,11 +2177,13 @@ window._fitlogsDb = db;
 #sos-wrapper[data-theme="light"] .login-card {background:transparent;}
 #sos-wrapper[data-theme="light"] .pricing-card {background:#ffffff;border-color:#e2e8f0;}
 #sos-wrapper[data-theme="light"] .pricing-tier, #sos-wrapper .pricing-price {color:#0f172a;}
-#sos-wrapper[data-theme="light"] .stat-card, #sos-wrapper .wide-card, #sos-wrapper .dash-chat-panel, #sos-wrapper .insights-widget, #sos-wrapper .analyze-widget {background:#ffffff;border-color:#e2e8f0;}
-#sos-wrapper[data-theme="light"] .analyze-ta, #sos-wrapper .dash-chat-input, #sos-wrapper .otp-input {background:#f8fafc;color:#0f172a;-webkit-text-fill-color:#0f172a;}
-#sos-wrapper[data-theme="light"] .wide-card-title, #sos-wrapper .stat-val, #sos-wrapper .section-title {color:#0f172a;}
+#sos-wrapper[data-theme="light"] .stat-card, #sos-wrapper[data-theme="light"] .wide-card, #sos-wrapper[data-theme="light"] .dash-chat-panel, #sos-wrapper[data-theme="light"] .insights-widget, #sos-wrapper[data-theme="light"] .analyze-widget {background:#ffffff;border-color:#e2e8f0;}
+#sos-wrapper[data-theme="light"] .analyze-ta, #sos-wrapper[data-theme="light"] .dash-chat-input, #sos-wrapper[data-theme="light"] .otp-input {background:#f8fafc;color:#0f172a;-webkit-text-fill-color:#0f172a;}
+#sos-wrapper[data-theme="light"] .wide-card-title, #sos-wrapper[data-theme="light"] .stat-val, #sos-wrapper[data-theme="light"] .section-title {color:#0f172a;}
 #sos-wrapper[data-theme="light"] .dash-nav {background:rgba(248,250,252,0.95);border-color:#e2e8f0;}
 #sos-wrapper[data-theme="light"] .analysis-field-value {background:#f8fafc;color:#0f172a;border-color:#e2e8f0;}
+/* Force analyze-widget dark regardless of html[data-theme] */
+#sos-wrapper .analyze-widget {background:var(--card) !important;border-color:var(--border) !important;}
 #sos-wrapper[data-theme="light"] .pl-footer {border-color:#e2e8f0;}
 #sos-wrapper[data-theme="light"] #app-loading {background:#f8fafc;}
 
