@@ -405,7 +405,7 @@ mark{background:rgba(34,197,94,0.2);color:var(--green2);border-radius:2px;paddin
     <div class="convo-pair">
       <!-- What you text -->
       <div class="convo-card card-you">
-        <div class="convo-card-label" style="color:var(--green);">WHAT YOU TEXT → 1-888-799-LOGS</div>
+        <div class="convo-card-label" style="color:var(--green);">WHAT YOU TEXT → 1-866-833-1330</div>
         <div class="convo-item"><div class="convo-dot"></div><div><strong>Food</strong> — "Had grilled chicken salad and water for lunch"</div></div>
         <div class="convo-item"><div class="convo-dot"></div><div><strong>Movement</strong> — "Walked 8,500 steps, 30 min jog"</div></div>
         <div class="convo-item"><div class="convo-dot"></div><div><strong>Sleep</strong> — "Slept 7.5 hrs, felt rested"</div></div>
@@ -417,8 +417,7 @@ mark{background:rgba(34,197,94,0.2);color:var(--green2);border-radius:2px;paddin
       <div style="background:rgba(8,20,8,0.95);border:1.5px solid rgba(34,197,94,0.4);border-radius:14px;padding:14px 18px 12px;display:flex;flex-direction:column;align-items:center;gap:8px;">
         <div style="display:flex;align-items:center;justify-content:center;gap:20px;">
           <div class="num-bridge-numbers" style="text-align:right;">
-            <span class="num" style="color:#fff;-webkit-text-fill-color:#fff;">1 (888) 799-5647</span>
-            <span class="vanity" style="color:#22c55e;-webkit-text-fill-color:#22c55e;">1-888-799-LOGS</span>
+            <span class="num" style="color:#fff;-webkit-text-fill-color:#fff;">1 (866) 833-1330</span>
           </div>
           <div class="num-bridge-arrows">
             <svg width="44" height="44" viewBox="0 0 48 48" fill="none">
@@ -1067,7 +1066,7 @@ function classify(body){
 function renderRecentLogs(logs){
   const el=document.getElementById('recent-logs');
   const recent=last30(logs).slice(0,8);
-  if(!recent.length){ el.innerHTML='<div class="empty">No logs in last 30 days. Text 1-888-799-LOGS to start!</div>'; return; }
+  if(!recent.length){ el.innerHTML='<div class="empty">No logs in last 30 days. Text 1-866-833-1330 to start!</div>'; return; }
   el.innerHTML=recent.map(r=>{
     const ts=new Date(getTs(r));
     const dateStr=ts.toLocaleDateString('en-US',{month:'short',day:'numeric'});
@@ -1081,7 +1080,7 @@ function renderRecentLogs(logs){
 function renderFoodList(logs){
   const r30=last30(logs).filter(r=>(r.type||classify(r.body||''))==='food');
   const el=document.getElementById('food-list');
-  if(!r30.length){ el.innerHTML='<div class="empty">No food logs yet. Text what you ate to 1-888-799-LOGS!</div>'; return; }
+  if(!r30.length){ el.innerHTML='<div class="empty">No food logs yet. Text what you ate to 1-866-833-1330!</div>'; return; }
   el.innerHTML=r30.slice(0,6).map(r=>{
     const ts=new Date(getTs(r));
     return '<div class="freq-item"><div class="freq-name" style="min-width:60px;font-size:11px;color:var(--muted);">'+ts.toLocaleDateString('en-US',{month:'short',day:'numeric'})+'</div><div style="flex:1;font-size:12px;color:var(--text);">'+esc((r.body||'').slice(0,80))+'</div></div>';
@@ -1091,7 +1090,7 @@ function renderFoodList(logs){
 function renderActivityList(logs){
   const r30=last30(logs).filter(r=>['workout','movement'].includes(r.type||classify(r.body||'')));
   const el=document.getElementById('activity-list');
-  if(!r30.length){ el.innerHTML='<div class="empty">No activity logs yet. Text your workouts to 1-888-799-LOGS!</div>'; return; }
+  if(!r30.length){ el.innerHTML='<div class="empty">No activity logs yet. Text your workouts to 1-866-833-1330!</div>'; return; }
   el.innerHTML=r30.slice(0,6).map(r=>{
     const ts=new Date(getTs(r));
     return '<div class="freq-item"><div class="freq-name" style="min-width:60px;font-size:11px;color:var(--muted);">'+ts.toLocaleDateString('en-US',{month:'short',day:'numeric'})+'</div><div style="flex:1;font-size:12px;color:var(--text);">'+esc((r.body||'').slice(0,80))+'</div></div>';
@@ -1101,7 +1100,7 @@ function renderActivityList(logs){
 function renderSleepList(logs){
   const r30=last30(logs).filter(r=>(r.type||classify(r.body||''))==='sleep');
   const el=document.getElementById('sleep-list');
-  if(!r30.length){ el.innerHTML='<div class="empty">No sleep logs yet. Text your sleep to 1-888-799-LOGS!</div>'; return; }
+  if(!r30.length){ el.innerHTML='<div class="empty">No sleep logs yet. Text your sleep to 1-866-833-1330!</div>'; return; }
   el.innerHTML=r30.slice(0,6).map(r=>{
     const ts=new Date(getTs(r));
     return '<div class="freq-item"><div class="freq-name" style="min-width:60px;font-size:11px;color:var(--muted);">'+ts.toLocaleDateString('en-US',{month:'short',day:'numeric'})+'</div><div style="flex:1;font-size:12px;color:var(--text);">'+esc((r.body||'').slice(0,80))+'</div></div>';
@@ -2268,7 +2267,7 @@ window._fitlogsSetMode = async (mode) => {
 
       <!-- What you text in -->
       <div class="convo-card card-you">
-        <div class="convo-card-label" style="font-size:14px;color:#c41e3a;letter-spacing:0.5px;">YOUR TEXT → 1-888-799-LOGS</div>
+        <div class="convo-card-label" style="font-size:14px;color:#c41e3a;letter-spacing:0.5px;">YOUR TEXT → 1-866-833-1330</div>
         <div class="convo-item"><div class="convo-dot"></div><div><strong>Incidents</strong> — What happened, where, when, who witnessed it</div></div>
         <div class="convo-item"><div class="convo-dot"></div><div><strong>ANALYZE:</strong> [paste email or document] — AI breaks it down with court relevance score</div></div>
         <div class="convo-item"><div class="convo-dot"></div><div><strong>CONFIRM</strong> — Save the analysis to your permanent record</div></div>
@@ -2278,8 +2277,7 @@ window._fitlogsSetMode = async (mode) => {
       <div style="background:rgba(13,42,30,0.95);border:1.5px solid rgba(29,184,122,0.4);border-radius:14px;padding:14px 18px 12px;display:flex;flex-direction:column;align-items:center;gap:8px;">
         <div style="display:flex;align-items:center;justify-content:center;gap:20px;">
           <div class="num-bridge-numbers" style="text-align:right;">
-            <span class="num" style="color:#c41e3a;-webkit-text-fill-color:#c41e3a;font-weight:800;">1 (888) 799-5647</span>
-            <span class="vanity" style="color:#1db87a;-webkit-text-fill-color:#1db87a;font-weight:800;">1-888-799-LOGS</span>
+            <span class="num" style="color:#c41e3a;-webkit-text-fill-color:#c41e3a;font-weight:800;">1 (866) 833-1330</span>
           </div>
           <div class="num-bridge-arrows">
             <svg width="44" height="44" viewBox="0 0 48 48" fill="none">
@@ -2409,9 +2407,9 @@ window._fitlogsSetMode = async (mode) => {
         <div class="pricing-card-accent" style="background:var(--muted);"></div>
         <div class="pricing-tier">Free</div>
         <div class="pricing-price">$0<span>/forever</span></div>
-        <div class="pricing-desc">Text incidents to 1-888-799-LOGS immediately. No account or login required.</div>
+        <div class="pricing-desc">Text incidents to 1-866-833-1330 immediately. No account or login required.</div>
         <ul class="pricing-features">
-          <li>Unlimited SMS logging via 1-888-799-LOGS</li>
+          <li>Unlimited SMS logging via 1-866-833-1330</li>
           <li>Timestamped records stored securely</li>
           <li class="no">No dashboard or message history</li>
           <li class="no">No map or analytics</li>
