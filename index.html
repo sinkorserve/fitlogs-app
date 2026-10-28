@@ -866,7 +866,7 @@ onAuthStateChanged(auth, async user => {
     if(oVerified) oVerified.classList.remove('show');
     ['su-phone','su-email','su-pw','su-pw2','otp-input'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
     ['signup-err','signup-ok','login-err','login-ok'].forEach(id=>{ const el=document.getElementById(id); if(el){ el.textContent=''; el.classList.remove('show'); } });
-    switchTab('login');
+    switchTab(window.location.pathname==='/opt-in'?'signup':'login');
     showScreen('login-screen'); window._fitlogsLoggedIn = false;
   }
 });
