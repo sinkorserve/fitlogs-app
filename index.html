@@ -468,16 +468,25 @@ mark{background:rgba(34,197,94,0.2);color:var(--green2);border-radius:2px;paddin
 </div>
 
 <!-- Auth column -->
-<div style="display:flex;flex-direction:column;justify-content:center;padding:24px 20px;overflow-y:auto;border-right:1px solid var(--border);order:1;">
+<div style="display:flex;flex-direction:column;justify-content:safe center;padding:24px 20px;overflow-y:auto;border-right:1px solid var(--border);order:1;">
 <div class="login-wrap">
-  <div style="display:flex;gap:0;margin-bottom:16px;background:var(--dark);border-radius:10px;padding:3px;">
-    <button id="tab-login" onclick="switchTab('login')" style="flex:1;padding:8px;border:none;border-radius:8px;background:var(--green);color:#000;font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;transition:all 0.18s;">Sign In</button>
-    <button id="tab-signup" onclick="switchTab('signup')" style="flex:1;padding:8px;border:none;border-radius:8px;background:transparent;color:var(--muted);font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;transition:all 0.18s;">Create Account</button>
+  <!-- Sign In -->
+  <div class="login-card" id="signin-card">
+    <div id="step-login">
+      <div style="font-size:14px;font-weight:700;color:var(--white);margin-bottom:4px;">Welcome back</div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:12px;">Enter your phone or email and password.</div>
+      <div class="field-wrap"><label class="f-label" for="login-id">Phone or Email</label><input class="f-input" id="login-id" type="text" placeholder="Email or 10-digit US phone number" autocomplete="off" aria-required="true"></div>
+      <div class="field-wrap"><label class="f-label" for="login-pw">Password</label><input class="f-input" id="login-pw" type="password" placeholder="Your password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()" aria-required="true"></div>
+      <div class="forgot-link"><a onclick="doForgotPw()" aria-label="Reset your password">Forgot password?</a></div>
+      <div class="err-box" id="login-err" role="alert" aria-live="assertive"></div>
+      <div class="ok-box" id="login-ok" role="status" aria-live="polite"></div>
+      <button class="btn-safe" onclick="doLogin()" id="login-btn" style="margin-top:6px;width:100%;">Sign In</button>
+    </div>
   </div>
 
-  <div class="login-card">
-    <!-- Signup -->
-    <div id="step-signup" class="step">
+  <!-- Create Account (standalone, linked from /opt-in) -->
+  <div class="login-card" id="signup-card" style="margin-top:16px;scroll-margin-top:16px;">
+    <div id="step-signup">
       <div style="font-size:14px;font-weight:700;color:var(--white);margin-bottom:4px;">Create your account</div>
       <div style="font-size:11px;color:var(--muted);margin-bottom:12px;">Your phone number is your primary identity.</div>
       <div class="grid-cc">
@@ -518,18 +527,6 @@ mark{background:rgba(34,197,94,0.2);color:var(--green2);border-radius:2px;paddin
       <button class="btn-safe" id="signup-btn" onclick="sendOtp()" style="margin-top:10px;" aria-label="Send verification code">Send Verification Code</button>
       <div class="err-box" id="signup-err" role="alert" aria-live="assertive"></div>
       <div class="ok-box" id="signup-ok" role="status" aria-live="polite"></div>
-    </div>
-
-    <!-- Login -->
-    <div id="step-login" class="step active">
-      <div style="font-size:14px;font-weight:700;color:var(--white);margin-bottom:4px;">Welcome back</div>
-      <div style="font-size:11px;color:var(--muted);margin-bottom:12px;">Enter your phone or email and password.</div>
-      <div class="field-wrap"><label class="f-label" for="login-id">Phone or Email</label><input class="f-input" id="login-id" type="text" placeholder="Email or 10-digit US phone number" autocomplete="off" aria-required="true"></div>
-      <div class="field-wrap"><label class="f-label" for="login-pw">Password</label><input class="f-input" id="login-pw" type="password" placeholder="Your password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()" aria-required="true"></div>
-      <div class="forgot-link"><a onclick="doForgotPw()" aria-label="Reset your password">Forgot password?</a></div>
-      <div class="err-box" id="login-err" role="alert" aria-live="assertive"></div>
-      <div class="ok-box" id="login-ok" role="status" aria-live="polite"></div>
-      <button class="btn-safe" onclick="doLogin()" id="login-btn" style="margin-top:6px;width:100%;">Sign In</button>
     </div>
   </div>
 </div>
@@ -1428,7 +1425,7 @@ window.verifySettingsOtp=async function(){
 
 // UTILS
 function showScreen(id){ document.querySelectorAll('.screen').forEach(s=>{ if(!s.closest('#sos-wrapper')){ s.classList.remove('active'); s.style.display='none'; } }); const candidates=document.querySelectorAll('#'+id); let el=null; candidates.forEach(c=>{ if(!c.closest('#sos-wrapper')) el=c; }); if(!el) el=document.getElementById(id); el.classList.add('active'); el.style.display=id==='login-screen'?'flex':'block'; }
-window.switchTab=function(tab){ const isSignup=tab==='signup',isLogin=tab==='login'; document.getElementById('step-signup').classList.toggle('active',isSignup); document.getElementById('step-login').classList.toggle('active',isLogin); const tS=document.getElementById('tab-signup'),tL=document.getElementById('tab-login'); tL.style.background=isLogin?'var(--green)':'transparent'; tL.style.color=isLogin?'#000':'var(--muted)'; tS.style.background=isSignup?'var(--green)':'transparent'; tS.style.color=isSignup?'#000':'var(--muted)'; };
+window.switchTab=function(tab){ if(tab==='signup'){ const c=document.getElementById('signup-card'); if(c){ c.scrollIntoView({behavior:'smooth',block:'start'}); const f=document.getElementById('su-phone'); if(f) setTimeout(()=>f.focus({preventScroll:true}),400); } } };
 function showErr(id,msg){ const e=document.getElementById(id); e.textContent=msg; e.classList.add('show'); }
 function showOk(id,msg){ const e=document.getElementById(id); e.textContent=msg; e.classList.add('show'); }
 function clearMsg(id){ const e=document.getElementById(id); e.textContent=''; e.classList.remove('show'); }
