@@ -1,0 +1,5 @@
+# Never commit service account keys or secrets
+*firebase-adminsdk*.json
+*serviceAccount*.json
+.env
+.env.*
